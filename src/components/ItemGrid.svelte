@@ -58,24 +58,44 @@
       let previousScreenSize = window.innerWidth;
 
       window.addEventListener('resize', () => {
-        if (window.innerWidth < 600 && previousScreenSize >= 600) {
-          generateMasonryGrid(1, items);
-        } else if (window.innerWidth >= 600 && window.innerWidth < 1000 && (previousScreenSize < 600 || previousScreenSize >= 1000)) {
+        if (window.innerWidth < 640 && previousScreenSize >= 640) {
           generateMasonryGrid(2, items);
-        } else if (window.innerWidth >= 1000 && previousScreenSize < 1000) {
+        } else if (window.innerWidth >= 640 && window.innerWidth < 1024 && (previousScreenSize < 640 || previousScreenSize >= 1024)) {
+          generateMasonryGrid(4, items);
+        } else if (window.innerWidth >= 1024 && previousScreenSize < 1024) {
           generateMasonryGrid(8, items);
         }
 
         previousScreenSize = window.innerWidth;
       })
 
-      if (previousScreenSize < 600) {
-        generateMasonryGrid(1, items);
-      } else if (previousScreenSize >= 600 && previousScreenSize < 1000) {
+      if (previousScreenSize < 640) {
         generateMasonryGrid(2, items);
+      } else if (previousScreenSize >= 640 && previousScreenSize < 1024) {
+        generateMasonryGrid(4, items);
       } else {
         generateMasonryGrid(8, items);
       }
+
+      // window.addEventListener('resize', () => {
+      //   if (window.innerWidth < 600 && previousScreenSize >= 600) {
+      //     generateMasonryGrid(1, items);
+      //   } else if (window.innerWidth >= 600 && window.innerWidth < 1000 && (previousScreenSize < 600 || previousScreenSize >= 1000)) {
+      //     generateMasonryGrid(2, items);
+      //   } else if (window.innerWidth >= 1000 && previousScreenSize < 1000) {
+      //     generateMasonryGrid(8, items);
+      //   }
+
+      //   previousScreenSize = window.innerWidth;
+      // })
+
+      // if (previousScreenSize < 600) {
+      //   generateMasonryGrid(1, items);
+      // } else if (previousScreenSize >= 600 && previousScreenSize < 1000) {
+      //   generateMasonryGrid(2, items);
+      // } else {
+      //   generateMasonryGrid(8, items);
+      // }
     }
   });
 </script>
