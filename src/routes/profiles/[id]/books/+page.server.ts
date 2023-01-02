@@ -19,5 +19,3 @@ export async function load({ params }: any) {
 
   return { profileBooks, books: sortedBooks };
 }
-
-export const prerender = false;

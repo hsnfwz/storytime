@@ -11,5 +11,3 @@ export async function load() {
 
   return { books };
 }
-
-export const prerender = false;

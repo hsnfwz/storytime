@@ -45,5 +45,3 @@ export const actions = {
     return { isUploadSuccess: true, message: 'Upload successful!' };
   }
 };
-
-export const prerender = true;
