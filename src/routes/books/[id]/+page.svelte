@@ -28,7 +28,10 @@
       const profileBooks: any = await getRecords(
         'profile_book',
         'id, status',
-        { profile_id: currentProfile.id, book_id: data.books[0].id },
+        {
+          profile_id: currentProfile.id,
+          book_id: data.books[0].id
+        },
       );
 
       if (profileBooks[0]) {

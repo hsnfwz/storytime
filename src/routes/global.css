@@ -7,7 +7,7 @@
   padding: 0;
 } */
 
-.masonry-grid-container {
+#masonry-grid-container {
   position: relative;
   width: 100%;
   display: flex;

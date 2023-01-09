@@ -13,7 +13,7 @@
 </script>
 
 <img
-  src={getPublicUrl(`book-covers/${formatFileName(item.title, item.id)}`)}
+  src={getPublicUrl('book-covers', `${formatFileName(item.title, item.id)}/${formatFileName(item.title, item.id, true)}`)}
   alt={item.title}
   width="320px"
   height=""

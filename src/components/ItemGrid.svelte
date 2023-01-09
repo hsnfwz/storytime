@@ -11,91 +11,86 @@
   // props
   export let items: any;
 
+  // state
+  let currentNumberOfColumns: number;
+  let containerElement: any;
+
   afterUpdate(() => {
-    if (items.length !== 0) {
-      const container = document.querySelector('.masonry-grid-container');
+    containerElement = document.querySelector('#masonry-grid-container');
+    
+    const generateMasonryGrid = (columns: any, items: any) => {
+      containerElement.innerHTML = '';
 
-      const generateMasonryGrid = (columns: any, items: any) => {
-        container.innerHTML = '';
+      let columnWrappers = {};
 
-        let columnWrappers = {};
-
-        for (let i = 0; i < columns; i++) {
-          columnWrappers[`column${i}`] = [];
-        }
-
-        for (let i = 0; i < items.length; i++) {
-          const column = i % columns;
-          columnWrappers[`column${column}`].push(items[i]);
-        }
-
-        for (let i = 0; i < columns; i++) {
-          let columnItems = columnWrappers[`column${i}`];
-
-          let div = document.createElement('div');
-          div.classList.add('masonry-grid-column');
-
-          columnItems.forEach(item => {
-            let itemDiv = document.createElement('div');
-            itemDiv.classList.add('masonry-grid-item-container');
-
-            let img = document.createElement('img');
-            img.classList.add('masonry-grid-item-image');
-            img.src = getPublicUrl(`book-covers/${formatFileName(item.title, item.id)}`);
-            img.alt = item.title;
-
-            const link = document.createElement('a');
-            link.href = `/books/${item.id}`;
-            link.append(img);
-            itemDiv.append(link);
-            div.appendChild(itemDiv);
-          });
-
-          container.appendChild(div);
-        }
+      for (let i = 0; i < columns; i++) {
+        columnWrappers[`column${i}`] = [];
       }
 
-      let previousScreenSize = window.innerWidth;
+      for (let i = 0; i < items.length; i++) {
+        const column = i % columns;
+        columnWrappers[`column${column}`].push(items[i]);
+      }
 
-      window.addEventListener('resize', () => {
-        if (window.innerWidth < 640 && previousScreenSize >= 640) {
-          generateMasonryGrid(2, items);
-        } else if (window.innerWidth >= 640 && window.innerWidth < 1024 && (previousScreenSize < 640 || previousScreenSize >= 1024)) {
-          generateMasonryGrid(4, items);
-        } else if (window.innerWidth >= 1024 && previousScreenSize < 1024) {
-          generateMasonryGrid(8, items);
-        }
+      for (let i = 0; i < columns; i++) {
+        let columnItems = columnWrappers[`column${i}`];
 
-        previousScreenSize = window.innerWidth;
-      })
+        let div = document.createElement('div');
+        div.classList.add('masonry-grid-column');
+        div.id = `column-${i}`;
 
-      if (previousScreenSize < 640) {
+        columnItems.forEach((item: any, index: any) => {
+          let itemDiv = document.createElement('div');
+          itemDiv.classList.add('masonry-grid-item-container');
+
+          let img = document.createElement('img');
+          img.classList.add('masonry-grid-item-image');
+          img.src = getPublicUrl('book-covers', `${formatFileName(item.title, item.id)}/${formatFileName(item.title, item.id, true)}`);
+          img.alt = item.title;
+
+          const link = document.createElement('a');
+          link.href = `/books/${item.id}`;
+          link.append(img);
+          itemDiv.append(link);
+          div.appendChild(itemDiv);
+        });
+
+        containerElement.appendChild(div);
+      }
+    }
+
+    let previousScreenSize = window.innerWidth;
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth < 640 && previousScreenSize >= 640) {
         generateMasonryGrid(2, items);
-      } else if (previousScreenSize >= 640 && previousScreenSize < 1024) {
+        currentNumberOfColumns = 2;
+      } else if (window.innerWidth >= 640 && window.innerWidth < 1024 && (previousScreenSize < 640 || previousScreenSize >= 1024)) {
         generateMasonryGrid(4, items);
-      } else {
+        currentNumberOfColumns = 4;
+      } else if (window.innerWidth >= 1024 && window.innerWidth < 1536 && (previousScreenSize < 1024 || previousScreenSize >= 1536)) {
+        generateMasonryGrid(6, items);
+        currentNumberOfColumns = 6;
+      } else if (window.innerWidth >= 1536 && previousScreenSize < 1536) {
         generateMasonryGrid(8, items);
+        currentNumberOfColumns = 8;
       }
 
-      // window.addEventListener('resize', () => {
-      //   if (window.innerWidth < 600 && previousScreenSize >= 600) {
-      //     generateMasonryGrid(1, items);
-      //   } else if (window.innerWidth >= 600 && window.innerWidth < 1000 && (previousScreenSize < 600 || previousScreenSize >= 1000)) {
-      //     generateMasonryGrid(2, items);
-      //   } else if (window.innerWidth >= 1000 && previousScreenSize < 1000) {
-      //     generateMasonryGrid(8, items);
-      //   }
+      previousScreenSize = window.innerWidth;
+    });
 
-      //   previousScreenSize = window.innerWidth;
-      // })
-
-      // if (previousScreenSize < 600) {
-      //   generateMasonryGrid(1, items);
-      // } else if (previousScreenSize >= 600 && previousScreenSize < 1000) {
-      //   generateMasonryGrid(2, items);
-      // } else {
-      //   generateMasonryGrid(8, items);
-      // }
+    if (previousScreenSize < 640) {
+      generateMasonryGrid(2, items);
+      currentNumberOfColumns = 2;
+    } else if (previousScreenSize >= 640 && previousScreenSize < 1024) {
+      generateMasonryGrid(4, items);
+      currentNumberOfColumns = 4;
+    } else if (previousScreenSize >= 1024 && previousScreenSize < 1536) {
+      generateMasonryGrid(6, items);
+      currentNumberOfColumns = 6;
+    } else {
+      generateMasonryGrid(8, items);
+      currentNumberOfColumns = 8;
     }
   });
 </script>
@@ -103,5 +98,5 @@
 {#if items.length === 0}
   <p class="text-center">Empty</p>
 {:else}
-  <div class="masonry-grid-container"></div>
+  <div id="masonry-grid-container"></div>
 {/if}

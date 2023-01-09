@@ -5,26 +5,30 @@ import supabase from '$config/supabase';
 const getRecords = async (
   table: string,
   columns: string = 'id',
-  filter: {} = {},
-  sort: {
+  match: {
+    [key: string]: string | number,
+  } = {},
+  order: {
     column: string,
-    options: {
-      ascending: boolean,
-    },
+    ascending: boolean,
   } = {
     column: 'created_at',
-    options: {
-      ascending: false,
-    },
+    ascending: false,
   },
-  limit: number = 100,
+  range: {
+    from: number,
+    to: number,
+  } = {
+    from: 0,
+    to: 47,
+  }
 ) => {
   const { data, error } = await supabase
   .from(table)
   .select(columns)
-  .match(filter)
-  .order(sort.column, sort.options)
-  .limit(limit);
+  .match(match)
+  .order(order.column, { ascending: order.ascending })
+  .range(range.from, range.to)
 
   if (error) {
     console.log(error);
@@ -56,13 +60,15 @@ const insertRecords = async (
 const updateRecords = async (
   table: string,
   values: {},
-  filter: {},
+  match: {
+    [key: string]: string,
+  } = {}
 ) => {
   const { data, error } = await supabase
   .from(table)
   .update(values)
-  .match(filter)
-  .select();
+  .match(match)
+  .select()
 
   if (error) {
     console.log(error);
@@ -75,13 +81,15 @@ const updateRecords = async (
 // delete 1 or more records
 const deleteRecords = async (
   table: string,
-  filter: {},
+  match: {
+    [key: string]: string,
+  } = {}
 ) => {
   const { data, error } = await supabase
   .from(table)
   .delete()
-  .match(filter)
-  .select();
+  .match(match)
+  .select()
 
   if (error) {
     console.log(error);

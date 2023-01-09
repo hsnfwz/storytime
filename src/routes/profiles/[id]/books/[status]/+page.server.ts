@@ -25,7 +25,14 @@ export async function load({ params }: any) {
     _status = E_BookStatus.DID_NOT_FINISH.text;
   }
 
-  const profileBooks: any = await getRecords('profile_book', 'id, profile_id, book_id, status, book (id, title, release_date)', { profile_id: id, status: _status });
+  const profileBooks: any = await getRecords(
+    'profile_book',
+    'id, profile_id, book_id, status, book (id, title, release_date)',
+    {
+      profile_id: id,
+      status: _status
+    }
+  );
 
   if (!profileBooks) throw error(404, 'Not Found');
 

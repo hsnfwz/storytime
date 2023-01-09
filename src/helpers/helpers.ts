@@ -8,12 +8,17 @@ const formatText = (text: string) => {
   return _text;
 }
 
-const formatFileName = (text: string, id: number) => {
+const formatFileName = (text: string, id: number, includeFileType: boolean = false) => {
   let _text: string = '';
 
   if (text) {
     _text = text.replace(/[^A-Za-z0-9\s]/g,'').replace(/\s+/g, ' ').trim().split(' ').join('-').toLowerCase();
-    _text = `${_text}-id-${id}.webp`;
+
+    if (includeFileType) {
+      _text = `${_text}-${id}.webp`;
+    } else {
+      _text = `${_text}-${id}`;
+    }
   }
   
   return _text;

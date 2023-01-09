@@ -32,13 +32,14 @@ export const actions = {
 
     if (coverFileSizeKB > 100) return fail(400, { isCoverFileFail: true, message: 'Cover file size must be 100KB or less' });
 
-    const insertedBook: any = await insertRecords('book', [{ title: formattedTitle, release_date: releaseDate }]);
+    const insertedBooks: any = await insertRecords('book', [{ title: formattedTitle, release_date: releaseDate }]);
 
-    if (!insertedBook) return fail(500, { isUploadFail: true, message: 'Book upload failed :(' });
+    if (!insertedBooks[0]) return fail(500, { isUploadFail: true, message: 'Book upload failed :(' });
 
-    const formattedCoverFileName = formatFileName(title, insertedBook.id);
+    const formattedFolderName = formatFileName(title, insertedBooks[0].id);
+    const formattedCoverFileName = formatFileName(title, insertedBooks[0].id, true);
 
-    const result = await uploadFile(`book-covers/${formattedCoverFileName}`, coverFile);
+    const result = await uploadFile('book-covers', `${formattedFolderName}/${formattedCoverFileName}`, coverFile);
 
     if (!result) return fail(500, { isUploadFail: true, message: 'File upload failed :(' });
 

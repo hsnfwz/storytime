@@ -1,10 +1,10 @@
 // config
 import supabase from '$config/supabase';
 
-const getPublicUrl = (path: string) => {
+const getPublicUrl = (bucket: string, path: string) => {
   const { data } = supabase
   .storage
-  .from('library')
+  .from(bucket)
   .getPublicUrl(path);
 
   const { publicUrl } = data;
@@ -13,12 +13,13 @@ const getPublicUrl = (path: string) => {
 }
 
 const uploadFile = async (
+  bucket: string,
   path: string,
   file: any
 ) => {
   const { data, error } = await supabase
   .storage
-  .from('library')
+  .from(bucket)
   .upload(path, file, {
     cacheControl: '3600',
     upsert: false,

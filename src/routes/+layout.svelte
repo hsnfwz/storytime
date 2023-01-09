@@ -56,8 +56,8 @@
 
 
 <!-- VERSION 1.0 FEATURES/FIXES -->
+<!-- detect user device as pc or not, if not, disable hover effects -->
 <!-- todo: make home a user's books if logged in, otherwise an explore page if not -->
-<!-- todo: replace film tie-in covers with originals (4 currently) -->
 
 <!-- VERSION 2.0 FEATURES/FIXES -->
 <!-- todo: limit (pagination), filter, sort, search -->
@@ -67,21 +67,16 @@
 <!-- todo: option to import any csv files (similar to IFTA Fuel Card) -->
 <!-- todo: find better icons -->
 <!-- todo: BUG accessing profiles while signed out crashed site -->
-
-<!-- {#if !isLoading}
-  <main class="bg-white min-h-screen">
-    <Nav />
-    <div class="p-4 main-container">
-      <slot />
-    </div>
-  </main>
-{/if} -->
+<!-- todo: editions (cover, page count, isbn, release date) ? -->
 
 {#if !isLoading}
-  <main>
+  <main class="flex flex-col gap-4 bg-white min-h-screen">
+  <!-- <main class="flex flex-col gap-4 bg-black min-h-screen"> -->
     <Nav />
     <div class="m-2">
       <slot />
     </div>
+    <div class="w-full h-20 bg-neutral-100"></div>
+    <!-- <div class="w-full h-20 bg-black"></div> -->
   </main>
 {/if}
