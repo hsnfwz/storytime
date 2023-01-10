@@ -34,6 +34,10 @@
       htmlElement?.classList.add(_theme);
     }
 
+    const bodyElement = document.querySelector('body');
+    bodyElement?.classList.add('bg-white');
+    bodyElement?.classList.add('dark:bg-black');
+
     subscriptionAuthStateChange = supabase.auth.onAuthStateChange((event, currentSession) => {
       if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
         session.set(undefined);
@@ -88,7 +92,7 @@
 
 
 {#if !isLoading}
-  <main class="flex flex-col gap-4 bg-white dark:bg-black min-h-screen">
+  <main class="flex flex-col gap-4">
     <Nav />
     <div class="ml-2 mr-2 mt-4 mb-4">
       <slot />
