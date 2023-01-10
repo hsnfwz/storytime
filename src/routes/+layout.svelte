@@ -73,7 +73,7 @@
 
 <!-- VERSION 2 FEATURES/FIXES -->
 
-
+<!-- todo: maybe put nav bar on bottom (for mobile only) and make it sticky (for mobile and desktop when scrolling back up) -->
 <!-- todo: filter, sort, search -->
 <!-- todo: queue, reviews, rankings -->
 <!-- todo: cookies notice to users, saying that they agree to cookies when using our site (for their better experience!) -->

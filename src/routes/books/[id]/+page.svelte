@@ -184,7 +184,7 @@
       <div class="flex flex-col gap-4">
         {#each Object.values(E_BookStatus) as bookStatus}
           <button
-            class={`px-4 py-2 rounded font-bold ${status === bookStatus.text ? 'bg-green-500 text-white pointer-events-none' : 'bg-neutral-100'}`}
+            class={`px-4 py-2 rounded font-bold ${status === bookStatus.text ? 'bg-green-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-neutral-900 dark:text-white'}`}
             type="button"
             on:click={async () => await handleAddEditProfileBook(bookStatus.text)}
           >
@@ -202,7 +202,7 @@
       </div>
       <div class="flex flex-col gap-4">
         <button
-          class={`px-4 py-2 rounded font-bold bg-neutral-100 disabled:opacity-50`}
+          class={`px-4 py-2 rounded font-bold bg-neutral-100 dark:bg-neutral-900 dark:text-white disabled:opacity-50`}
           type="button"
           on:click={() => console.log('queue')}
           disabled
@@ -210,7 +210,7 @@
           Queue
         </button>
         <button
-          class={`px-4 py-2 rounded font-bold bg-neutral-100 disabled:opacity-50`}
+          class={`px-4 py-2 rounded font-bold bg-neutral-100 dark:bg-neutral-900 dark:text-white disabled:opacity-50`}
           type="button"
           on:click={() => console.log('rank')}
           disabled
@@ -218,7 +218,7 @@
           Rank
         </button>
         <button
-          class={`px-4 py-2 rounded font-bold bg-neutral-100 disabled:opacity-50`}
+          class={`px-4 py-2 rounded font-bold bg-neutral-100 dark:bg-neutral-900 dark:text-white disabled:opacity-50`}
           type="button"
           on:click={() => console.log('review')}
           disabled
