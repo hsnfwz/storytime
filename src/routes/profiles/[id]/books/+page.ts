@@ -24,6 +24,16 @@ export async function load({ url, params }: any) {
     currentEnv = 'prod';
   }
 
+  const profiles: any = await getRecords(
+    'profile',
+    'id, created_at, book_total_count, book_reading_count, book_want_to_read_count, book_read_count, book_did_not_finish_count',
+    {
+      id
+    }
+  );
+
+  if (!profiles || !profiles[0]) throw error(404, 'Not Found');
+
   const profileBooks: any = await getRecords(
     'profile_book',
     `id, profile_id, book_id, status, ${currentEnv}_book (id, title, release_date)`,
@@ -43,6 +53,7 @@ export async function load({ url, params }: any) {
   const items: any = sortBy(books, 'release_date', false);
 
   return {
+    profile: profiles[0],
     items,
     currentPage,
     maxPageItemsCount,

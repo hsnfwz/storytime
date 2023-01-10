@@ -69,27 +69,23 @@
   onDestroy(() => subscriptionAuthStateChange?.data?.subscription?.unsubscribe());
 </script>
 
-
-
 <!-- VERSION 2 FEATURES/FIXES -->
-
+<!-- todo: queue, reviews, ratings, rankings, and other cool stuff -->
 <!-- todo: maybe put nav bar on bottom (for mobile only) and make it sticky (for mobile and desktop when scrolling back up) -->
 <!-- todo: filter, sort, search -->
-<!-- todo: queue, reviews, rankings -->
-<!-- todo: cookies notice to users, saying that they agree to cookies when using our site (for their better experience!) -->
-
 
 <!-- VERSION 3 FEATURES/FIXES -->
-
 <!-- todo: authors, shelves (tags), stats, social features, newsletter, recommendations -->
 <!-- todo: film, games, music, series_title, series_entry, synopsis -->
-<!-- todo: update RLS -->
 <!-- todo: option to import any csv files (similar to IFTA Fuel Card) -->
 <!-- todo: editions (cover, page count, isbn, release date) ? -->
 <!-- todo: detect user device as pc or not, if not, disable hover effects if any -->
 <!-- todo: name and username -->
 <!-- todo: convert sign in form to svelte form -->
 
+<!-- BEFORE RELEASE -->
+<!-- todo: log all data that is being fetched in each url and test by switching pages to see how many requests we make each time, then we will figure out how to reduce requests from there (i.e. caching) -->
+<!-- todo: update supabase RLS -->
 
 {#if !isLoading}
   <main class="flex flex-col gap-4">

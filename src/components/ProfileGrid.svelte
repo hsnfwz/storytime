@@ -14,7 +14,6 @@
         <a
           href={`/profiles/${profile.id}`}
           class="text-blue-500"
-          on:click={() => sessionStorage.setItem('view-profile', JSON.stringify(profile))}
         >
           View Profile
         </a>

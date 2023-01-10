@@ -46,7 +46,7 @@
             img.alt = item.title;
 
             const link = document.createElement('a');
-            link.href = `/books/${item.id}`;
+            link.href = `/explore/books/${item.id}`;
             link.append(img);
             itemDiv.append(link);
             div.appendChild(itemDiv);
