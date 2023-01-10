@@ -12,16 +12,16 @@
 </script>
 
 <div class="flex flex-col items-center gap-4">
-  <h1 class="font-bold text-xl text-center">Sign Out</h1>
+  <h1 class="dark:text-white font-bold text-2xl text-center">Sign Out</h1>
   {#if currentSession}
     <button
-      class="px-4 py-2 bg-neutral-100 rounded font-bold"
+      class="px-4 py-2 bg-neutral-100 dark:bg-neutral-900 dark:text-white rounded font-bold"
       type="button"
       on:click={async () => await supabase.auth.signOut()}
     >
       Sign Out
     </button>
   {:else}
-    <a href="/" class="text-blue-500">Home</a>
+    <p class="dark:text-white text-center">You are signed out!</p>
   {/if}
 </div>

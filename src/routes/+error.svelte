@@ -3,4 +3,4 @@
   <meta name="description" content="404 Not Found | StoryTime" />
 </svelte:head>
 
-<p>404 Not Found</p>
+<p class="dark:text-white">404 Not Found</p>

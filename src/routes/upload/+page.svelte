@@ -28,10 +28,10 @@
 </script>
 
 <div class="flex flex-col gap-4 items-center">
-  <h1 class="text-center text-xl font-bold">Upload</h1>
+  <h1 class="dark:text-white text-center text-2xl font-bold">Upload</h1>
   {#if currentProfile && currentProfile.is_contributor}
     <form
-      class="flex flex-col gap-4 w-60 bg-neutral-100 p-4 rounded-lg"
+      class="flex flex-col gap-4 w-60 bg-neutral-100 dark:bg-neutral-900 p-4 rounded-lg"
       method="post"
       enctype="multipart/form-data"
       use:enhance
@@ -39,7 +39,7 @@
       on:submit={() => form?.message ? isSubmitDisabled = true : isSubmitDisabled = false}
     >
       <div class="flex flex-col gap-2">
-        <label for="title" class={`${form?.message && form?.isTitleFail ? 'text-red-500' : ''}`}>* Title</label>
+        <label for="title" class={`${form?.message && form?.isTitleFail ? 'text-red-500' : 'dark:text-white'}`}>* Title</label>
         <input
           class={`${form?.isTitleFail ? 'border-red-500' : 'border-white'} p-2 box-border border-2 w-full rounded`}
           id="title"
@@ -53,7 +53,7 @@
         {/if}
       </div>
       <div class="flex flex-col gap-2">
-        <label for="releaseDate" class={`${form?.message && form?.isReleaseDateFail ? 'text-red-500' : ''}`}>* Release Date</label>
+        <label for="releaseDate" class={`${form?.message && form?.isReleaseDateFail ? 'text-red-500' : 'dark:text-white'}`}>* Release Date</label>
         <input
           class={`${form?.isReleaseDateFail ? 'border-red-500' : 'border-white'} p-2 box-border border-2 w-full rounded`}
           id="releaseDate"
@@ -67,7 +67,7 @@
         {/if}
       </div>
       <div class="flex flex-col gap-2">
-        <p class={`${form?.message && form?.isCoverFileFail ? 'text-red-500' : ''}`}>* Cover File</p>
+        <p class={`${form?.message && form?.isCoverFileFail ? 'text-red-500' : 'dark:text-white'}`}>* Cover File</p>
         <label for="coverFile" class="min-w-0 whitespace-nowrap overflow-hidden text-ellipsis p-2 bg-blue-500 text-white rounded">{coverFilePath || 'WEBP'}</label>
         <input
           class="hidden"
@@ -86,15 +86,10 @@
         <button type="submit" class="font-bold w-full rounded px-4 py-2 bg-green-500 text-white disabled:opacity-50" disabled={form?.message ? true : false}>Submit</button>
       </div>
       {#if form?.message && (form?.isUploadSuccess || form?.isUploadFail)}
-        <p class="text-center">{form?.message}</p>
+        <p class="dark:text-white text-center">{form?.message}</p>
       {/if}
-      <div class="flex flex-col gap-2">
-        <p>Convert JPG/JPEG cover file to WEBP format <a href="https://www.xconvert.com/convert-jpg-to-webp" target="_blank" rel="noreferrer" class="text-blue-500">here</a></p>
-        <p>Compress WEBP cover file to 100KB or less <a href="https://www.xconvert.com/compress-webp" target="_blank" rel="noreferrer" class="text-blue-500">here</a></p>
-      </div>
     </form>
   {:else}
-    <p>Become a contributor to start uploading</p>
-    <a href="/" class="text-blue-500">Home</a>
+    <p class="dark:text-white text-center">Become a contributor to start uploading</p>
   {/if}
 </div>

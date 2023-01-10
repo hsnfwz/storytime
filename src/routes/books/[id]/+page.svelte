@@ -173,8 +173,8 @@
 
 <div class="flex flex-col items-center gap-4">
   <div class="flex flex-col gap-2">
-    <h1 class="font-bold text-xl text-center">{data.books[0].title}</h1>
-    <p class="text-center">
+    <h1 class="dark:text-white font-bold text-2xl text-center">{data.books[0].title}</h1>
+    <p class="dark:text-white text-center">
       Published on {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(data.books[0].release_date))}
     </p>
   </div>
@@ -228,6 +228,6 @@
       </div>
     </div>
   {:else}
-    <p class="text-center"><a href='/sign-in' class="text-blue-500">Sign in</a> to start managing your books</p>
+    <p class="dark:text-white text-center"><a href='/sign-in' class="text-blue-500">Sign in</a> to start managing your books</p>
   {/if}
 </div>

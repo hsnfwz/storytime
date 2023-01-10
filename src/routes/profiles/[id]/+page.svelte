@@ -1,12 +1,27 @@
 <script lang="ts">
-  // components
-  import ItemGrid from '$components/ItemGrid.svelte';
+  // svelte
+  import { onMount } from 'svelte';
 
-  // data
-  export let data: {
-    profileBooks: any,
-    books: any,
-  }
+  // state
+  let profile: any;
+
+  onMount(() => {
+    const viewProfile: any = sessionStorage.getItem('view-profile');
+
+    if (viewProfile) {
+      profile = JSON.parse(viewProfile);
+    }
+  });
 </script>
 
-<ItemGrid items={data.books} />
+{#if profile}
+  <div class="flex flex-col items-center gap-4">
+    <h1 class="dark:text-white text-center font-bold text-2xl">Profile {profile.id}</h1>
+    <a
+      href={`/profiles/${profile.id}/books`}
+      class="text-blue-500"
+    >
+      View Books
+    </a>
+  </div>
+{/if}

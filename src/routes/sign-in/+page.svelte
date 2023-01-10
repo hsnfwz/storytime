@@ -1,4 +1,7 @@
 <script lang="ts">
+  // svelte
+  import { dev } from '$app/environment';
+
   // config
   import supabase from '$config/supabase';
 
@@ -19,10 +22,11 @@
     } else {
       showSuccessMessage = true;
 
-      await supabase.auth.signInWithOtp({
-        email,
-        options: { emailRedirectTo: 'http://localhost:5173' },
-      });
+      let options: any;
+
+      if (dev) options = { emailRedirectTo: 'http://localhost:5173' };
+
+      await supabase.auth.signInWithOtp({ email, options });
     }
   }
 
@@ -32,20 +36,20 @@
 </script>
 
 <div class="flex flex-col items-center gap-4">
-  <h1 class="font-bold text-xl text-center">Sign In</h1>
+  <h1 class="dark:text-white font-bold text-2xl text-center">Sign In</h1>
   {#if currentSession}
-    <a href="/" class="text-blue-500">Home</a>
+    <p class="darK:text-white text-center">You are already signed in!</p>
   {:else}
     {#if showSuccessMessage}
       <div class="flex flex-col gap-4 w-60">
-        <p class="text-center">
-          We sent an email to you at <span class="font-bold">{email}</span>. It has a magic link that will sign you in.
+        <p class="dark:text-white text-center">
+          We sent an email to you at <span class="font-bold dark:text-white">{email}</span>. It has a magic link that will sign you in.
         </p>
       </div>
     {:else}
-      <form class="flex flex-col gap-4 w-60 bg-neutral-100 p-4 rounded-lg">
+      <form class="flex flex-col gap-4 w-60 bg-neutral-100 dark:bg-neutral-900 p-4 rounded-lg">
         <div class="flex flex-col gap-2">
-          <label for="user-email" class={`${showErrorMessage ? 'text-red-500' : ''}`}>* Email</label>
+          <label for="user-email" class={`${showErrorMessage ? 'text-red-500' : 'dark:text-white'}`}>* Email</label>
           <input
             id="user-email"
             type="email"
@@ -65,7 +69,7 @@
         >
           Sign In
         </button>
-        <p>By signing in, you agree to our <a class="text-blue-500" href="/terms-and-conditions">Terms and Conditions.</a></p>
+        <p class="dark:text-white">By signing in, you agree to our <a class="text-blue-500" href="/terms-and-conditions">Terms and Conditions.</a></p>
       </form>
     {/if}
   {/if}

@@ -23,6 +23,17 @@
   let subscriptionAuthStateChange: any;
 
   onMount(async () => {
+    const theme = localStorage.getItem('theme') || '';
+
+    let _theme: string = 'dark';
+
+    if (theme === 'light') _theme = '';
+
+    if (_theme) {
+      const htmlElement = document.querySelector('html');
+      htmlElement?.classList.add(_theme);
+    }
+
     subscriptionAuthStateChange = supabase.auth.onAuthStateChange((event, currentSession) => {
       if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
         session.set(undefined);
@@ -55,28 +66,34 @@
 </script>
 
 
-<!-- VERSION 1.0 FEATURES/FIXES -->
-<!-- detect user device as pc or not, if not, disable hover effects -->
-<!-- todo: make home a user's books if logged in, otherwise an explore page if not -->
 
-<!-- VERSION 2.0 FEATURES/FIXES -->
-<!-- todo: limit (pagination), filter, sort, search -->
-<!-- todo: film, games, music, series_title, series_entry, synopsis (maybe not, takes up a lot of space), authors, shelves (tags), queue, reviews, rankings, stats, profiles, social features, newsletter, recommendations -->
+<!-- VERSION 2 FEATURES/FIXES -->
+
+
+<!-- todo: filter, sort, search -->
+<!-- todo: queue, reviews, rankings -->
+<!-- todo: cookies notice to users, saying that they agree to cookies when using our site (for their better experience!) -->
+
+
+<!-- VERSION 3 FEATURES/FIXES -->
+
+<!-- todo: authors, shelves (tags), stats, social features, newsletter, recommendations -->
+<!-- todo: film, games, music, series_title, series_entry, synopsis -->
 <!-- todo: update RLS -->
-<!-- todo: dark mode -->
 <!-- todo: option to import any csv files (similar to IFTA Fuel Card) -->
-<!-- todo: find better icons -->
-<!-- todo: BUG accessing profiles while signed out crashed site -->
 <!-- todo: editions (cover, page count, isbn, release date) ? -->
+<!-- todo: detect user device as pc or not, if not, disable hover effects if any -->
+<!-- todo: name and username -->
+<!-- todo: convert sign in form to svelte form -->
+
 
 {#if !isLoading}
-  <main class="flex flex-col gap-4 bg-white min-h-screen">
-  <!-- <main class="flex flex-col gap-4 bg-black min-h-screen"> -->
+  <main class="flex flex-col gap-4 bg-white dark:bg-black min-h-screen">
     <Nav />
-    <div class="m-2">
+    <div class="ml-2 mr-2 mt-4 mb-4">
       <slot />
     </div>
-    <div class="w-full h-20 bg-neutral-100"></div>
-    <!-- <div class="w-full h-20 bg-black"></div> -->
   </main>
+{:else}
+  <p class="dark:text-white text-center">Loading...</p>
 {/if}

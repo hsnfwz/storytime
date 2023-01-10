@@ -11,12 +11,12 @@ export async function load({ url }: any) {
   const from: number = (page - 1) * (limit + 1);
   const to: number = page * limit;
 
-  const books: any = await getRecords(
-    'book',
-    'id, title, release_date',
+  const profiles: any = await getRecords(
+    'profile',
+    'id, created_at, book_total_count, book_reading_count, book_want_to_read_count, book_read_count, book_did_not_finish_count',
     undefined,
     {
-      column: 'release_date',
+      column: 'created_at',
       ascending: false
     },
     {
@@ -25,7 +25,7 @@ export async function load({ url }: any) {
     }
   );
 
-  if (!books) throw error(404, 'Not Found');
+  if (!profiles) throw error(404, 'Not Found');
 
-  return { books, pageNumber: +page };
+  return { profiles, pageNumber: +page };
 }

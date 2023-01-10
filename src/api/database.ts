@@ -1,3 +1,6 @@
+// svelte
+import { dev } from '$app/environment';
+
 // config
 import supabase from '$config/supabase';
 
@@ -23,8 +26,16 @@ const getRecords = async (
     to: 47,
   }
 ) => {
+  let _table: string = table;
+
+  if (dev) {
+    _table = `dev_${table}`;
+  } else {
+    _table = `prod_${table}`;
+  }
+
   const { data, error } = await supabase
-  .from(table)
+  .from(_table)
   .select(columns)
   .match(match)
   .order(order.column, { ascending: order.ascending })
@@ -43,8 +54,16 @@ const insertRecords = async (
   table: string,
   values: any[],
 ) => {
+  let _table: string = table;
+
+  if (dev) {
+    _table = `dev_${table}`;
+  } else {
+    _table = `prod_${table}`;
+  }
+
   const { data, error } = await supabase
-  .from(table)
+  .from(_table)
   .insert(values)
   .select()
 
@@ -64,8 +83,16 @@ const updateRecords = async (
     [key: string]: string,
   } = {}
 ) => {
+  let _table: string = table;
+
+  if (dev) {
+    _table = `dev_${table}`;
+  } else {
+    _table = `prod_${table}`;
+  }
+
   const { data, error } = await supabase
-  .from(table)
+  .from(_table)
   .update(values)
   .match(match)
   .select()
@@ -85,8 +112,16 @@ const deleteRecords = async (
     [key: string]: string,
   } = {}
 ) => {
+  let _table: string = table;
+
+  if (dev) {
+    _table = `dev_${table}`;
+  } else {
+    _table = `prod_${table}`;
+  }
+
   const { data, error } = await supabase
-  .from(table)
+  .from(_table)
   .delete()
   .match(match)
   .select()
