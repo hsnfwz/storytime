@@ -27,8 +27,8 @@
   }
 </script>
 
-<div class="flex flex-col gap-4 items-center">
-  <h1 class="dark:text-white text-center text-2xl font-bold">Upload</h1>
+<div class="flex flex-col gap-8 items-center">
+  <h1 class="dark:text-white text-center text-2xl st-font-bold">Upload</h1>
   {#if currentProfile && currentProfile.is_contributor}
     <form
       class="flex flex-col gap-4 w-60 bg-neutral-100 dark:bg-neutral-900 p-4 rounded-lg"
@@ -82,8 +82,8 @@
         {/if}
       </div>
       <div class="flex gap-4">
-        <button type="reset" class="font-bold w-full rounded px-4 py-2 bg-red-500 text-white">Reset</button>
-        <button type="submit" class="font-bold w-full rounded px-4 py-2 bg-green-500 text-white disabled:opacity-50" disabled={form?.message ? true : false}>Submit</button>
+        <button type="reset" class="st-font-bold w-full rounded px-4 py-2 bg-red-500 text-white">Reset</button>
+        <button type="submit" class="st-font-bold w-full rounded px-4 py-2 bg-green-500 text-white disabled:opacity-50" disabled={form?.message ? true : false}>Submit</button>
       </div>
       {#if form?.message && (form?.isUploadSuccess || form?.isUploadFail)}
         <p class="dark:text-white text-center">{form?.message}</p>

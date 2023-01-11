@@ -25,12 +25,12 @@
   {#if isLoading}
     <p class="dark:text-white text-center">Loading...</p>
   {:else}
-    <h1 class="dark:text-white text-center font-bold text-2xl">Profiles</h1>
+    <h1 class="dark:text-white text-center st-font-bold text-2xl">Profiles</h1>
     <ProfileGrid {profiles} />
     <div class="flex gap-4">
       <a
         href={`?page=${pageNumber}`}
-        class={`rounded p-2 bg-blue-500 text-white font-bold disabled:opacity-50 flex justify-center items-center gap-2 ${pageNumber === 1 ? 'opacity-50 pointer-events-none' : ''}`}
+        class={`rounded p-2 bg-blue-500 text-white st-font-bold disabled:opacity-50 flex justify-center items-center gap-2 ${pageNumber === 1 ? 'opacity-50 pointer-events-none' : ''}`}
         on:click={() => pageNumber = pageNumber - 1}
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
@@ -40,7 +40,7 @@
       </a>
       <a
         href={`?page=${pageNumber}`}
-        class={`rounded p-2 bg-blue-500 text-white font-bold disabled:opacity-50 flex justify-center items-center gap-2 ${profiles.length <= limit ? 'opacity-50 pointer-events-none' : ''}`}
+        class={`rounded p-2 bg-blue-500 text-white st-font-bold disabled:opacity-50 flex justify-center items-center gap-2 ${profiles.length <= limit ? 'opacity-50 pointer-events-none' : ''}`}
         on:click={() => pageNumber = pageNumber + 1}
       >
         <span>Next</span>

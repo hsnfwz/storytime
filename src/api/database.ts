@@ -65,7 +65,7 @@ const insertRecords = async (
   const { data, error } = await supabase
   .from(_table)
   .insert(values)
-  .select()
+  .select('*')
 
   if (error) {
     console.log(error);
@@ -95,7 +95,7 @@ const updateRecords = async (
   .from(_table)
   .update(values)
   .match(match)
-  .select()
+  .select('*')
 
   if (error) {
     console.log(error);
@@ -124,7 +124,7 @@ const deleteRecords = async (
   .from(_table)
   .delete()
   .match(match)
-  .select()
+  .select('id')
 
   if (error) {
     console.log(error);

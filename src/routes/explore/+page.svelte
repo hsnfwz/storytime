@@ -18,7 +18,7 @@
   {#if isLoading}
     <p class="dark:text-white text-center">Loading...</p>
   {:else}
-    <h1 class="dark:text-white text-center font-bold text-2xl">Explore</h1>
+    <h1 class="dark:text-white text-center st-font-bold text-2xl">Explore</h1>
     <ItemGrid items={data.items} />
     <Paginator
       currentPage={data.currentPage}
@@ -34,7 +34,7 @@
   <div class="flex gap-4">
     <button
       type="button"
-      class="rounded p-2 bg-blue-500 text-white font-bold disabled:opacity-50"
+      class="rounded p-2 bg-blue-500 text-white st-font-bold disabled:opacity-50"
       on:click={() => page = 1}
       disabled={page === 1}
     >
@@ -44,7 +44,7 @@
     </button>
     <button
       type="button"
-      class="rounded p-2 bg-blue-500 text-white font-bold disabled:opacity-50"
+      class="rounded p-2 bg-blue-500 text-white st-font-bold disabled:opacity-50"
       on:click={() => page = page - 1}
       disabled={page === 1}
     >
@@ -55,7 +55,7 @@
     <p class="dark:text-white flex items-center">{page} / {data.books.length}</p>
     <button
       type="button"
-      class="rounded p-2 bg-blue-500 text-white font-bold disabled:opacity-50"
+      class="rounded p-2 bg-blue-500 text-white st-font-bold disabled:opacity-50"
       on:click={() => page = page + 1}
       disabled={page === data.books.length}
     >
@@ -65,7 +65,7 @@
     </button>
     <button
       type="button"
-      class="rounded p-2 bg-blue-500 text-white font-bold disabled:opacity-50"
+      class="rounded p-2 bg-blue-500 text-white st-font-bold disabled:opacity-50"
       on:click={() => page = data.books.length}
       disabled={page === data.books.length}
     >
@@ -88,7 +88,7 @@
     <p class="dark:text-white p-2">/ {data.books.length}</p>
     <button
       type="button"
-      class="px-4 py-2 bg-green-500 text-white font-bold rounded disabled:opacity-50"
+      class="px-4 py-2 bg-green-500 text-white st-font-bold rounded disabled:opacity-50"
       on:click={() => {
         if (page <= 0) {
           page = 1;

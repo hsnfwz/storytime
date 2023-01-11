@@ -9,7 +9,7 @@ export async function load({ params }: any) {
 
   const items: any = await getRecords(
     'book',
-    'id, title, release_date',
+    '*',
     {
       id
     }

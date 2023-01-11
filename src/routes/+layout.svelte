@@ -52,7 +52,7 @@
 
       let profileRecords: any[] = await getRecords(
         'profile',
-        'id, user_id, is_contributor, book_total_count, book_reading_count, book_want_to_read_count, book_read_count, book_did_not_finish_count',
+        '*',
         { user_id: currentSession.data.session.user.id }
       );
 
@@ -70,7 +70,12 @@
 </script>
 
 <!-- VERSION 2 FEATURES/FIXES -->
-<!-- todo: queue, reviews, ratings, rankings, and other cool stuff -->
+<!-- todo: update/delete rating/review -->
+<!-- todo: sync between status and rating (close loophole where users need tp have read or dnf before rating and cannot switch back to other options unless they are willing to remove their rating/review) -->
+<!-- todo: maybe introduce 'interested' and 'want to reread' options -->
+<!-- todo: keep track of reread count -->
+
+<!-- todo: queue, rankings, lists -->
 <!-- todo: maybe put nav bar on bottom (for mobile only) and make it sticky (for mobile and desktop when scrolling back up) -->
 <!-- todo: filter, sort, search -->
 
@@ -84,8 +89,9 @@
 <!-- todo: convert sign in form to svelte form -->
 
 <!-- BEFORE RELEASE -->
-<!-- todo: log all data that is being fetched in each url and test by switching pages to see how many requests we make each time, then we will figure out how to reduce requests from there (i.e. caching) -->
+<!-- todo: log all data that is being fetched in each url and test by switching pages to see how many requests we make each time, then we will figure out how to reduce requests from there (i.e. caching, look up pros and cons and what to consider) -->
 <!-- todo: update supabase RLS -->
+
 
 {#if !isLoading}
   <main class="flex flex-col gap-4">

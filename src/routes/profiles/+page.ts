@@ -13,7 +13,7 @@ export async function load({ url }: any) {
 
   const profiles: any = await getRecords(
     'profile',
-    'id, created_at, book_total_count, book_reading_count, book_want_to_read_count, book_read_count, book_did_not_finish_count',
+    'id, created_at, book_total_status_count, book_reading_status_count, book_want_to_read_status_count, book_read_status_count, book_did_not_finish_status_count',
     undefined,
     {
       column: 'created_at',

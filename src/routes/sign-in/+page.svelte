@@ -36,14 +36,14 @@
 </script>
 
 <div class="flex flex-col items-center gap-4">
-  <h1 class="dark:text-white font-bold text-2xl text-center">Sign In</h1>
+  <h1 class="dark:text-white st-font-bold text-2xl text-center">Sign In</h1>
   {#if currentSession}
     <p class="darK:text-white text-center">You are already signed in!</p>
   {:else}
     {#if showSuccessMessage}
       <div class="flex flex-col gap-4 w-60">
         <p class="dark:text-white text-center">
-          We sent an email to you at <span class="font-bold dark:text-white">{email}</span>. It has a magic link that will sign you in.
+          We sent an email to you at <span class="st-font-bold dark:text-white">{email}</span>. It has a magic link that will sign you in.
         </p>
       </div>
     {:else}
@@ -63,7 +63,7 @@
           <p class="text-red-500">Email must be between 3 and 320 characters</p>
         {/if}
         <button
-          class="rounded px-4 py-2 bg-blue-500 text-white font-bold disabled:opacity-50"
+          class="rounded px-4 py-2 bg-blue-500 text-white st-font-bold disabled:opacity-50"
           on:click={async () => await handleSubmit()}
           disabled={showErrorMessage}
         >
