@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
   // api
   import { insertRecords, updateRecords, getRecords, deleteRecords } from '$api/database';
 
@@ -361,6 +361,463 @@
       <p class="text-center dark:text-white">Mark this book as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DID_NOT_FINISH.text}</span> before rating</p>
     {/if}
   {:else}
+    <p class="dark:text-white text-center"><a href='/sign-in' class="text-blue-500">Sign in</a> to start managing your books</p>
+  {/if}
+</div> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script lang="ts">
+  // api
+  import { insertRecords, updateRecords, getRecords, deleteRecords } from '$api/database';
+
+  // stores
+  import { profile } from '$stores/ProfileStore';
+
+  // enums
+  import E_BookStatus from '$enums/E_BookStatus';
+
+  // interfaces
+  import type I_Profile from '$interfaces/I_Profile';
+
+  // components
+  import ItemCard from '$components/ItemCard.svelte';
+  import Counter from '$components/Counter.svelte';
+
+  // helpers
+  import { formatDate, getRatingsAverage, getTotalRatings, getDateDifference } from '$helpers/helpers';
+
+  // data
+  export let data: { item: any };
+
+  // state
+  let currentProfile: I_Profile | undefined;
+  let status: string = '';
+  let rating: number = 5;
+  let review: string = '';
+  let profileBook: any;
+  const dateDifference = getDateDifference(data.item.release_date);
+
+  profile.subscribe(async (value) => {
+    currentProfile = value;
+
+    if (currentProfile) {
+      const profileBooks: any = await getRecords(
+        'profile_book',
+        '*',
+        {
+          profile_id: currentProfile.id,
+          book_id: data.item.id,
+        },
+      );
+
+      if (profileBooks[0]) {
+        profileBook = profileBooks[0];
+        status = profileBook.status;
+      }
+    }
+  });
+
+  const handleRemoveProfileBook = async () => {
+    // todo: update additional attrbiutes
+
+    // let countAttribute: string = '';
+    // let countValue: number = 0;
+
+    // if (profileBook.status === E_BookStatus.READING.text) {
+    //   countAttribute = 'book_reading_status_count';
+    //   countValue = currentProfile.book_reading_status_count - 1;
+    // } else if (profileBook.status === E_BookStatus.WANT_TO_READ.text) {
+    //   countAttribute = 'book_want_to_read_status_count';
+    //   countValue = currentProfile.book_want_to_read_status_count - 1;
+    // } else if (profileBook.status === E_BookStatus.READ.text) {
+    //   countAttribute = 'book_read_status_count';
+    //   countValue = currentProfile.book_read_status_count - 1;
+    // } else if (profileBook.status === E_BookStatus.DID_NOT_FINISH.text) {
+    //   countAttribute = 'book_did_not_finish_status_count';
+    //   countValue = currentProfile.book_did_not_finish_status_count - 1;
+    // }
+
+    // const _bookTotalCount = currentProfile.book_total_status_count - 1;
+
+    // const _updatedProfileData: any = {
+    //   book_total_status_count: _bookTotalCount,
+    //   [countAttribute]: countValue,
+    // };
+
+    // const [deletedProfileBookRecord, updatedProfileRecord] = await Promise.all([
+    //   deleteRecords('profile_book', { profile_id: currentProfile.id, book_id: data.item.id }),
+    //   updateRecords('profile', _updatedProfileData, { id: currentProfile.id }),
+    // ]);
+
+    // profile.set(updatedProfileRecord[0]);
+    // profileBook = undefined;
+    // status = '';
+  }
+
+  const handleAddProfileBook = async (bookStatus: string) => {
+    // records to update: profile, book, profile-book, read-instance (if status is read)
+
+    // let countAttribute: string = '';
+    // let countValue: number = 0;
+
+    // if (bookStatus === E_BookStatus.READING.text) {
+    //   countAttribute = 'book_status_reading_count';
+    //   countValue = currentProfile[countAttribute] + 1;
+    // } else if (bookStatus === E_BookStatus.WANT_TO_READ.text) {
+    //   countAttribute = 'book_status_want_to_read_count';
+    //   countValue = currentProfile[countAttribute] + 1;
+    // } else if (bookStatus === E_BookStatus.READ.text) {
+    //   countAttribute = 'book_status_read_count';
+    //   countValue = currentProfile[countAttribute] + 1;
+    // } else if (bookStatus === E_BookStatus.DID_NOT_FINISH.text) {
+    //   countAttribute = 'book_status_did_not_finish_count';
+    //   countValue = currentProfile[countAttribute] + 1;
+    // }
+
+    // const _bookTotalCount = currentProfile.book_total_status_count + 1;
+
+    // const _updatedProfileData: any = {
+    //   book_total_status_count: _bookTotalCount,
+    //   [countAttribute]: countValue,
+    // };
+
+    // const _newProfileBookData: any = {
+    //   profile_id: currentProfile.id,
+    //   book_id: data.item.id,
+    //   status: bookStatus,
+    //   status_created_at: new Date(),
+    // };
+
+    // const [insertedProfileBookRecord, updatedProfileRecord] = await Promise.all([
+    //   insertRecords('profile_book', [_newProfileBookData]),
+    //   updateRecords('profile', _updatedProfileData, { id: currentProfile.id }),
+    // ]);
+
+    // profile.set(updatedProfileRecord[0]);
+    // profileBook = insertedProfileBookRecord;
+
+    // status = '';
+  }
+
+  const handleEditProfileBook = async (bookStatus: string) => {
+    // let plusCountAttribute: string = '';
+    // let plusCountValue: number = 0;
+
+    // let minusCountAttribute: string = '';
+    // let minusCountValue: number = 0;
+
+    // if (profileBook.status === E_BookStatus.READING.text) {
+    //   minusCountAttribute = 'book_reading_status_count';
+    //   minusCountValue = currentProfile.book_reading_status_count - 1;
+    // } else if (profileBook.status === E_BookStatus.WANT_TO_READ.text) {
+    //   minusCountAttribute = 'book_want_to_read_status_count';
+    //   minusCountValue = currentProfile.book_want_to_read_status_count - 1;
+    // } else if (profileBook.status === E_BookStatus.READ.text) {
+    //   minusCountAttribute = 'book_read_status_count';
+    //   minusCountValue = currentProfile.book_read_status_count - 1;
+    // } else if (profileBook.status === E_BookStatus.DID_NOT_FINISH.text) {
+    //   minusCountAttribute = 'book_did_not_finish_status_count';
+    //   minusCountValue = currentProfile.book_did_not_finish_status_count - 1;
+    // }
+
+    // if (bookStatus === E_BookStatus.READING.text) {
+    //   plusCountAttribute = 'book_reading_status_count';
+    //   plusCountValue = currentProfile.book_reading_status_count + 1;
+    // } else if (bookStatus === E_BookStatus.WANT_TO_READ.text) {
+    //   plusCountAttribute = 'book_want_to_read_status_count';
+    //   plusCountValue = currentProfile.book_want_to_read_status_count + 1;
+    // } else if (bookStatus === E_BookStatus.READ.text) {
+    //   plusCountAttribute = 'book_read_status_count';
+    //   plusCountValue = currentProfile.book_read_status_count + 1;
+    // } else if (bookStatus === E_BookStatus.DID_NOT_FINISH.text) {
+    //   plusCountAttribute = 'book_did_not_finish_status_count';
+    //   plusCountValue = currentProfile.book_did_not_finish_status_count + 1;
+    // }
+
+    // const _updatedProfileData: any = {
+    //   [plusCountAttribute]: plusCountValue,
+    //   [minusCountAttribute]: minusCountValue,
+    // };
+
+    // const _updatedProfileBookData: any = {
+    //   status: bookStatus,
+    //   status_updated_at: new Date(),
+    // };
+
+    // const [updatedProfileBookRecord, updatedProfileRecord] = await Promise.all([
+    //   updateRecords('profile_book', _updatedProfileBookData, { profile_id: currentProfile.id, book_id: data.item.id }),
+    //   updateRecords('profile', _updatedProfileData, { id: currentProfile.id }),
+    // ]);
+
+    // profile.set(updatedProfileRecord[0]);
+    // profileBook = updatedProfileBookRecord;
+
+    // status = '';
+  }
+
+  const handleAddEditRatingReview = async () => {
+    // todo: "delete" rating and/or review (clear the attributes and update relevent tables) also let user know that removing a book also removes their rating and review
+
+    // if (profileBook && profileBook.rating !== null) {
+    //   // edit
+
+    //   const profileMinusCountAttribute: string = `book_${profileBook.rating}_rating_count`;
+    //   const profileMinusCountValue: number = currentProfile[profileMinusCountAttribute] - 1;
+
+    //   const profilePlusCountAttribute: string = `book_${rating}_rating_count`;
+    //   const profilePlusCountValue: number = currentProfile[profilePlusCountAttribute] + 1;
+
+    //   const bookMinusCountAttribute: string = `${profileBook.rating}_rating_count`;
+    //   const bookMinusCountValue: number = currentProfile[bookMinusCountAttribute] - 1;
+
+    //   const bookPlusCountAttribute: string = `${rating}_rating_count`;
+    //   const bookPlusCountValue: number = currentProfile[bookPlusCountAttribute] + 1;
+
+    //   const _updatedProfileData: any = {
+    //     [profileMinusCountAttribute]: profileMinusCountValue,
+    //     [profilePlusCountAttribute]: profilePlusCountValue,
+    //   };
+
+    //   const _updatedProfileBookData: any = {
+    //     rating,
+    //     rating_updated_at: new Date(),
+    //     // review,
+    //   };
+
+    //   const _updatedBookData: any = {
+    //     [bookMinusCountAttribute]: bookMinusCountValue,
+    //     [bookPlusCountAttribute]: bookPlusCountValue,
+    //   }
+
+    //   const [updatedProfileBookRecord, updatedProfileRecord, updatedBookRecord] = await Promise.all([
+    //     updateRecords('profile_book', _updatedProfileBookData, { profile_id: currentProfile.id, book_id: data.item.id }),
+    //     updateRecords('profile', _updatedProfileData, { id: currentProfile.id }),
+    //     updateRecords('book', _updatedBookData, { id: data.item.id }),
+    //   ]);
+
+    //   profile.set(updatedProfileRecord[0]);
+
+    //   data.item = updatedBookRecord[0];
+    // } else {
+    //   // add
+
+    //   const profileCountAttribute: string = `book_${rating}_rating_count`;
+    //   const profileCountValue: number = currentProfile[profileCountAttribute] + 1;
+
+    //   const bookCountAttribute: string = `${rating}_rating_count`;
+    //   const bookCountValue: number = data.item[bookCountAttribute] + 1;
+
+    //   const profileBookTotalRatingCount = currentProfile.book_total_rating_count + 1;
+    //   const bookTotalRatingCount = data.item.total_rating_count + 1;
+
+    //   const _updatedProfileData: any = {
+    //     book_total_rating_count: profileBookTotalRatingCount,
+    //     [profileCountAttribute]: profileCountValue,
+    //   };
+
+    //   const _updatedProfileBookData: any = {
+    //     rating,
+    //     rating_created_at: new Date(),
+    //     // review,
+    //   };
+
+    //   const _updatedBookData: any = {
+    //     total_rating_count: bookTotalRatingCount,
+    //     [bookCountAttribute]: bookCountValue,
+    //   };
+
+    //   const [updatedProfileBookData, updatedProfileRecord, updatedBookRecord] = await Promise.all([
+    //     updateRecords('profile_book', _updatedProfileBookData, { profile_id: currentProfile.id, book_id: data.item.id }),
+    //     updateRecords('profile', _updatedProfileData, { id: currentProfile.id }),
+    //     updateRecords('book', _updatedBookData, { id: data.item.id }),
+    //   ]);
+
+    //   profile.set(updatedProfileRecord[0]);
+
+    //   data.item = updatedBookRecord[0];
+    // }
+  }
+</script>
+
+<div class="flex flex-col items-center gap-4">
+  <ItemCard item={data.item} />
+
+  {#if currentProfile && (dateDifference?.afterDate === false)}
+    <div class="flex flex-col gap-2">
+      <h1 class="dark:text-white st-font-bold text-2xl text-center">{data.item.title}</h1>
+      <p class="dark:text-white text-center">
+        Expected Publication {formatDate(data.item.release_date)}
+      </p>
+      {#if getTotalRatings(data.item) === 0}
+        <p class="text-center dark:text-white">No Ratings</p>
+      {:else}
+        <p class="text-center dark:text-white">{getRatingsAverage(data.item)} / 10 ({getTotalRatings(data.item)} ratings)</p>
+      {/if}
+    </div>
+    <p class="text-center dark:text-white">{dateDifference.differenceDays === 1 ? `${dateDifference.differenceDays} day before release` : `${dateDifference.differenceDays} days before release`}</p>
+    <button
+      class={`px-4 py-2 rounded st-font-bold ${status === E_BookStatus.WANT_TO_READ.text ? 'bg-green-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-neutral-900 dark:text-white'}`}
+      type="button"
+      on:click={async () => {
+        if (profileBook) {
+          await handleEditProfileBook(E_BookStatus.WANT_TO_READ.text)
+        } else {
+          await handleAddProfileBook(E_BookStatus.WANT_TO_READ.text)
+        }
+      }}
+    >
+      {E_BookStatus.WANT_TO_READ.text}
+    </button>
+    <p class="text-center dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READING.text}</span> on publication day</p>
+    <p class="text-center dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DID_NOT_FINISH.text}</span> 3 days after publication day</p>
+    <p class="text-center dark:text-white">You can start rating this book after marking it as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DID_NOT_FINISH.text}</span></p>
+  {/if}
+
+  {#if currentProfile && (dateDifference?.afterDate === true) && (dateDifference?.differenceDays <= 3)}
+    <div class="flex flex-col gap-2">
+      <h1 class="dark:text-white st-font-bold text-2xl text-center">{data.item.title}</h1>
+      <p class="dark:text-white text-center">
+        Published {formatDate(data.item.release_date)}
+      </p>
+      {#if getTotalRatings(data.item) === 0}
+        <p class="text-center dark:text-white">No Ratings</p>
+      {:else}
+        <p class="text-center dark:text-white">{getRatingsAverage(data.item)} / 10 ({getTotalRatings(data.item)} ratings)</p>
+      {/if}
+    </div>
+    <button
+      class={`px-4 py-2 rounded st-font-bold ${status === E_BookStatus.WANT_TO_READ.text ? 'bg-green-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-neutral-900 dark:text-white'}`}
+      type="button"
+      on:click={async () => {
+        if (profileBook) {
+          await handleEditProfileBook(E_BookStatus.WANT_TO_READ.text)
+        } else {
+          await handleAddProfileBook(E_BookStatus.WANT_TO_READ.text)
+        }
+      }}
+    >
+      {E_BookStatus.WANT_TO_READ.text}
+    </button>
+    <button
+      class={`px-4 py-2 rounded st-font-bold ${status === E_BookStatus.READING.text ? 'bg-green-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-neutral-900 dark:text-white'}`}
+      type="button"
+      on:click={async () => {
+        if (profileBook) {
+          await handleEditProfileBook(E_BookStatus.READING.text)
+        } else {
+          await handleAddProfileBook(E_BookStatus.READING.text)
+        }
+      }}
+    >
+      {E_BookStatus.READING.text}
+    </button>
+    <p class="text-center dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DID_NOT_FINISH.text}</span> 3 days after publication day</p>
+    <p class="text-center dark:text-white">You can start rating this book after marking it as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DID_NOT_FINISH.text}</span></p>
+  {/if}
+
+  {#if currentProfile && dateDifference?.differenceDays > 3 && dateDifference?.afterDate}
+    <div class="flex flex-col gap-2">
+      <h1 class="dark:text-white st-font-bold text-2xl text-center">{data.item.title}</h1>
+      <p class="dark:text-white text-center">
+        Published {formatDate(data.item.release_date)}
+      </p>
+      {#if getTotalRatings(data.item) === 0}
+        <p class="text-center dark:text-white">No Ratings</p>
+      {:else}
+        <p class="text-center dark:text-white">{getRatingsAverage(data.item)} / 10 ({getTotalRatings(data.item)} ratings)</p>
+      {/if}
+    </div>
+    <div class="flex flex-col gap-4">
+      {#each Object.values(E_BookStatus) as bookStatus}
+        <button
+          class={`px-4 py-2 rounded st-font-bold ${status === bookStatus.text ? 'bg-green-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-neutral-900 dark:text-white'}`}
+          type="button"
+          on:click={async () => {
+            if (profileBook) {
+              await handleEditProfileBook(bookStatus.text)
+            } else {
+              await handleAddProfileBook(bookStatus.text)
+            }
+          }}
+        >
+          {bookStatus.text}
+        </button>
+      {/each}
+      {#if profileBook}
+        <button
+          class="px-4 py-2 rounded st-font-bold bg-red-500 text-white"
+          type="button"
+          on:click={async () => await handleRemoveProfileBook()}
+        >
+          Remove
+        </button>
+      {/if}
+    </div>
+
+    {#if profileBook && profileBook.rating !== null}
+      <p class="text-center dark:text-white">Your rating is {profileBook.rating}/10</p>
+    {:else if profileBook && profileBook.rating === null && (profileBook.status === E_BookStatus.READ.text || profileBook.status === E_BookStatus.DID_NOT_FINISH.text)}
+      <div class="flex flex-col gap-4 p-4 bg-neutral-100 dark:bg-neutral-900 rounded-lg">
+        <div class="flex flex-col gap-2">
+          <p class="dark:text-white">Rating</p>
+          <div class="flex flex-col gap-4 items-center bg-neutral-200 dark:bg-neutral-800 p-4 rounded-lg">
+            <p class="flex justify-center items-center w-16 h-16 rounded-full dark:text-white"><span class={`st-font-bold text-2xl`}>{rating}</span>/10</p>
+            <Counter bind:value={rating} />
+          </div>
+        </div>
+        <div class="flex flex-col gap-2">
+          <label for="review" class="dark:text-white">Review</label>
+          <textarea
+            rows="5"
+            maxlength="4000"
+            class={`p-2 box-border w-full rounded-lg dark:bg-neutral-800 dark:text-white`}
+            placeholder="Write a review (maximum 4000 characters)"
+            value={review}
+          />
+        </div>
+        <button
+          class="rounded px-4 py-2 bg-blue-500 text-white st-font-bold disabled:opacity-50"
+          on:click={async () => await handleAddEditRatingReview()}
+        >
+          Submit
+        </button>
+      </div>
+    {:else}
+      <p class="text-center dark:text-white">You can start rating this book after marking it as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DID_NOT_FINISH.text}</span></p>
+    {/if}
+  {/if}
+  {#if !currentProfile}
     <p class="dark:text-white text-center"><a href='/sign-in' class="text-blue-500">Sign in</a> to start managing your books</p>
   {/if}
 </div>
