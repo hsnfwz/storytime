@@ -963,7 +963,7 @@
       <h1 class="w-full dark:text-white st-font-bold text-xl text-center">Status</h1>
       {#if currentProfile && (dateDifference?.differenceDays < 0)}
         <button
-          class={`w-full border-2 border-neutral-100 dark:border-black bg-neutral-100 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-white dark:bg-black dark:text-white'}`}
+          class={`w-full border-2 border-neutral-100 dark:border-slate-600 bg-neutral-100 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-white dark:bg-slate-600 dark:text-white'}`}
           type="button"
           on:click={async () => {
             await handleToReadStatus(E_BookStatus.TO_READ);
@@ -979,7 +979,7 @@
       {#if currentProfile && (dateDifference?.differenceDays >= 0) && (dateDifference?.differenceDays <= 3)}
         <div class="flex gap-2 w-full">
           <button
-            class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-black dark:text-white border-neutral-100 dark:border-black'}`}
+            class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-slate-600 dark:text-white border-neutral-100 dark:border-slate-600'}`}
             type="button"
             on:click={async () => {
               await handleToReadStatus(E_BookStatus.TO_READ);
@@ -988,7 +988,7 @@
             {E_BookStatus.TO_READ}
           </button>
           <button
-            class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-black dark:text-white border-neutral-100 dark:border-black'}`}
+            class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-slate-600 dark:text-white border-neutral-100 dark:border-slate-600'}`}
             type="button"
             on:click={async () => {
               await handleReadingStatus(E_BookStatus.READING);
@@ -1003,7 +1003,7 @@
         <div class="flex flex-col gap-4 w-full">
           <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-2 w-full">
             <button
-              class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-black dark:text-white border-neutral-100 dark:border-black'}`}
+              class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-slate-600 dark:text-white border-neutral-100 dark:border-slate-600'}`}
               type="button"
               on:click={async () => {
                 await handleToReadStatus(E_BookStatus.TO_READ);
@@ -1012,7 +1012,7 @@
               {E_BookStatus.TO_READ}
             </button>
             <button
-              class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-black dark:text-white border-neutral-100 dark:border-black'}`}
+              class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-slate-600 dark:text-white border-neutral-100 dark:border-slate-600'}`}
               type="button"
               on:click={async () => {
                 await handleReadingStatus(E_BookStatus.READING);
@@ -1021,7 +1021,7 @@
               {E_BookStatus.READING}
             </button>
             <button
-              class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-black dark:text-white border-neutral-100 dark:border-black'}`}
+              class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-slate-600 dark:text-white border-neutral-100 dark:border-slate-600'}`}
               type="button"
               on:click={async () => {
                 await handleReadStatus(E_BookStatus.READ);
@@ -1030,7 +1030,7 @@
               {E_BookStatus.READ}
             </button>
             <button
-              class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-black dark:text-white border-neutral-100 dark:border-black'}`}
+              class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-slate-600 dark:text-white border-neutral-100 dark:border-slate-600'}`}
               type="button"
               on:click={async () => {
                 await handleDNFStatus(E_BookStatus.DNF);
@@ -1084,7 +1084,7 @@
         <h1 class="w-full dark:text-white st-font-bold text-xl text-center">Rating/Review</h1>
         <div class="w-full flex flex-col gap-2">
           <p class="dark:text-white">Rating</p>
-          <div class="flex flex-col gap-4 items-center p-4 bg-neutral-100 dark:bg-black rounded-lg">
+          <div class="flex flex-col gap-4 items-center">
             <div class="w-full flex flex-col gap-2">
               <p class="dark:text-white text-center text-2xl st-font-bold ">{rating}</p>
               <p class="dark:text-white text-center st-font-italic">{E_Rating[rating].label}</p>
@@ -1097,7 +1097,7 @@
           <textarea
             rows="10"
             maxlength="4000"
-            class={`resize-none p-2 box-border w-full rounded-lg border-2 border-neutral-100 dark:border-black dark:bg-black dark:text-white`}
+            class={`resize-none p-2 box-border w-full rounded-lg border-2 border-neutral-100 bg-neutral-100 dark:border-slate-600 dark:bg-slate-600 dark:text-white`}
             placeholder="Write a review (maximum 4000 characters)"
             bind:value={review}
           />
