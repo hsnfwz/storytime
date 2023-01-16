@@ -68,7 +68,7 @@
 
 <div class="flex flex-col gap-2">
   <p class={`${showError ? 'text-red-500' : 'dark:text-white'}`}>{label}</p>
-  <div class="grid sm:grid-cols-3 gap-2 items-start">
+  <div class="grid md:grid-cols-3 gap-2 items-start">
     <div
       class="flex flex-col gap-2 items-center relative rounded"
       on:mouseup={() => {

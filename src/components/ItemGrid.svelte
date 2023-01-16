@@ -41,13 +41,27 @@
             itemDiv.classList.add('masonry-grid-item-container');
 
             let img = document.createElement('img');
-            img.classList.add('masonry-grid-item-image');
             img.src = getPublicUrl('book-covers', `${formatFileName(item.title, item.id)}/${formatFileName(item.title, item.id, true)}`);
             img.alt = item.title;
+            img.classList.add('masonry-grid-item-image');
 
             const link = document.createElement('a');
             link.href = `/explore/books/${item.id}`;
-            link.append(img);
+
+            img.onload = () => {
+              link.append(img);
+            }
+
+            img.onerror = () => {
+              let div = document.createElement('div');
+              // div.classList.add('w-[300px]');
+              // maintain aspect ratio in div
+              div.classList.add('h-[400px]');
+              div.classList.add('bg-slate-700');
+              div.classList.add('rounded-lg');
+              link.appendChild(div);
+            }
+
             itemDiv.append(link);
             div.appendChild(itemDiv);
           });

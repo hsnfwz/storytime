@@ -931,54 +931,39 @@
   }
 </script>
 
-<div class="flex flex-col gap-8 m-auto max-w-[500px]">
-  <div class="flex justify-center">
+<div class="flex flex-col items-center sm:flex-row sm:justify-center sm:items-start gap-4">
+  <div class="w-full flex flex-col items-center gap-4 sm:max-w-[300px]">
     <ItemCard item={data.item} />
+    <Card>
+      <h1 class="w-full dark:text-white st-font-bold text-xl text-center">{data.item.title}</h1>
+      {#if dateDifference?.differenceDays < 0}
+        <p class="w-full text-center dark:text-white">
+          Expected Publication {formatDate(data.item.release_date)} ({dateDifference.differenceDaysAbs === 1 ? `${dateDifference.differenceDaysAbs} day` : `${dateDifference.differenceDaysAbs} days`})
+        </p>
+      {:else}
+        <p class="w-full text-center dark:text-white">
+          Published {formatDate(data.item.release_date)}
+        </p>
+      {/if}
+      {#if getItemTotalRatings(data.item) !== 0}
+        <p class="w-full text-center dark:text-white">{getItemRatingsAverage(data.item)} / 10</p>
+      {/if}
+      <p class="w-full text-center dark:text-white">{getItemTotalRatings(data.item) === 1 ? `${getItemTotalRatings(data.item)} rating`: `${getItemTotalRatings(data.item)} ratings`}</p>
+      <p class="w-full text-center dark:text-white">{data.item.review_count ===  1 ? `${data.item.review_count} review` : `${data.item.review_count} reviews`}</p>
+      <p class="w-full text-center dark:text-white">{data.item.status_to_read_count === 1 ? `${data.item.status_to_read_count} to read status` : `${data.item.status_to_read_count} to read statuses`}</p>
+      <p class="w-full text-center dark:text-white">{data.item.status_reading_count === 1 ? `${data.item.status_reading_count} reading status` : `${data.item.status_reading_count} reading statuses`}</p>
+      <p class="w-full text-center dark:text-white">{data.item.status_read_count === 1 ? `${data.item.status_read_count} read status` : `${data.item.status_read_count} read statuses`}</p>
+      <p class="w-full text-center dark:text-white">{data.item.status_dnf_count === 1 ? `${data.item.status_dnf_count} dnf status` : `${data.item.status_dnf_count} dnf statuses`}</p>
+      <p class="w-full text-center dark:text-white">{data.item.unique_read_count === 1 ? `${data.item.unique_read_count} unique read` : `${data.item.unique_read_count} unique reads`}</p>
+      <p class="w-full text-center dark:text-white">{data.item.read_count === 1 ? `${data.item.read_count} total read` : `${data.item.read_count} total reads`}</p>
+    </Card>
   </div>
-  <Card>
-    <h1 class="w-full dark:text-white st-font-bold text-2xl text-center p-4">{data.item.title}</h1>
-    {#if dateDifference?.differenceDays < 0}
-      <p class="w-full text-center dark:text-white">
-        Expected Publication {formatDate(data.item.release_date)} ({dateDifference.differenceDaysAbs === 1 ? `${dateDifference.differenceDaysAbs} day` : `${dateDifference.differenceDaysAbs} days`})
-      </p>
-    {:else}
-      <p class="w-full text-center dark:text-white">
-        Published {formatDate(data.item.release_date)}
-      </p>
-    {/if}
-    {#if getItemTotalRatings(data.item) !== 0}
-      <p class="w-full text-center dark:text-white">{getItemRatingsAverage(data.item)} / 10</p>
-    {/if}
-    <p class="w-full text-center dark:text-white">{getItemTotalRatings(data.item) === 1 ? `${getItemTotalRatings(data.item)} rating`: `${getItemTotalRatings(data.item)} ratings`}</p>
-    <p class="w-full text-center dark:text-white">{data.item.review_count ===  1 ? `${data.item.review_count} review` : `${data.item.review_count} reviews`}</p>
-    <p class="w-full text-center dark:text-white">{data.item.status_to_read_count === 1 ? `${data.item.status_to_read_count} to read status` : `${data.item.status_to_read_count} to read statuses`}</p>
-    <p class="w-full text-center dark:text-white">{data.item.status_reading_count === 1 ? `${data.item.status_reading_count} reading status` : `${data.item.status_reading_count} reading statuses`}</p>
-    <p class="w-full text-center dark:text-white">{data.item.status_read_count === 1 ? `${data.item.status_read_count} read status` : `${data.item.status_read_count} read statuses`}</p>
-    <p class="w-full text-center dark:text-white">{data.item.status_dnf_count === 1 ? `${data.item.status_dnf_count} dnf status` : `${data.item.status_dnf_count} dnf statuses`}</p>
-    <p class="w-full text-center dark:text-white">{data.item.unique_read_count === 1 ? `${data.item.unique_read_count} unique read` : `${data.item.unique_read_count} unique reads`}</p>
-    <p class="w-full text-center dark:text-white">{data.item.read_count === 1 ? `${data.item.read_count} total read` : `${data.item.read_count} total reads`}</p>
-  </Card>
-  <Card>
-    <h1 class="w-full dark:text-white st-font-bold text-2xl text-center p-4">Status</h1>
-    {#if currentProfile && (dateDifference?.differenceDays < 0)}
-      <button
-        class={`w-full border-2 border-neutral-100 dark:border-black bg-neutral-100 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ ? 'bg-blue-500 border-blue-500 text-white pointer-events-none' : 'bg-white dark:bg-black dark:text-white'}`}
-        type="button"
-        on:click={async () => {
-          await handleToReadStatus(E_BookStatus.TO_READ);
-        }}
-      >
-        {E_BookStatus.TO_READ}
-      </button>
-      <div class="flex flex-col gap-2">
-        <p class="w-full text-center dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READING}</span> on publication day</p>
-        <p class="w-full text-center dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READ}</span> or <span class="st-font-italic">{E_BookStatus.DNF}</span> 3 days after publication day</p>
-      </div>
-    {/if}
-    {#if currentProfile && (dateDifference?.differenceDays >= 0) && (dateDifference?.differenceDays <= 3)}
-      <div class="flex gap-2 w-full">
+  <div class="w-full flex flex-col gap-4 sm:max-w-[500px]">
+    <Card>
+      <h1 class="w-full dark:text-white st-font-bold text-xl text-center">Status</h1>
+      {#if currentProfile && (dateDifference?.differenceDays < 0)}
         <button
-          class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ ? 'bg-blue-500 border-blue-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-black dark:text-white border-neutral-100 dark:border-black'}`}
+          class={`w-full border-2 border-neutral-100 dark:border-black bg-neutral-100 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-white dark:bg-black dark:text-white'}`}
           type="button"
           on:click={async () => {
             await handleToReadStatus(E_BookStatus.TO_READ);
@@ -986,23 +971,15 @@
         >
           {E_BookStatus.TO_READ}
         </button>
-        <button
-          class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? 'bg-blue-500 border-blue-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-black dark:text-white border-neutral-100 dark:border-black'}`}
-          type="button"
-          on:click={async () => {
-            await handleReadingStatus(E_BookStatus.READING);
-          }}
-        >
-          {E_BookStatus.READING}
-        </button>
-      </div>
-      <p class="w-full text-center dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READ}</span> or <span class="st-font-italic">{E_BookStatus.DNF}</span> 3 days after publication day</p>
-    {/if}
-    {#if currentProfile && (dateDifference?.differenceDays > 3)}
-      <div class="flex flex-col gap-4 w-full">
-        <div class="grid sm:grid-cols-4 gap-2 w-full">
+        <div class="flex flex-col gap-2">
+          <p class="w-full text-center dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READING}</span> on publication day</p>
+          <p class="w-full text-center dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READ}</span> or <span class="st-font-italic">{E_BookStatus.DNF}</span> 3 days after publication day</p>
+        </div>
+      {/if}
+      {#if currentProfile && (dateDifference?.differenceDays >= 0) && (dateDifference?.differenceDays <= 3)}
+        <div class="flex gap-2 w-full">
           <button
-            class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ ? 'bg-blue-500 border-blue-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-black dark:text-white border-neutral-100 dark:border-black'}`}
+            class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-black dark:text-white border-neutral-100 dark:border-black'}`}
             type="button"
             on:click={async () => {
               await handleToReadStatus(E_BookStatus.TO_READ);
@@ -1011,7 +988,7 @@
             {E_BookStatus.TO_READ}
           </button>
           <button
-            class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? 'bg-blue-500 border-blue-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-black dark:text-white border-neutral-100 dark:border-black'}`}
+            class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-black dark:text-white border-neutral-100 dark:border-black'}`}
             type="button"
             on:click={async () => {
               await handleReadingStatus(E_BookStatus.READING);
@@ -1019,118 +996,143 @@
           >
             {E_BookStatus.READING}
           </button>
-          <button
-            class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ ? 'bg-blue-500 border-blue-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-black dark:text-white border-neutral-100 dark:border-black'}`}
-            type="button"
-            on:click={async () => {
-              await handleReadStatus(E_BookStatus.READ);
-            }}
-          >
-            {E_BookStatus.READ}
-          </button>
-          <button
-            class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF ? 'bg-blue-500 border-blue-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-black dark:text-white border-neutral-100 dark:border-black'}`}
-            type="button"
-            on:click={async () => {
-              await handleDNFStatus(E_BookStatus.DNF);
-            }}
-          >
-            {E_BookStatus.DNF}
-          </button>
         </div>
-        {#if (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING) || (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ) || (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF)}
-          <DatePicker
-            label="Start Date"
-            bind:year={startYear}
-            bind:month={startMonth}
-            bind:day={startDay}
-            bind:showError={showInvalidDateRangeError}
-            errorMessage="Start Date cannot be after End Date"
-          />
-        {/if}
-        {#if (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ) || (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF)}
-          <DatePicker
-            label="End Date"
-            bind:year={endYear}
-            bind:month={endMonth}
-            bind:day={endDay}
-            bind:showError={showInvalidDateRangeError}
-            errorMessage="End Date cannot be before Start Date"
-          />
-        {/if}
-        {#if profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.TO_READ}
-          <button
-            class={`border-2 border-blue-500 px-4 py-2 rounded st-font-bold bg-blue-500 text-white disabled:opacity-50`}
-            type="button"
-            disabled={
-              (profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING && (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date))) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(startYear, startMonth.monthNumber, startDay))) ||
-              (profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.READING && (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date))) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(startYear, startMonth.monthNumber, startDay)) &&
-              (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].end_date)) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(endYear, endMonth.monthNumber, endDay)))) ||
-              showInvalidDateRangeError
-            }
-            on:click={async () => {
-              await handleUpdateProfileBook();
-            }}
-          >
-            Update Status
-          </button>
-        {/if}
-      </div>
-    {/if}
-  </Card>
-  <Card>
-    {#if profileBook && ((profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ) || (profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF))}
-      <h1 class="w-full dark:text-white st-font-bold text-2xl text-center p-4">Rating/Review</h1>
-      <div class="w-full flex flex-col gap-2">
-        <p class="dark:text-white">Rating</p>
-        <div class="flex flex-col gap-4 items-center p-4 bg-neutral-100 dark:bg-black rounded-lg">
-          <div class="w-full flex flex-col gap-2">
-            <p class="dark:text-white text-center text-2xl st-font-bold ">{rating}</p>
-            <p class="dark:text-white text-center st-font-italic">{E_Rating[rating].label}</p>
+        <p class="w-full text-center dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READ}</span> or <span class="st-font-italic">{E_BookStatus.DNF}</span> 3 days after publication day</p>
+      {/if}
+      {#if currentProfile && (dateDifference?.differenceDays > 3)}
+        <div class="flex flex-col gap-4 w-full">
+          <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-2 w-full">
+            <button
+              class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-black dark:text-white border-neutral-100 dark:border-black'}`}
+              type="button"
+              on:click={async () => {
+                await handleToReadStatus(E_BookStatus.TO_READ);
+              }}
+            >
+              {E_BookStatus.TO_READ}
+            </button>
+            <button
+              class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-black dark:text-white border-neutral-100 dark:border-black'}`}
+              type="button"
+              on:click={async () => {
+                await handleReadingStatus(E_BookStatus.READING);
+              }}
+            >
+              {E_BookStatus.READING}
+            </button>
+            <button
+              class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-black dark:text-white border-neutral-100 dark:border-black'}`}
+              type="button"
+              on:click={async () => {
+                await handleReadStatus(E_BookStatus.READ);
+              }}
+            >
+              {E_BookStatus.READ}
+            </button>
+            <button
+              class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-black dark:text-white border-neutral-100 dark:border-black'}`}
+              type="button"
+              on:click={async () => {
+                await handleDNFStatus(E_BookStatus.DNF);
+              }}
+            >
+              {E_BookStatus.DNF}
+            </button>
           </div>
-          <Slider bind:value={rating} />
+          {#if (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING) || (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ) || (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF)}
+            <DatePicker
+              label="Start Date"
+              bind:year={startYear}
+              bind:month={startMonth}
+              bind:day={startDay}
+              bind:showError={showInvalidDateRangeError}
+              errorMessage="Start Date cannot be after End Date"
+            />
+          {/if}
+          {#if (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ) || (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF)}
+            <DatePicker
+              label="End Date"
+              bind:year={endYear}
+              bind:month={endMonth}
+              bind:day={endDay}
+              bind:showError={showInvalidDateRangeError}
+              errorMessage="End Date cannot be before Start Date"
+            />
+          {/if}
+          {#if profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.TO_READ}
+            <button
+              class={`border-2 border-sky-500 px-4 py-2 rounded st-font-bold bg-sky-500 text-white disabled:opacity-50`}
+              type="button"
+              disabled={
+                (profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING && (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date))) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(startYear, startMonth.monthNumber, startDay))) ||
+                (profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.READING && (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date))) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(startYear, startMonth.monthNumber, startDay)) &&
+                (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].end_date)) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(endYear, endMonth.monthNumber, endDay)))) ||
+                showInvalidDateRangeError
+              }
+              on:click={async () => {
+                await handleUpdateProfileBook();
+              }}
+            >
+              Update Status
+            </button>
+          {/if}
         </div>
-      </div>
-      <div class="w-full flex flex-col gap-2">
-        <label for="review" class="dark:text-white">Review</label>
-        <textarea
-          rows="10"
-          maxlength="4000"
-          class={`resize-none p-2 box-border w-full rounded-lg border-2 border-neutral-100 dark:border-black dark:bg-black dark:text-white`}
-          placeholder="Write a review (maximum 4000 characters)"
-          bind:value={review}
-        />
-      </div>
-      <button
-        class="w-full rounded px-4 py-2 border-2 border-blue-500 bg-blue-500 text-white st-font-bold disabled:opacity-50"
-        on:click={async () => await handleRatingInstance()}
-        disabled={
-          profileBook[`${getCurrentEnvironment()}_rating_instance`] &&
-          profileBook[`${getCurrentEnvironment()}_rating_instance`].rating === rating &&
-          profileBook[`${getCurrentEnvironment()}_rating_instance`].review === review
-        }
-      >
-        {profileBook[`${getCurrentEnvironment()}_rating_instance`] ? 'Update Review/Rating' : 'Add Review/Rating'}
-      </button>
-    {:else}
-      <p class="w-full text-center dark:text-white">You can start rating this book after marking it as <span class="st-font-italic">{E_BookStatus.READ}</span> or <span class="st-font-italic">{E_BookStatus.DNF}</span></p>
+      {/if}
+    </Card>
+    <Card>
+      {#if profileBook && ((profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ) || (profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF))}
+        <h1 class="w-full dark:text-white st-font-bold text-xl text-center">Rating/Review</h1>
+        <div class="w-full flex flex-col gap-2">
+          <p class="dark:text-white">Rating</p>
+          <div class="flex flex-col gap-4 items-center p-4 bg-neutral-100 dark:bg-black rounded-lg">
+            <div class="w-full flex flex-col gap-2">
+              <p class="dark:text-white text-center text-2xl st-font-bold ">{rating}</p>
+              <p class="dark:text-white text-center st-font-italic">{E_Rating[rating].label}</p>
+            </div>
+            <Slider bind:value={rating} />
+          </div>
+        </div>
+        <div class="w-full flex flex-col gap-2">
+          <label for="review" class="dark:text-white">Review</label>
+          <textarea
+            rows="10"
+            maxlength="4000"
+            class={`resize-none p-2 box-border w-full rounded-lg border-2 border-neutral-100 dark:border-black dark:bg-black dark:text-white`}
+            placeholder="Write a review (maximum 4000 characters)"
+            bind:value={review}
+          />
+        </div>
+        <button
+          class="w-full rounded px-4 py-2 border-2 border-sky-500 bg-sky-500 text-white st-font-bold disabled:opacity-50"
+          on:click={async () => await handleRatingInstance()}
+          disabled={
+            profileBook[`${getCurrentEnvironment()}_rating_instance`] &&
+            profileBook[`${getCurrentEnvironment()}_rating_instance`].rating === rating &&
+            profileBook[`${getCurrentEnvironment()}_rating_instance`].review === review
+          }
+        >
+          {profileBook[`${getCurrentEnvironment()}_rating_instance`] ? 'Update Rating/Review' : 'Add Rating/Review'}
+        </button>
+      {:else}
+        <p class="w-full text-center dark:text-white">You can start rating this book after marking it as <span class="st-font-italic">{E_BookStatus.READ}</span> or <span class="st-font-italic">{E_BookStatus.DNF}</span></p>
+      {/if}
+    </Card>
+    {#if profileBook}
+      <Card>
+        <h1 class="w-full dark:text-white st-font-bold text-xl text-center">Danger Zone</h1>
+        <button
+          class="w-full px-4 py-2 rounded st-font-bold bg-rose-500 text-white border-2 border-rose-500"
+          type="button"
+          on:click={async () => await handleDeleteProfileBook()}
+        >
+          Remove Book
+        </button>
+      </Card>
     {/if}
-  </Card>
-  {#if profileBook}
-    <Card>
-      <h1 class="w-full dark:text-white st-font-bold text-2xl text-center p-4">Danger Zone</h1>
-      <button
-        class="w-full px-4 py-2 rounded st-font-bold bg-red-500 text-white border-2 border-red-500"
-        type="button"
-        on:click={async () => await handleDeleteProfileBook()}
-      >
-        Delete Book
-      </button>
-    </Card>
-  {/if}
-  {#if !currentProfile}
-    <Card>
-      <p class="w-full text-center dark:text-white"><a href='/sign-in' class="text-blue-500">Sign in</a> to start managing your books</p>
-    </Card>
-  {/if}
+    {#if !currentProfile}
+      <Card>
+        <p class="w-full text-center dark:text-white"><a href='/sign-in' class="text-sky-500">Sign in</a> to start managing your books</p>
+      </Card>
+    {/if}
+  </div>
 </div>
