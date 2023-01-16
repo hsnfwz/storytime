@@ -1,402 +1,3 @@
-<!-- <script lang="ts">
-  // api
-  import { insertRecords, updateRecords, getRecords, deleteRecords } from '$api/database';
-
-  // stores
-  import { profile } from '$stores/ProfileStore';
-
-  // enums
-  import E_BookStatus from '$enums/E_BookStatus';
-
-  // interfaces
-  import type I_Profile from '$interfaces/I_Profile';
-
-  // components
-  import ItemCard from '$components/ItemCard.svelte';
-  import Counter from '$components/Counter.svelte';
-
-  // data
-  export let data: { item: any };
-
-  // state
-  let currentProfile: I_Profile | undefined;
-  let status: string = '';
-  let rating: number = 5;
-  let review: string = '';
-
-  let profileBook: any;
-
-  profile.subscribe(async (value) => {
-    currentProfile = value;
-
-    if (value) {
-      const profileBooks: any = await getRecords(
-        'profile_book',
-        '*',
-        {
-          profile_id: currentProfile.id,
-          book_id: data.item.id
-        },
-      );
-
-      if (profileBooks[0]) {
-        profileBook = profileBooks[0];
-        status = profileBook.status;
-      }
-    }
-  });
-
-  const handleRemoveProfileBook = async () => {
-    // todo: update additional attrbiutes
-    let countAttribute: string = '';
-    let countValue: number = 0;
-
-    if (profileBook.status === E_BookStatus.READING.text) {
-      countAttribute = 'book_reading_status_count';
-      countValue = currentProfile.book_reading_status_count - 1;
-    } else if (profileBook.status === E_BookStatus.WANT_TO_READ.text) {
-      countAttribute = 'book_want_to_read_status_count';
-      countValue = currentProfile.book_want_to_read_status_count - 1;
-    } else if (profileBook.status === E_BookStatus.READ.text) {
-      countAttribute = 'book_read_status_count';
-      countValue = currentProfile.book_read_status_count - 1;
-    } else if (profileBook.status === E_BookStatus.DID_NOT_FINISH.text) {
-      countAttribute = 'book_did_not_finish_status_count';
-      countValue = currentProfile.book_did_not_finish_status_count - 1;
-    }
-
-    const _bookTotalCount = currentProfile.book_total_status_count - 1;
-
-    const _updatedProfileData: any = {
-      book_total_status_count: _bookTotalCount,
-      [countAttribute]: countValue,
-    };
-
-    const [deletedProfileBookRecord, updatedProfileRecord] = await Promise.all([
-      deleteRecords('profile_book', { profile_id: currentProfile.id, book_id: data.item.id }),
-      updateRecords('profile', _updatedProfileData, { id: currentProfile.id }),
-    ]);
-
-    profile.set(updatedProfileRecord[0]);
-    profileBook = undefined;
-    status = '';
-  }
-
-  const handleAddEditProfileBook = async (bookStatus: string) => {
-    // todo: update additional attrbiutes
-    if (profileBook && profileBook.status) {
-      // edit
-      let plusCountAttribute: string = '';
-      let plusCountValue: number = 0;
-
-      let minusCountAttribute: string = '';
-      let minusCountValue: number = 0;
-
-      if (profileBook.status === E_BookStatus.READING.text) {
-        minusCountAttribute = 'book_reading_status_count';
-        minusCountValue = currentProfile.book_reading_status_count - 1;
-      } else if (profileBook.status === E_BookStatus.WANT_TO_READ.text) {
-        minusCountAttribute = 'book_want_to_read_status_count';
-        minusCountValue = currentProfile.book_want_to_read_status_count - 1;
-      } else if (profileBook.status === E_BookStatus.READ.text) {
-        minusCountAttribute = 'book_read_status_count';
-        minusCountValue = currentProfile.book_read_status_count - 1;
-      } else if (profileBook.status === E_BookStatus.DID_NOT_FINISH.text) {
-        minusCountAttribute = 'book_did_not_finish_status_count';
-        minusCountValue = currentProfile.book_did_not_finish_status_count - 1;
-      }
-
-      if (bookStatus === E_BookStatus.READING.text) {
-        plusCountAttribute = 'book_reading_status_count';
-        plusCountValue = currentProfile.book_reading_status_count + 1;
-      } else if (bookStatus === E_BookStatus.WANT_TO_READ.text) {
-        plusCountAttribute = 'book_want_to_read_status_count';
-        plusCountValue = currentProfile.book_want_to_read_status_count + 1;
-      } else if (bookStatus === E_BookStatus.READ.text) {
-        plusCountAttribute = 'book_read_status_count';
-        plusCountValue = currentProfile.book_read_status_count + 1;
-      } else if (bookStatus === E_BookStatus.DID_NOT_FINISH.text) {
-        plusCountAttribute = 'book_did_not_finish_status_count';
-        plusCountValue = currentProfile.book_did_not_finish_status_count + 1;
-      }
-
-      const _updatedProfileData: any = {
-        [plusCountAttribute]: plusCountValue,
-        [minusCountAttribute]: minusCountValue,
-      };
-
-      const _updatedProfileBookData: any = {
-        status: bookStatus,
-        status_updated_at: new Date(),
-      };
-
-      const [updatedProfileBookRecord, updatedProfileRecord] = await Promise.all([
-        updateRecords('profile_book', _updatedProfileBookData, { profile_id: currentProfile.id, book_id: data.item.id }),
-        updateRecords('profile', _updatedProfileData, { id: currentProfile.id }),
-      ]);
-
-      profile.set(updatedProfileRecord[0]);
-      profileBook = updatedProfileBookRecord;
-    } else {
-      // add
-      let countAttribute: string = '';
-      let countValue: number = 0;
-
-      if (bookStatus === E_BookStatus.READING.text) {
-        countAttribute = 'book_reading_status_count';
-        countValue = currentProfile.book_reading_status_count + 1;
-      } else if (bookStatus === E_BookStatus.WANT_TO_READ.text) {
-        countAttribute = 'book_want_to_read_status_count';
-        countValue = currentProfile.book_want_to_read_status_count + 1;
-      } else if (bookStatus === E_BookStatus.READ.text) {
-        countAttribute = 'book_read_status_count';
-        countValue = currentProfile.book_read_status_count + 1;
-      } else if (bookStatus === E_BookStatus.DID_NOT_FINISH.text) {
-        countAttribute = 'book_did_not_finish_status_count';
-        countValue = currentProfile.book_did_not_finish_status_count + 1;
-      }
-
-      const _bookTotalCount = currentProfile.book_total_status_count + 1;
-
-      const _updatedProfileData: any = {
-        book_total_status_count: _bookTotalCount,
-        [countAttribute]: countValue,
-      };
-
-      const _newProfileBookData: any = {
-        profile_id: currentProfile.id,
-        book_id: data.item.id,
-        status: bookStatus,
-        status_created_at: new Date(),
-      };
-
-      const [insertedProfileBookRecord, updatedProfileRecord] = await Promise.all([
-        insertRecords('profile_book', [_newProfileBookData]),
-        updateRecords('profile', _updatedProfileData, { id: currentProfile.id }),
-      ]);
-
-      profile.set(updatedProfileRecord[0]);
-      profileBook = insertedProfileBookRecord;
-    }
-
-    status = '';
-  }
-
-  const handleAddEditRatingReview = async () => {
-    // todo: "delete" rating and/or review (clear the attributes and update relevent tables)
-    if (profileBook && profileBook.rating !== null) {
-      console.log('edit')
-      // edit
-
-      const profileMinusCountAttribute: string = `book_${profileBook.rating}_rating_count`;
-      const profileMinusCountValue: number = currentProfile[profileMinusCountAttribute] - 1;
-
-      const profilePlusCountAttribute: string = `book_${rating}_rating_count`;
-      const profilePlusCountValue: number = currentProfile[profilePlusCountAttribute] + 1;
-
-      const bookMinusCountAttribute: string = `${profileBook.rating}_rating_count`;
-      const bookMinusCountValue: number = currentProfile[bookMinusCountAttribute] - 1;
-
-      const bookPlusCountAttribute: string = `${rating}_rating_count`;
-      const bookPlusCountValue: number = currentProfile[bookPlusCountAttribute] + 1;
-
-      const _updatedProfileData: any = {
-        [profileMinusCountAttribute]: profileMinusCountValue,
-        [profilePlusCountAttribute]: profilePlusCountValue,
-      };
-
-      const _updatedProfileBookData: any = {
-        rating,
-        rating_updated_at: new Date(),
-        // review,
-      };
-
-      const _updatedBookData: any = {
-        [bookMinusCountAttribute]: bookMinusCountValue,
-        [bookPlusCountAttribute]: bookPlusCountValue,
-      }
-
-      const [updatedProfileBookRecord, updatedProfileRecord, updatedBookRecord] = await Promise.all([
-        updateRecords('profile_book', _updatedProfileBookData, { profile_id: currentProfile.id, book_id: data.item.id }),
-        updateRecords('profile', _updatedProfileData, { id: currentProfile.id }),
-        updateRecords('book', _updatedBookData, { id: data.item.id }),
-      ]);
-
-      profile.set(updatedProfileRecord[0]);
-
-      data.item = updatedBookRecord[0];
-    } else {
-      // add
-
-      const profileCountAttribute: string = `book_${rating}_rating_count`;
-      const profileCountValue: number = currentProfile[profileCountAttribute] + 1;
-
-      const bookCountAttribute: string = `${rating}_rating_count`;
-      const bookCountValue: number = data.item[bookCountAttribute] + 1;
-
-      const profileBookTotalRatingCount = currentProfile.book_total_rating_count + 1;
-      const bookTotalRatingCount = data.item.total_rating_count + 1;
-
-      const _updatedProfileData: any = {
-        book_total_rating_count: profileBookTotalRatingCount,
-        [profileCountAttribute]: profileCountValue,
-      };
-
-      const _updatedProfileBookData: any = {
-        rating,
-        rating_created_at: new Date(),
-        // review,
-      };
-
-      const _updatedBookData: any = {
-        total_rating_count: bookTotalRatingCount,
-        [bookCountAttribute]: bookCountValue,
-      };
-
-      const [updatedProfileBookData, updatedProfileRecord, updatedBookRecord] = await Promise.all([
-        updateRecords('profile_book', _updatedProfileBookData, { profile_id: currentProfile.id, book_id: data.item.id }),
-        updateRecords('profile', _updatedProfileData, { id: currentProfile.id }),
-        updateRecords('book', _updatedBookData, { id: data.item.id }),
-      ]);
-
-      profile.set(updatedProfileRecord[0]);
-
-      data.item = updatedBookRecord[0];
-    }
-  }
-</script>
-
-<div class="flex flex-col items-center gap-4">
-  <div class="flex flex-col gap-2">
-    <h1 class="dark:text-white st-font-bold text-2xl text-center">{data.item.title}</h1>
-    <p class="dark:text-white text-center">
-      Published on {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(data.item.release_date))}
-    </p>
-    {#if data.item.total_rating_count === 0}
-      <p class="text-center dark:text-white">Not rated</p>
-    {:else}
-      <p class="dark:text-white text-center">
-        {(0*(data.item['0_rating_count']) + 1*(data.item['1_rating_count']) + 2*(data.item['2_rating_count']) + 3*(data.item['3_rating_count']) + 4*(data.item['4_rating_count']) + 5*(data.item['5_rating_count']) + 6*(data.item['6_rating_count']) + 7*(data.item['7_rating_count']) + 8*(data.item['8_rating_count']) + 9*(data.item['9_rating_count']) + 10*(data.item['10_rating_count'])) / data.item.total_rating_count.toFixed(1)} / 10 ({data.item.total_rating_count} ratings)
-      </p>
-    {/if}
-  </div>
-  <ItemCard item={data.item} />
-  {#if currentProfile}
-    <div class="flex gap-4">
-      <div class="flex flex-col gap-4">
-        {#each Object.values(E_BookStatus) as bookStatus}
-          <button
-            class={`px-4 py-2 rounded st-font-bold ${status === bookStatus.text ? 'bg-green-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-neutral-900 dark:text-white'}`}
-            type="button"
-            on:click={async () => await handleAddEditProfileBook(bookStatus.text)}
-          >
-            {bookStatus.text}
-          </button>
-        {/each}
-        <button
-          class="px-4 py-2 rounded st-font-bold bg-red-500 text-white disabled:opacity-50"
-          type="button"
-          on:click={async () => await handleRemoveProfileBook()}
-          disabled={status === ''}
-        >
-          Remove
-        </button>
-      </div>
-      <div class="flex flex-col gap-4">
-        <button
-          class={`px-4 py-2 rounded st-font-bold bg-neutral-100 dark:bg-neutral-900 dark:text-white disabled:opacity-50`}
-          type="button"
-          on:click={() => console.log('queue')}
-          disabled
-        >
-          Queue
-        </button>
-        <button
-          class={`px-4 py-2 rounded st-font-bold bg-neutral-100 dark:bg-neutral-900 dark:text-white disabled:opacity-50`}
-          type="button"
-          on:click={() => console.log('rank')}
-          disabled
-        >
-          Rank
-        </button>
-        <button
-          class={`px-4 py-2 rounded st-font-bold bg-neutral-100 dark:bg-neutral-900 dark:text-white disabled:opacity-50`}
-          type="button"
-          on:click={() => console.log('review')}
-          disabled
-        >
-          Review
-        </button>
-      </div>
-    </div>
-    {#if profileBook && profileBook.rating !== null}
-      <p class="text-center dark:text-white">Your rating is {profileBook.rating}/10</p>
-    {:else if profileBook && profileBook.rating === null && (profileBook.status === E_BookStatus.READ.text || profileBook.status === E_BookStatus.DID_NOT_FINISH.text)}
-      <div class="flex flex-col gap-4 p-4 bg-neutral-100 dark:bg-neutral-900 rounded-lg">
-        <div class="flex flex-col gap-2">
-          <p class="dark:text-white">Rating</p>
-          <div class="flex flex-col gap-4 items-center bg-neutral-200 dark:bg-neutral-800 p-4 rounded-lg">
-            <p class="flex justify-center items-center w-16 h-16 rounded-full dark:text-white"><span class={`st-font-bold text-2xl`}>{rating}</span>/10</p>
-            <Counter bind:value={rating} />
-          </div>
-        </div>
-        <div class="flex flex-col gap-2">
-          <label for="review" class="dark:text-white">Review</label>
-          <textarea
-            rows="5"
-            maxlength="4000"
-            class={`p-2 box-border w-full rounded-lg dark:bg-neutral-800 dark:text-white`}
-            placeholder="Write a review (maximum 4000 characters)"
-            value={review}
-          />
-        </div>
-        <button
-          class="rounded px-4 py-2 bg-blue-500 text-white st-font-bold disabled:opacity-50"
-          on:click={async () => await handleAddEditRatingReview()}
-        >
-          Submit
-        </button>
-      </div>
-    {:else}
-      <p class="text-center dark:text-white">Mark this book as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DID_NOT_FINISH.text}</span> before rating</p>
-    {/if}
-  {:else}
-    <p class="dark:text-white text-center"><a href='/sign-in' class="text-blue-500">Sign in</a> to start managing your books</p>
-  {/if}
-</div> -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <script lang="ts">
   // api
   import { insertRecords, updateRecords, getRecords, deleteRecords } from '$api/database';
@@ -406,418 +7,1130 @@
 
   // enums
   import E_BookStatus from '$enums/E_BookStatus';
+  import E_Rating from '$enums/E_Rating';
 
   // interfaces
   import type I_Profile from '$interfaces/I_Profile';
 
   // components
   import ItemCard from '$components/ItemCard.svelte';
-  import Counter from '$components/Counter.svelte';
+  import DatePicker from '$components/DatePicker.svelte';
+  import Slider from '$components/Slider.svelte';
+  import Card from '$components/Card.svelte';
 
   // helpers
-  import { formatDate, getRatingsAverage, getTotalRatings, getDateDifference } from '$helpers/helpers';
+  import { formatDate, getItemRatingsAverage, getItemTotalRatings, getProfileTotalRatings, getDateDifference, getCurrentEnvironment } from '$helpers/helpers';
 
   // data
   export let data: { item: any };
 
   // state
   let currentProfile: I_Profile | undefined;
-  let status: string = '';
+  let profileBook: any;
+
+  let showInvalidDateRangeError: boolean = false;
+
+  $: {
+    if (showInvalidDateRangeError) setTimeout(() => showInvalidDateRangeError = false, 3000);
+  }
+
+  let today: any = new Date();
+  today.setHours(0);
+
+  let startYear: number = today.getUTCFullYear();
+  let startMonth: { monthName: string, monthNumber: number } = {
+    monthName: new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'UTC' }).format(today),
+    monthNumber: today.getUTCMonth(),
+  }
+  let startDay: number = today.getUTCDate();
+
+  let endYear: number = today.getUTCFullYear();
+  let endMonth: { monthName: string, monthNumber: number } = {
+    monthName: new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'UTC' }).format(today),
+    monthNumber: today.getUTCMonth(),
+  }
+  let endDay: number = today.getUTCDate();
+
   let rating: number = 5;
   let review: string = '';
-  let profileBook: any;
+
   const dateDifference = getDateDifference(data.item.release_date);
+  
+  // todo: add a shortcut for creating another read or rating instance, and update related data accordingly
+  // todo: loading screens
+  // todo: confirm dialog when user clicks remove button
+  // update rating/review
 
   profile.subscribe(async (value) => {
-    currentProfile = value;
-
-    if (currentProfile) {
+    if (!currentProfile && value) {
       const profileBooks: any = await getRecords(
         'profile_book',
-        '*',
+        `*, ${getCurrentEnvironment()}_status_instance (*), ${getCurrentEnvironment()}_rating_instance (*)`,
         {
-          profile_id: currentProfile.id,
+          profile_id: value.id,
           book_id: data.item.id,
         },
       );
 
       if (profileBooks[0]) {
         profileBook = profileBooks[0];
-        status = profileBook.status;
+
+        if (profileBook[`${getCurrentEnvironment()}_rating_instance`]) {
+          rating = profileBook[`${getCurrentEnvironment()}_rating_instance`].rating;
+          review = profileBook[`${getCurrentEnvironment()}_rating_instance`].review;
+        }
+
+        if (profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.TO_READ) {
+          if (profileBook[`${getCurrentEnvironment()}_status_instance`].start_date) {
+            startYear = new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date).getUTCFullYear();
+            startMonth = {
+              monthName: new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date)),
+              monthNumber: new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date).getUTCMonth(),
+            }
+            startDay = new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date).getUTCDate();
+          }
+        }
+        
+        if ((profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ) || (profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF)) {
+          if (profileBook[`${getCurrentEnvironment()}_status_instance`].end_date) {
+            endYear = new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].end_date).getUTCFullYear();
+            endMonth = {
+              monthName: new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].end_date)),
+              monthNumber: new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].end_date).getUTCMonth(),
+            }
+            endDay = new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].end_date).getUTCDate();
+          }
+        }
       }
+      
+      currentProfile = value;
+    } else if (currentProfile) {
+      currentProfile = value;
     }
   });
 
-  const handleRemoveProfileBook = async () => {
-    // todo: update additional attrbiutes
+  const handleUpdateProfileBook = async () => {
+    const _dateDifference: any = getDateDifference(new Date(startYear, startMonth.monthNumber, startDay), new Date(endYear, endMonth.monthNumber, endDay));
 
-    // let countAttribute: string = '';
-    // let countValue: number = 0;
+    console.log(_dateDifference);
 
-    // if (profileBook.status === E_BookStatus.READING.text) {
-    //   countAttribute = 'book_reading_status_count';
-    //   countValue = currentProfile.book_reading_status_count - 1;
-    // } else if (profileBook.status === E_BookStatus.WANT_TO_READ.text) {
-    //   countAttribute = 'book_want_to_read_status_count';
-    //   countValue = currentProfile.book_want_to_read_status_count - 1;
-    // } else if (profileBook.status === E_BookStatus.READ.text) {
-    //   countAttribute = 'book_read_status_count';
-    //   countValue = currentProfile.book_read_status_count - 1;
-    // } else if (profileBook.status === E_BookStatus.DID_NOT_FINISH.text) {
-    //   countAttribute = 'book_did_not_finish_status_count';
-    //   countValue = currentProfile.book_did_not_finish_status_count - 1;
-    // }
+    if (_dateDifference.differenceDays < 0) {
+      showInvalidDateRangeError = true;
+      return;
+    }
 
-    // const _bookTotalCount = currentProfile.book_total_status_count - 1;
+    const profileBookStatus: string = profileBook[`${getCurrentEnvironment()}_status_instance`].status;
 
-    // const _updatedProfileData: any = {
-    //   book_total_status_count: _bookTotalCount,
-    //   [countAttribute]: countValue,
-    // };
+    if (profileBookStatus === E_BookStatus.READING) {
+      // status instance
+      const updatedStatusInstanceData: any = {
+        start_date: new Date(startYear, startMonth.monthNumber, startDay),
+      };
 
-    // const [deletedProfileBookRecord, updatedProfileRecord] = await Promise.all([
-    //   deleteRecords('profile_book', { profile_id: currentProfile.id, book_id: data.item.id }),
-    //   updateRecords('profile', _updatedProfileData, { id: currentProfile.id }),
-    // ]);
+      const latestStatusInstanceRecord = await updateRecords('status_instance', [updatedStatusInstanceData], { id: profileBook.latest_status_instance_id });
 
-    // profile.set(updatedProfileRecord[0]);
-    // profileBook = undefined;
-    // status = '';
+      profileBook[`${getCurrentEnvironment()}_status_instance`] = latestStatusInstanceRecord[0];
+    } else if (profileBookStatus === E_BookStatus.READ) {
+      // read instance
+      const updatedReadInstanceData: any = {
+        start_date: new Date(startYear, startMonth.monthNumber, startDay),
+        end_date: new Date(endYear, endMonth.monthNumber, endDay),
+      };
+
+      // status instance
+      const updatedStatusInstanceData: any = {
+        start_date: new Date(startYear, startMonth.monthNumber, startDay),
+        end_date: new Date(endYear, endMonth.monthNumber, endDay),
+      };
+
+      const [
+        latestReadInstanceRecord,
+        latestStatusInstanceRecord
+      ] = await Promise.all([
+        updateRecords('read_instance', [updatedReadInstanceData], { id: profileBook.latest_read_instance_id }),
+        updateRecords('status_instance', [updatedStatusInstanceData], { id: profileBook.latest_status_instance_id }),
+      ]);
+
+      profileBook[`${getCurrentEnvironment()}_read_instance`] = latestReadInstanceRecord[0];
+      profileBook[`${getCurrentEnvironment()}_status_instance`] = latestStatusInstanceRecord[0];
+    } else if (profileBookStatus === E_BookStatus.DNF) {
+      // status instance
+      const updatedStatusInstanceData: any = {
+        start_date: new Date(startYear, startMonth.monthNumber, startDay),
+        end_date: new Date(endYear, endMonth.monthNumber, endDay),
+      };
+
+      const latestStatusInstanceRecord = await updateRecords('status_instance', [updatedStatusInstanceData], { id: profileBook.latest_status_instance_id });
+
+      profileBook[`${getCurrentEnvironment()}_status_instance`] = latestStatusInstanceRecord[0];
+    }
   }
 
-  const handleAddProfileBook = async (bookStatus: string) => {
-    // records to update: profile, book, profile-book, read-instance (if status is read)
+  const handleDeleteProfileBook = async () => {
+    const profileBookStatus: string = profileBook[`${getCurrentEnvironment()}_status_instance`].status;
 
-    // let countAttribute: string = '';
-    // let countValue: number = 0;
+    let profileCountAttribute: string = '';
+    let profileCountValue: number = 0;
 
-    // if (bookStatus === E_BookStatus.READING.text) {
-    //   countAttribute = 'book_status_reading_count';
-    //   countValue = currentProfile[countAttribute] + 1;
-    // } else if (bookStatus === E_BookStatus.WANT_TO_READ.text) {
-    //   countAttribute = 'book_status_want_to_read_count';
-    //   countValue = currentProfile[countAttribute] + 1;
-    // } else if (bookStatus === E_BookStatus.READ.text) {
-    //   countAttribute = 'book_status_read_count';
-    //   countValue = currentProfile[countAttribute] + 1;
-    // } else if (bookStatus === E_BookStatus.DID_NOT_FINISH.text) {
-    //   countAttribute = 'book_status_did_not_finish_count';
-    //   countValue = currentProfile[countAttribute] + 1;
-    // }
+    let bookCountAttribute: string = '';
+    let bookCountValue: number = 0;
 
-    // const _bookTotalCount = currentProfile.book_total_status_count + 1;
+    if (profileBookStatus === E_BookStatus.READING) {
+      profileCountAttribute = 'book_status_reading_count';
+      profileCountValue = currentProfile.book_status_reading_count - 1;
+      bookCountAttribute = 'status_reading_count';
+      bookCountValue = data.item.status_reading_count - 1;
+    } else if (profileBookStatus === E_BookStatus.TO_READ) {
+      profileCountAttribute = 'book_status_to_read_count';
+      profileCountValue = currentProfile.book_status_to_read_count - 1;
+      bookCountAttribute = 'status_to_read_count';
+      bookCountValue = data.item.status_to_read_count - 1;
+    } else if (profileBookStatus === E_BookStatus.READ) {
+      profileCountAttribute = 'book_status_read_count';
+      profileCountValue = currentProfile.book_status_read_count - 1;
+      bookCountAttribute = 'status_read_count';
+      bookCountValue = data.item.status_read_count - 1;
+    } else if (profileBookStatus === E_BookStatus.DNF) {
+      profileCountAttribute = 'book_status_dnf_count';
+      profileCountValue = currentProfile.book_status_dnf_count - 1;
+      bookCountAttribute = 'status_dnf_count';
+      bookCountValue = data.item.status_dnf_count - 1;
+    }
 
-    // const _updatedProfileData: any = {
-    //   book_total_status_count: _bookTotalCount,
-    //   [countAttribute]: countValue,
-    // };
+    let updatedProfileData: any;
+    let updatedBookData: any;
 
-    // const _newProfileBookData: any = {
-    //   profile_id: currentProfile.id,
-    //   book_id: data.item.id,
-    //   status: bookStatus,
-    //   status_created_at: new Date(),
-    // };
+    if (profileBook.read_count > 0) {
+      if (getProfileTotalRatings(currentProfile) > 0) {
+        updatedProfileData = {
+          [`book_rating_${rating}_count`]: currentProfile[`book_rating_${rating}_count`] - 1,
+          [profileCountAttribute]: profileCountValue,
+          book_unique_read_count: currentProfile.book_unique_read_count - 1,
+        };
 
-    // const [insertedProfileBookRecord, updatedProfileRecord] = await Promise.all([
-    //   insertRecords('profile_book', [_newProfileBookData]),
-    //   updateRecords('profile', _updatedProfileData, { id: currentProfile.id }),
-    // ]);
+        updatedBookData = {
+          [`rating_${rating}_count`]: data.item[`rating_${rating}_count`] - 1,
+          [bookCountAttribute]: bookCountValue,
+          unique_read_count: data.item.unique_read_count - 1,
+          read_count: data.item.read_count - profileBook.read_count,
+        };
+      } else {
+        updatedProfileData = {
+          [profileCountAttribute]: profileCountValue,
+          book_unique_read_count: currentProfile.book_unique_read_count - 1,
+        };
 
-    // profile.set(updatedProfileRecord[0]);
-    // profileBook = insertedProfileBookRecord;
+        updatedBookData = {
+          [bookCountAttribute]: bookCountValue,
+          unique_read_count: data.item.unique_read_count - 1,
+          read_count: data.item.read_count - profileBook.read_count,
+        };
+      }
+    } else {
+      updatedProfileData = {
+        [profileCountAttribute]: profileCountValue,
+      };
 
-    // status = '';
+      updatedBookData = {
+        [bookCountAttribute]: bookCountValue,
+      };
+    }
+
+    await deleteRecords('profile_book', { id: profileBook.id });
+    await Promise.all([
+      deleteRecords('read_instance', { profile_id: currentProfile.id, book_id: data.item.id }),
+      deleteRecords('status_instance', { profile_id: currentProfile.id, book_id: data.item.id }),
+      deleteRecords('rating_instance', { profile_id: currentProfile.id, book_id: data.item.id }),
+    ]);
+    const [
+      updatedProfileRecord,
+      updatedBookRecord,
+    ] = await Promise.all([
+      updateRecords('profile', updatedProfileData, { id: currentProfile.id }),
+      updateRecords('book', updatedBookData, { id: data.item.id }),
+    ]);
+
+    profile.set(updatedProfileRecord[0]);
+    data.item = updatedBookRecord[0];
+    profileBook = undefined;
+
+    const _today: any = new Date();
+    _today.setHours(0);
+    
+    startYear = _today.getUTCFullYear();
+    startMonth = {
+      monthName: new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'UTC' }).format(_today),
+      monthNumber: _today.getUTCMonth(),
+    }
+    startDay = _today.getUTCDate();
+
+    endYear = _today.getUTCFullYear();
+    endMonth = {
+      monthName: new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'UTC' }).format(_today),
+      monthNumber: _today.getUTCMonth(),
+    }
+    endDay = _today.getUTCDate();
+
+    rating = 5;
+    review = '';
   }
 
-  const handleEditProfileBook = async (bookStatus: string) => {
-    // let plusCountAttribute: string = '';
-    // let plusCountValue: number = 0;
+  const handleToReadStatus = async (status: string) => {
+    const _today: any = new Date();
+    _today.setHours(0);
 
-    // let minusCountAttribute: string = '';
-    // let minusCountValue: number = 0;
+    if (profileBook) {
+      // status instance
+      const statusInstanceData: any = {
+        profile_id: currentProfile.id,
+        book_id: data.item.id,
+        status,
+      };
 
-    // if (profileBook.status === E_BookStatus.READING.text) {
-    //   minusCountAttribute = 'book_reading_status_count';
-    //   minusCountValue = currentProfile.book_reading_status_count - 1;
-    // } else if (profileBook.status === E_BookStatus.WANT_TO_READ.text) {
-    //   minusCountAttribute = 'book_want_to_read_status_count';
-    //   minusCountValue = currentProfile.book_want_to_read_status_count - 1;
-    // } else if (profileBook.status === E_BookStatus.READ.text) {
-    //   minusCountAttribute = 'book_read_status_count';
-    //   minusCountValue = currentProfile.book_read_status_count - 1;
-    // } else if (profileBook.status === E_BookStatus.DID_NOT_FINISH.text) {
-    //   minusCountAttribute = 'book_did_not_finish_status_count';
-    //   minusCountValue = currentProfile.book_did_not_finish_status_count - 1;
-    // }
+      const newStatusInstanceRecord = await insertRecords('status_instance', [statusInstanceData]);
 
-    // if (bookStatus === E_BookStatus.READING.text) {
-    //   plusCountAttribute = 'book_reading_status_count';
-    //   plusCountValue = currentProfile.book_reading_status_count + 1;
-    // } else if (bookStatus === E_BookStatus.WANT_TO_READ.text) {
-    //   plusCountAttribute = 'book_want_to_read_status_count';
-    //   plusCountValue = currentProfile.book_want_to_read_status_count + 1;
-    // } else if (bookStatus === E_BookStatus.READ.text) {
-    //   plusCountAttribute = 'book_read_status_count';
-    //   plusCountValue = currentProfile.book_read_status_count + 1;
-    // } else if (bookStatus === E_BookStatus.DID_NOT_FINISH.text) {
-    //   plusCountAttribute = 'book_did_not_finish_status_count';
-    //   plusCountValue = currentProfile.book_did_not_finish_status_count + 1;
-    // }
+      // profile book
+      const updatedProfileBookData: any = {
+        profile_id: currentProfile.id,
+        book_id: data.item.id,
+        latest_status_instance_id: newStatusInstanceRecord[0].id,
+      };
 
-    // const _updatedProfileData: any = {
-    //   [plusCountAttribute]: plusCountValue,
-    //   [minusCountAttribute]: minusCountValue,
-    // };
+      const profileBookStatus: string = profileBook[`${getCurrentEnvironment()}_status_instance`].status;
 
-    // const _updatedProfileBookData: any = {
-    //   status: bookStatus,
-    //   status_updated_at: new Date(),
-    // };
+      let minusProfileAttribute: string = '';
+      let minusProfileCount: number = 0;
 
-    // const [updatedProfileBookRecord, updatedProfileRecord] = await Promise.all([
-    //   updateRecords('profile_book', _updatedProfileBookData, { profile_id: currentProfile.id, book_id: data.item.id }),
-    //   updateRecords('profile', _updatedProfileData, { id: currentProfile.id }),
-    // ]);
+      let minusBookAttribute: string = '';
+      let minusBookCount: number = 0;
 
-    // profile.set(updatedProfileRecord[0]);
-    // profileBook = updatedProfileBookRecord;
+      if (profileBookStatus === E_BookStatus.READING) {
+        minusProfileAttribute = 'book_status_reading_count';
+        minusProfileCount = currentProfile[minusProfileAttribute] - 1;
+        minusBookAttribute = 'status_reading_count';
+        minusBookCount = data.item[minusBookAttribute] - 1;
+      } else if (profileBookStatus === E_BookStatus.READ) {
+        minusProfileAttribute = 'book_status_read_count';
+        minusProfileCount = currentProfile[minusProfileAttribute] - 1;
+        minusBookAttribute = 'status_read_count';
+        minusBookCount = data.item[minusBookAttribute] - 1;
+      } else if (profileBookStatus === E_BookStatus.DNF) {
+        minusProfileAttribute = 'book_status_dnf_count';
+        minusProfileCount = currentProfile[minusProfileAttribute] - 1;
+        minusBookAttribute = 'status_dnf_count';
+        minusBookCount = data.item[minusBookAttribute] - 1;
+      }
 
-    // status = '';
+      // profile
+      const updatedProfileData: any = {
+        book_status_to_read_count: currentProfile.book_status_to_read_count + 1,
+        [minusProfileAttribute]: minusProfileCount,
+      };
+
+      // book
+      const updatedBookData: any = {
+        status_to_read_count: data.item.status_to_read_count + 1,
+        [minusBookAttribute]: minusBookCount,
+      };
+
+      const [
+        latestProfileBookRecord,
+        latestProfileRecord,
+        latestBookRecord
+      ] = await Promise.all([
+        updateRecords('profile_book', [updatedProfileBookData], { profile_id: currentProfile.id, book_id: data.item.id }),
+        updateRecords('profile', updatedProfileData, { id: currentProfile.id }),
+        updateRecords('book', updatedBookData, { id: data.item.id }),
+      ]);
+
+      data.item = latestBookRecord[0];
+      profile.set(latestProfileRecord[0]);
+      profileBook = latestProfileBookRecord[0];
+      profileBook[`${getCurrentEnvironment()}_status_instance`] = newStatusInstanceRecord[0];
+    } else {
+      // status instance
+      const statusInstanceData: any = {
+        profile_id: currentProfile.id,
+        book_id: data.item.id,
+        status,
+      };
+
+      const newStatusInstanceRecord = await insertRecords('status_instance', [statusInstanceData]);
+
+      // profile book
+      const profileBookData: any = {
+        profile_id: currentProfile.id,
+        book_id: data.item.id,
+        latest_status_instance_id: newStatusInstanceRecord[0].id,
+      };
+
+      // profile
+      const updatedProfileData: any = {
+        book_status_to_read_count: currentProfile.book_status_to_read_count + 1,
+      };
+
+      // book
+      const updatedBookData: any = {
+        status_to_read_count: data.item.status_to_read_count + 1,
+      };
+
+      const [
+        newProfileBookRecord,
+        latestProfileRecord,
+        latestBookRecord
+      ] = await Promise.all([
+        insertRecords('profile_book', [profileBookData]),
+        updateRecords('profile', updatedProfileData, { id: currentProfile.id }),
+        updateRecords('book', updatedBookData, { id: data.item.id }),
+      ]);
+
+      data.item = latestBookRecord[0];
+      profile.set(latestProfileRecord[0]);
+      profileBook = newProfileBookRecord[0];
+      profileBook[`${getCurrentEnvironment()}_status_instance`] = newStatusInstanceRecord[0];
+    }
+
+    startYear = _today.getUTCFullYear();
+    startMonth = {
+      monthName: new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'UTC' }).format(_today),
+      monthNumber: _today.getUTCMonth(),
+    }
+    startDay = _today.getUTCDate();
+
+    endYear = _today.getUTCFullYear();
+    endMonth = {
+      monthName: new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'UTC' }).format(_today),
+      monthNumber: _today.getUTCMonth(),
+    }
+    endDay = _today.getUTCDate();
   }
 
-  const handleAddEditRatingReview = async () => {
-    // todo: "delete" rating and/or review (clear the attributes and update relevent tables) also let user know that removing a book also removes their rating and review
+  const handleReadingStatus = async (status: string) => {
+    const _today: any = new Date();
+    _today.setHours(0);
 
-    // if (profileBook && profileBook.rating !== null) {
-    //   // edit
+    if (profileBook) {
+      // status instance
+      const statusInstanceData: any = {
+        profile_id: currentProfile.id,
+        book_id: data.item.id,
+        status,
+        start_date: _today,
+      };
 
-    //   const profileMinusCountAttribute: string = `book_${profileBook.rating}_rating_count`;
-    //   const profileMinusCountValue: number = currentProfile[profileMinusCountAttribute] - 1;
+      const newStatusInstanceRecord = await insertRecords('status_instance', [statusInstanceData]);
 
-    //   const profilePlusCountAttribute: string = `book_${rating}_rating_count`;
-    //   const profilePlusCountValue: number = currentProfile[profilePlusCountAttribute] + 1;
+      // profile book
+      const updatedProfileBookData: any = {
+        profile_id: currentProfile.id,
+        book_id: data.item.id,
+        latest_status_instance_id: newStatusInstanceRecord[0].id,
+      };
 
-    //   const bookMinusCountAttribute: string = `${profileBook.rating}_rating_count`;
-    //   const bookMinusCountValue: number = currentProfile[bookMinusCountAttribute] - 1;
+      const profileBookStatus: string = profileBook[`${getCurrentEnvironment()}_status_instance`].status;
 
-    //   const bookPlusCountAttribute: string = `${rating}_rating_count`;
-    //   const bookPlusCountValue: number = currentProfile[bookPlusCountAttribute] + 1;
+      let minusProfileAttribute: string = '';
+      let minusProfileCount: number = 0;
 
-    //   const _updatedProfileData: any = {
-    //     [profileMinusCountAttribute]: profileMinusCountValue,
-    //     [profilePlusCountAttribute]: profilePlusCountValue,
-    //   };
+      let minusBookAttribute: string = '';
+      let minusBookCount: number = 0;
 
-    //   const _updatedProfileBookData: any = {
-    //     rating,
-    //     rating_updated_at: new Date(),
-    //     // review,
-    //   };
+      if (profileBookStatus === E_BookStatus.TO_READ) {
+        minusProfileAttribute = 'book_status_to_read_count';
+        minusProfileCount = currentProfile[minusProfileAttribute] - 1;
+        minusBookAttribute = 'status_to_read_count';
+        minusBookCount = data.item[minusBookAttribute] - 1;
+      } else if (profileBookStatus === E_BookStatus.READ) {
+        minusProfileAttribute = 'book_status_read_count';
+        minusProfileCount = currentProfile[minusProfileAttribute] - 1;
+        minusBookAttribute = 'status_read_count';
+        minusBookCount = data.item[minusBookAttribute] - 1;
+      } else if (profileBookStatus === E_BookStatus.DNF) {
+        minusProfileAttribute = 'book_status_dnf_count';
+        minusProfileCount = currentProfile[minusProfileAttribute] - 1;
+        minusBookAttribute = 'status_dnf_count';
+        minusBookCount = data.item[minusBookAttribute] - 1;
+      }
 
-    //   const _updatedBookData: any = {
-    //     [bookMinusCountAttribute]: bookMinusCountValue,
-    //     [bookPlusCountAttribute]: bookPlusCountValue,
-    //   }
+      // profile
+      const updatedProfileData: any = {
+        book_status_reading_count: currentProfile.book_status_reading_count + 1,
+        [minusProfileAttribute]: minusProfileCount,
+      };
 
-    //   const [updatedProfileBookRecord, updatedProfileRecord, updatedBookRecord] = await Promise.all([
-    //     updateRecords('profile_book', _updatedProfileBookData, { profile_id: currentProfile.id, book_id: data.item.id }),
-    //     updateRecords('profile', _updatedProfileData, { id: currentProfile.id }),
-    //     updateRecords('book', _updatedBookData, { id: data.item.id }),
-    //   ]);
+      // book
+      const updatedBookData: any = {
+        status_reading_count: data.item.status_reading_count + 1,
+        [minusBookAttribute]: minusBookCount,
+      };
 
-    //   profile.set(updatedProfileRecord[0]);
+      const [
+        latestProfileBookRecord,
+        latestProfileRecord,
+        latestBookRecord
+      ] = await Promise.all([
+        updateRecords('profile_book', [updatedProfileBookData], { profile_id: currentProfile.id, book_id: data.item.id }),
+        updateRecords('profile', updatedProfileData, { id: currentProfile.id }),
+        updateRecords('book', updatedBookData, { id: data.item.id }),
+      ]);
 
-    //   data.item = updatedBookRecord[0];
-    // } else {
-    //   // add
+      data.item = latestBookRecord[0];
+      profile.set(latestProfileRecord[0]);
+      profileBook = latestProfileBookRecord[0];
+      profileBook[`${getCurrentEnvironment()}_status_instance`] = newStatusInstanceRecord[0];
+    } else {
+      // status instance
+      const statusInstanceData: any = {
+        profile_id: currentProfile.id,
+        book_id: data.item.id,
+        status,
+        start_date: _today,
+      };
 
-    //   const profileCountAttribute: string = `book_${rating}_rating_count`;
-    //   const profileCountValue: number = currentProfile[profileCountAttribute] + 1;
+      const newStatusInstanceRecord = await insertRecords('status_instance', [statusInstanceData]);
 
-    //   const bookCountAttribute: string = `${rating}_rating_count`;
-    //   const bookCountValue: number = data.item[bookCountAttribute] + 1;
+      // profile book
+      const profileBookData: any = {
+        profile_id: currentProfile.id,
+        book_id: data.item.id,
+        latest_status_instance_id: newStatusInstanceRecord[0].id,
+      };
 
-    //   const profileBookTotalRatingCount = currentProfile.book_total_rating_count + 1;
-    //   const bookTotalRatingCount = data.item.total_rating_count + 1;
+      // profile
+      const updatedProfileData: any = {
+        book_status_reading_count: currentProfile.book_status_reading_count + 1,
+      };
 
-    //   const _updatedProfileData: any = {
-    //     book_total_rating_count: profileBookTotalRatingCount,
-    //     [profileCountAttribute]: profileCountValue,
-    //   };
+      // book
+      const updatedBookData: any = {
+        status_reading_count: data.item.status_reading_count + 1,
+      };
 
-    //   const _updatedProfileBookData: any = {
-    //     rating,
-    //     rating_created_at: new Date(),
-    //     // review,
-    //   };
+      const [
+        newProfileBookRecord,
+        latestProfileRecord,
+        latestBookRecord
+      ] = await Promise.all([
+        insertRecords('profile_book', [profileBookData]),
+        updateRecords('profile', updatedProfileData, { id: currentProfile.id }),
+        updateRecords('book', updatedBookData, { id: data.item.id }),
+      ]);
 
-    //   const _updatedBookData: any = {
-    //     total_rating_count: bookTotalRatingCount,
-    //     [bookCountAttribute]: bookCountValue,
-    //   };
+      data.item = latestBookRecord[0];
+      profile.set(latestProfileRecord[0]);
+      profileBook = newProfileBookRecord[0];
+      profileBook[`${getCurrentEnvironment()}_status_instance`] = newStatusInstanceRecord[0];
+    }
 
-    //   const [updatedProfileBookData, updatedProfileRecord, updatedBookRecord] = await Promise.all([
-    //     updateRecords('profile_book', _updatedProfileBookData, { profile_id: currentProfile.id, book_id: data.item.id }),
-    //     updateRecords('profile', _updatedProfileData, { id: currentProfile.id }),
-    //     updateRecords('book', _updatedBookData, { id: data.item.id }),
-    //   ]);
+    startYear = _today.getUTCFullYear();
+    startMonth = {
+      monthName: new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'UTC' }).format(_today),
+      monthNumber: _today.getUTCMonth(),
+    }
+    startDay = _today.getUTCDate();
 
-    //   profile.set(updatedProfileRecord[0]);
+    endYear = _today.getUTCFullYear();
+    endMonth = {
+      monthName: new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'UTC' }).format(_today),
+      monthNumber: _today.getUTCMonth(),
+    }
+    endDay = _today.getUTCDate();
+  }
 
-    //   data.item = updatedBookRecord[0];
-    // }
+  const handleReadStatus = async (status: string) => {
+    if (profileBook) {
+      // read instance
+      const readInstanceData: any = {
+        profile_id: currentProfile.id,
+        book_id: data.item.id,
+        start_date: profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? profileBook[`${getCurrentEnvironment()}_status_instance`].start_date : new Date(startYear, startMonth.monthNumber, startDay),
+        end_date: new Date(endYear, endMonth.monthNumber, endDay),
+      };
+
+      // status instance
+      const statusInstanceData: any = {
+        profile_id: currentProfile.id,
+        book_id: data.item.id,
+        status,
+        start_date: profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? profileBook[`${getCurrentEnvironment()}_status_instance`].start_date : new Date(startYear, startMonth.monthNumber, startDay),
+        end_date: new Date(endYear, endMonth.monthNumber, endDay),
+      };
+
+      const [
+        newReadInstanceRecord,
+        newStatusInstanceRecord
+      ] = await Promise.all([
+        insertRecords('read_instance', [readInstanceData]),
+        insertRecords('status_instance', [statusInstanceData]),
+      ]);
+
+      // profile book
+      const updatedProfileBookData: any = {
+        profile_id: currentProfile.id,
+        book_id: data.item.id,
+        latest_status_instance_id: newStatusInstanceRecord[0].id,
+        latest_read_instance_id: newReadInstanceRecord[0].id,
+        read_count: profileBook.read_count + 1,
+      };
+
+      const profileBookStatus: string = profileBook[`${getCurrentEnvironment()}_status_instance`].status;
+
+      let minusProfileAttribute: string = '';
+      let minusProfileCount: number = 0;
+
+      let minusBookAttribute: string = '';
+      let minusBookCount: number = 0;
+
+      if (profileBookStatus === E_BookStatus.TO_READ) {
+        minusProfileAttribute = 'book_status_to_read_count';
+        minusProfileCount = currentProfile[minusProfileAttribute] - 1;
+        minusBookAttribute = 'status_to_read_count';
+        minusBookCount = data.item[minusBookAttribute] - 1;
+      } else if (profileBookStatus === E_BookStatus.READING) {
+        minusProfileAttribute = 'book_status_reading_count';
+        minusProfileCount = currentProfile[minusProfileAttribute] - 1;
+        minusBookAttribute = 'status_reading_count';
+        minusBookCount = data.item[minusBookAttribute] - 1;
+      } else if (profileBookStatus === E_BookStatus.DNF) {
+        minusProfileAttribute = 'book_status_dnf_count';
+        minusProfileCount = currentProfile[minusProfileAttribute] - 1;
+        minusBookAttribute = 'status_dnf_count';
+        minusBookCount = data.item[minusBookAttribute] - 1;
+      }
+
+      // profile
+      const updatedProfileData: any = {
+        book_unique_read_count: profileBook.read_count === 0 ? currentProfile.book_unique_read_count + 1 : currentProfile.book_unique_read_count,
+        book_status_read_count: currentProfile.book_status_read_count + 1,
+        [minusProfileAttribute]: minusProfileCount,
+      };
+
+      // book
+      const updatedBookData: any = {
+        read_count: data.item.read_count + 1,
+        unique_read_count: profileBook.read_count === 0 ? data.item.unique_read_count + 1 : data.item.unique_read_count,
+        status_read_count: data.item.status_read_count + 1,
+        [minusBookAttribute]: minusBookCount,
+      };
+
+      const [
+        latestProfileBookRecord,
+        latestProfileRecord,
+        latestBookRecord
+      ] = await Promise.all([
+        updateRecords('profile_book', [updatedProfileBookData], { profile_id: currentProfile.id, book_id: data.item.id }),
+        updateRecords('profile', updatedProfileData, { id: currentProfile.id }),
+        updateRecords('book', updatedBookData, { id: data.item.id }),
+      ]);
+
+      data.item = latestBookRecord[0];
+      profile.set(latestProfileRecord[0]);
+      profileBook = latestProfileBookRecord[0];
+      profileBook[`${getCurrentEnvironment()}_read_instance`] = newReadInstanceRecord[0];
+      profileBook[`${getCurrentEnvironment()}_status_instance`] = newStatusInstanceRecord[0];
+    } else {
+      // read instance
+      const readInstanceData: any = {
+        profile_id: currentProfile.id,
+        book_id: data.item.id,
+        start_date: new Date(startYear, startMonth.monthNumber, startDay),
+        end_date: new Date(endYear, endMonth.monthNumber, endDay),
+      };
+
+      // status instance
+      const statusInstanceData: any = {
+        profile_id: currentProfile.id,
+        book_id: data.item.id,
+        status,
+        start_date: new Date(startYear, startMonth.monthNumber, startDay),
+        end_date: new Date(endYear, endMonth.monthNumber, endDay),
+      };
+
+      const [
+        newReadInstanceRecord,
+        newStatusInstanceRecord
+      ] = await Promise.all([
+        insertRecords('read_instance', [readInstanceData]),
+        insertRecords('status_instance', [statusInstanceData]),
+      ]);
+
+      // profile book
+      const profileBookData: any = {
+        profile_id: currentProfile.id,
+        book_id: data.item.id,
+        latest_status_instance_id: newStatusInstanceRecord[0].id,
+        latest_read_instance_id: newReadInstanceRecord[0].id,
+        read_count: 1,
+      };
+
+      // profile
+      const updatedProfileData: any = {
+        book_unique_read_count: currentProfile.book_unique_read_count + 1,
+        book_status_read_count: currentProfile.book_status_read_count + 1,
+      };
+
+      // book
+      const updatedBookData: any = {
+        read_count: data.item.read_count + 1,
+        unique_read_count: data.item.unique_read_count + 1,
+        status_read_count: data.item.status_read_count + 1,
+      };
+
+      const [
+        newProfileBookRecord,
+        latestProfileRecord,
+        latestBookRecord
+      ] = await Promise.all([
+        insertRecords('profile_book', [profileBookData]),
+        updateRecords('profile', updatedProfileData, { id: currentProfile.id }),
+        updateRecords('book', updatedBookData, { id: data.item.id }),
+      ]);
+
+      data.item = latestBookRecord[0];
+      profile.set(latestProfileRecord[0]);
+      profileBook = newProfileBookRecord[0];
+      profileBook[`${getCurrentEnvironment()}_read_instance`] = newReadInstanceRecord[0];
+      profileBook[`${getCurrentEnvironment()}_status_instance`] = newStatusInstanceRecord[0];
+    }
+  }
+
+  const handleDNFStatus = async (status: string) => {
+    if (profileBook) {
+      // status instance
+      const statusInstanceData: any = {
+        profile_id: currentProfile.id,
+        book_id: data.item.id,
+        status,
+        start_date: profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? profileBook[`${getCurrentEnvironment()}_status_instance`].start_date : new Date(startYear, startMonth.monthNumber, startDay),
+        end_date: new Date(endYear, endMonth.monthNumber, endDay),
+      };
+
+      const newStatusInstanceRecord = await insertRecords('status_instance', [statusInstanceData]);
+
+      // profile book
+      const updatedProfileBookData: any = {
+        profile_id: currentProfile.id,
+        book_id: data.item.id,
+        latest_status_instance_id: newStatusInstanceRecord[0].id,
+      };
+
+      const profileBookStatus: string = profileBook[`${getCurrentEnvironment()}_status_instance`].status;
+
+      let minusProfileAttribute: string = '';
+      let minusProfileCount: number = 0;
+
+      let minusBookAttribute: string = '';
+      let minusBookCount: number = 0;
+
+      if (profileBookStatus === E_BookStatus.TO_READ) {
+        minusProfileAttribute = 'book_status_to_read_count';
+        minusProfileCount = currentProfile[minusProfileAttribute] - 1;
+        minusBookAttribute = 'status_to_read_count';
+        minusBookCount = data.item[minusBookAttribute] - 1;
+      } else if (profileBookStatus === E_BookStatus.READING) {
+        minusProfileAttribute = 'book_status_reading_count';
+        minusProfileCount = currentProfile[minusProfileAttribute] - 1;
+        minusBookAttribute = 'status_reading_count';
+        minusBookCount = data.item[minusBookAttribute] - 1;
+      } else if (profileBookStatus === E_BookStatus.READ) {
+        minusProfileAttribute = 'book_status_read_count';
+        minusProfileCount = currentProfile[minusProfileAttribute] - 1;
+        minusBookAttribute = 'status_read_count';
+        minusBookCount = data.item[minusBookAttribute] - 1;
+      }
+
+      // profile
+      const updatedProfileData: any = {
+        book_status_dnf_count: currentProfile.book_status_dnf_count + 1,
+        [minusProfileAttribute]: minusProfileCount,
+      };
+
+      // book
+      const updatedBookData: any = {
+        status_dnf_count: data.item.status_dnf_count + 1,
+        [minusBookAttribute]: minusBookCount,
+      };
+
+      const [
+        latestProfileBookRecord,
+        latestProfileRecord,
+        latestBookRecord
+      ] = await Promise.all([
+        updateRecords('profile_book', [updatedProfileBookData], { profile_id: currentProfile.id, book_id: data.item.id }),
+        updateRecords('profile', updatedProfileData, { id: currentProfile.id }),
+        updateRecords('book', updatedBookData, { id: data.item.id }),
+      ]);
+
+      data.item = latestBookRecord[0];
+      profile.set(latestProfileRecord[0]);
+      profileBook = latestProfileBookRecord[0];
+      profileBook[`${getCurrentEnvironment()}_status_instance`] = newStatusInstanceRecord[0];
+    } else {
+      // status instance
+      const statusInstanceData: any = {
+        profile_id: currentProfile.id,
+        book_id: data.item.id,
+        status,
+        start_date: new Date(startYear, startMonth.monthNumber, startDay),
+        end_date: new Date(endYear, endMonth.monthNumber, endDay),
+      };
+
+      const newStatusInstanceRecord = await insertRecords('status_instance', [statusInstanceData]);
+
+      // profile book
+      const profileBookData: any = {
+        profile_id: currentProfile.id,
+        book_id: data.item.id,
+        latest_status_instance_id: newStatusInstanceRecord[0].id,
+      };
+
+      // profile
+      const updatedProfileData: any = {
+        book_status_dnf_count: currentProfile.book_status_dnf_count + 1,
+      };
+
+      // book
+      const updatedBookData: any = {
+        status_dnf_count: data.item.status_dnf_count + 1,
+      };
+
+      const [
+        newProfileBookRecord,
+        latestProfileRecord,
+        latestBookRecord
+      ] = await Promise.all([
+        insertRecords('profile_book', [profileBookData]),
+        updateRecords('profile', updatedProfileData, { id: currentProfile.id }),
+        updateRecords('book', updatedBookData, { id: data.item.id }),
+      ]);
+
+      data.item = latestBookRecord[0];
+      profile.set(latestProfileRecord[0]);
+      profileBook = newProfileBookRecord[0];
+      profileBook[`${getCurrentEnvironment()}_status_instance`] = newStatusInstanceRecord[0];
+    }
+  }
+
+  const handleRatingInstance = async () => {
+    if (profileBook && profileBook[`${getCurrentEnvironment()}_rating_instance`]) {
+      // now, are we updating a current instance, or adding another new instance ?
+
+      // // status instance
+      // const statusInstanceData: any = {
+      //   profile_id: currentProfile.id,
+      //   book_id: data.item.id,
+      //   status,
+      // };
+
+      // const newStatusInstanceRecord = await insertRecords('status_instance', [statusInstanceData]);
+
+      // // profile book
+      // const updatedProfileBookData: any = {
+      //   profile_id: currentProfile.id,
+      //   book_id: data.item.id,
+      //   latest_status_instance_id: newStatusInstanceRecord[0].id,
+      // };
+
+      // const profileBookStatus: string = profileBook[`${getCurrentEnvironment()}_status_instance`].status;
+
+      // let minusProfileAttribute: string = '';
+      // let minusProfileCount: number = 0;
+
+      // let minusBookAttribute: string = '';
+      // let minusBookCount: number = 0;
+
+      // if (profileBookStatus === E_BookStatus.READING) {
+      //   minusProfileAttribute = 'book_status_reading_count';
+      //   minusProfileCount = currentProfile[minusProfileAttribute] - 1;
+      //   minusBookAttribute = 'status_reading_count';
+      //   minusBookCount = data.item[minusBookAttribute] - 1;
+      // } else if (profileBookStatus === E_BookStatus.READ) {
+      //   minusProfileAttribute = 'book_status_read_count';
+      //   minusProfileCount = currentProfile[minusProfileAttribute] - 1;
+      //   minusBookAttribute = 'status_read_count';
+      //   minusBookCount = data.item[minusBookAttribute] - 1;
+      // } else if (profileBookStatus === E_BookStatus.DNF) {
+      //   minusProfileAttribute = 'book_status_dnf_count';
+      //   minusProfileCount = currentProfile[minusProfileAttribute] - 1;
+      //   minusBookAttribute = 'status_dnf_count';
+      //   minusBookCount = data.item[minusBookAttribute] - 1;
+      // }
+
+      // // profile
+      // const updatedProfileData: any = {
+      //   book_status_to_read_count: currentProfile.book_status_to_read_count + 1,
+      //   [minusProfileAttribute]: minusProfileCount,
+      // };
+
+      // // book
+      // const updatedBookData: any = {
+      //   status_to_read_count: data.item.status_to_read_count + 1,
+      //   [minusBookAttribute]: minusBookCount,
+      // };
+
+      // const [
+      //   latestProfileBookRecord,
+      //   latestProfileRecord,
+      //   latestBookRecord
+      // ] = await Promise.all([
+      //   updateRecords('profile_book', [updatedProfileBookData], { profile_id: currentProfile.id, book_id: data.item.id }),
+      //   updateRecords('profile', updatedProfileData, { id: currentProfile.id }),
+      //   updateRecords('book', updatedBookData, { id: data.item.id }),
+      // ]);
+
+      // data.item = latestBookRecord[0];
+      // profile.set(latestProfileRecord[0]);
+      // profileBook = latestProfileBookRecord[0];
+      // profileBook[`${getCurrentEnvironment()}_status_instance`] = newStatusInstanceRecord[0];
+    } else if (profileBook && !profileBook[`${getCurrentEnvironment()}_rating_instance`]) {
+      // rating instance
+      const ratingInstanceData: any = {
+        profile_id: currentProfile.id,
+        book_id: data.item.id,
+        rating,
+        review,
+      };
+
+      const newRatingInstanceRecord = await insertRecords('rating_instance', [ratingInstanceData]);
+
+      // profile book
+      const updatedProfileBookData: any = {
+        latest_rating_instance_id: newRatingInstanceRecord[0].id,
+      };
+
+      // profile
+      const updatedProfileData: any = {
+        [`book_rating_${rating}_count`]: currentProfile[`book_rating_${rating}_count`] + 1,
+        book_review_count: review ? currentProfile.book_review_count + 1 : currentProfile.book_review_count,
+      };
+
+      // book
+      const updatedBookData: any = {
+        [`rating_${rating}_count`]: data.item[`rating_${rating}_count`] + 1,
+        review_count: review ? data.item.review_count + 1 : data.item.review_count,
+      };
+
+      const [
+        latestProfileBookRecord,
+        latestProfileRecord,
+        latestBookRecord
+      ] = await Promise.all([
+        updateRecords('profile_book', updatedProfileBookData, { id: profileBook.id }),
+        updateRecords('profile', updatedProfileData, { id: currentProfile.id }),
+        updateRecords('book', updatedBookData, { id: data.item.id }),
+      ]);
+
+      data.item = latestBookRecord[0];
+      profile.set(latestProfileRecord[0]);
+      // profileBook = latestProfileBookRecord[0]; //todo: don't do this until you allow yourself to specify which attributes to fetch from updating/inserting records
+      profileBook[`${getCurrentEnvironment()}_rating_instance`] = newRatingInstanceRecord[0];
+    }
+
+    rating = profileBook[`${getCurrentEnvironment()}_rating_instance`].rating;
+    review = profileBook[`${getCurrentEnvironment()}_rating_instance`].review;
   }
 </script>
 
-<div class="flex flex-col items-center gap-4">
-  <ItemCard item={data.item} />
-
-  {#if currentProfile && (dateDifference?.afterDate === false)}
-    <div class="flex flex-col gap-2">
-      <h1 class="dark:text-white st-font-bold text-2xl text-center">{data.item.title}</h1>
-      <p class="dark:text-white text-center">
-        Expected Publication {formatDate(data.item.release_date)}
+<div class="flex flex-col gap-8 m-auto max-w-[500px]">
+  <div class="flex justify-center">
+    <ItemCard item={data.item} />
+  </div>
+  <Card>
+    <h1 class="w-full dark:text-white st-font-bold text-2xl text-center p-4">{data.item.title}</h1>
+    {#if dateDifference?.differenceDays < 0}
+      <p class="w-full text-center dark:text-white">
+        Expected Publication {formatDate(data.item.release_date)} ({dateDifference.differenceDaysAbs === 1 ? `${dateDifference.differenceDaysAbs} day` : `${dateDifference.differenceDaysAbs} days`})
       </p>
-      {#if getTotalRatings(data.item) === 0}
-        <p class="text-center dark:text-white">No Ratings</p>
-      {:else}
-        <p class="text-center dark:text-white">{getRatingsAverage(data.item)} / 10 ({getTotalRatings(data.item)} ratings)</p>
-      {/if}
-    </div>
-    <p class="text-center dark:text-white">{dateDifference.differenceDays === 1 ? `${dateDifference.differenceDays} day before release` : `${dateDifference.differenceDays} days before release`}</p>
-    <button
-      class={`px-4 py-2 rounded st-font-bold ${status === E_BookStatus.WANT_TO_READ.text ? 'bg-green-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-neutral-900 dark:text-white'}`}
-      type="button"
-      on:click={async () => {
-        if (profileBook) {
-          await handleEditProfileBook(E_BookStatus.WANT_TO_READ.text)
-        } else {
-          await handleAddProfileBook(E_BookStatus.WANT_TO_READ.text)
-        }
-      }}
-    >
-      {E_BookStatus.WANT_TO_READ.text}
-    </button>
-    <p class="text-center dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READING.text}</span> on publication day</p>
-    <p class="text-center dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DID_NOT_FINISH.text}</span> 3 days after publication day</p>
-    <p class="text-center dark:text-white">You can start rating this book after marking it as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DID_NOT_FINISH.text}</span></p>
-  {/if}
-
-  {#if currentProfile && (dateDifference?.afterDate === true) && (dateDifference?.differenceDays <= 3)}
-    <div class="flex flex-col gap-2">
-      <h1 class="dark:text-white st-font-bold text-2xl text-center">{data.item.title}</h1>
-      <p class="dark:text-white text-center">
+    {:else}
+      <p class="w-full text-center dark:text-white">
         Published {formatDate(data.item.release_date)}
       </p>
-      {#if getTotalRatings(data.item) === 0}
-        <p class="text-center dark:text-white">No Ratings</p>
-      {:else}
-        <p class="text-center dark:text-white">{getRatingsAverage(data.item)} / 10 ({getTotalRatings(data.item)} ratings)</p>
-      {/if}
-    </div>
-    <button
-      class={`px-4 py-2 rounded st-font-bold ${status === E_BookStatus.WANT_TO_READ.text ? 'bg-green-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-neutral-900 dark:text-white'}`}
-      type="button"
-      on:click={async () => {
-        if (profileBook) {
-          await handleEditProfileBook(E_BookStatus.WANT_TO_READ.text)
-        } else {
-          await handleAddProfileBook(E_BookStatus.WANT_TO_READ.text)
-        }
-      }}
-    >
-      {E_BookStatus.WANT_TO_READ.text}
-    </button>
-    <button
-      class={`px-4 py-2 rounded st-font-bold ${status === E_BookStatus.READING.text ? 'bg-green-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-neutral-900 dark:text-white'}`}
-      type="button"
-      on:click={async () => {
-        if (profileBook) {
-          await handleEditProfileBook(E_BookStatus.READING.text)
-        } else {
-          await handleAddProfileBook(E_BookStatus.READING.text)
-        }
-      }}
-    >
-      {E_BookStatus.READING.text}
-    </button>
-    <p class="text-center dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DID_NOT_FINISH.text}</span> 3 days after publication day</p>
-    <p class="text-center dark:text-white">You can start rating this book after marking it as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DID_NOT_FINISH.text}</span></p>
-  {/if}
-
-  {#if currentProfile && dateDifference?.differenceDays > 3 && dateDifference?.afterDate}
-    <div class="flex flex-col gap-2">
-      <h1 class="dark:text-white st-font-bold text-2xl text-center">{data.item.title}</h1>
-      <p class="dark:text-white text-center">
-        Published {formatDate(data.item.release_date)}
-      </p>
-      {#if getTotalRatings(data.item) === 0}
-        <p class="text-center dark:text-white">No Ratings</p>
-      {:else}
-        <p class="text-center dark:text-white">{getRatingsAverage(data.item)} / 10 ({getTotalRatings(data.item)} ratings)</p>
-      {/if}
-    </div>
-    <div class="flex flex-col gap-4">
-      {#each Object.values(E_BookStatus) as bookStatus}
+    {/if}
+    {#if getItemTotalRatings(data.item) !== 0}
+      <p class="w-full text-center dark:text-white">{getItemRatingsAverage(data.item)} / 10</p>
+    {/if}
+    <p class="w-full text-center dark:text-white">{getItemTotalRatings(data.item) === 1 ? `${getItemTotalRatings(data.item)} rating`: `${getItemTotalRatings(data.item)} ratings`}</p>
+    <p class="w-full text-center dark:text-white">{data.item.review_count ===  1 ? `${data.item.review_count} review` : `${data.item.review_count} reviews`}</p>
+    <p class="w-full text-center dark:text-white">{data.item.status_to_read_count === 1 ? `${data.item.status_to_read_count} to read status` : `${data.item.status_to_read_count} to read statuses`}</p>
+    <p class="w-full text-center dark:text-white">{data.item.status_reading_count === 1 ? `${data.item.status_reading_count} reading status` : `${data.item.status_reading_count} reading statuses`}</p>
+    <p class="w-full text-center dark:text-white">{data.item.status_read_count === 1 ? `${data.item.status_read_count} read status` : `${data.item.status_read_count} read statuses`}</p>
+    <p class="w-full text-center dark:text-white">{data.item.status_dnf_count === 1 ? `${data.item.status_dnf_count} dnf status` : `${data.item.status_dnf_count} dnf statuses`}</p>
+    <p class="w-full text-center dark:text-white">{data.item.unique_read_count === 1 ? `${data.item.unique_read_count} unique read` : `${data.item.unique_read_count} unique reads`}</p>
+    <p class="w-full text-center dark:text-white">{data.item.read_count === 1 ? `${data.item.read_count} total read` : `${data.item.read_count} total reads`}</p>
+  </Card>
+  <Card>
+    <h1 class="w-full dark:text-white st-font-bold text-2xl text-center p-4">Status</h1>
+    {#if currentProfile && (dateDifference?.differenceDays < 0)}
+      <button
+        class={`w-full border-2 border-neutral-100 dark:border-black bg-neutral-100 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ ? 'bg-blue-500 border-blue-500 text-white pointer-events-none' : 'bg-white dark:bg-black dark:text-white'}`}
+        type="button"
+        on:click={async () => {
+          await handleToReadStatus(E_BookStatus.TO_READ);
+        }}
+      >
+        {E_BookStatus.TO_READ}
+      </button>
+      <div class="flex flex-col gap-2">
+        <p class="w-full text-center dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READING}</span> on publication day</p>
+        <p class="w-full text-center dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READ}</span> or <span class="st-font-italic">{E_BookStatus.DNF}</span> 3 days after publication day</p>
+      </div>
+    {/if}
+    {#if currentProfile && (dateDifference?.differenceDays >= 0) && (dateDifference?.differenceDays <= 3)}
+      <div class="flex gap-2 w-full">
         <button
-          class={`px-4 py-2 rounded st-font-bold ${status === bookStatus.text ? 'bg-green-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-neutral-900 dark:text-white'}`}
+          class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ ? 'bg-blue-500 border-blue-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-black dark:text-white border-neutral-100 dark:border-black'}`}
           type="button"
           on:click={async () => {
-            if (profileBook) {
-              await handleEditProfileBook(bookStatus.text)
-            } else {
-              await handleAddProfileBook(bookStatus.text)
-            }
+            await handleToReadStatus(E_BookStatus.TO_READ);
           }}
         >
-          {bookStatus.text}
+          {E_BookStatus.TO_READ}
         </button>
-      {/each}
-      {#if profileBook}
         <button
-          class="px-4 py-2 rounded st-font-bold bg-red-500 text-white"
+          class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? 'bg-blue-500 border-blue-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-black dark:text-white border-neutral-100 dark:border-black'}`}
           type="button"
-          on:click={async () => await handleRemoveProfileBook()}
+          on:click={async () => {
+            await handleReadingStatus(E_BookStatus.READING);
+          }}
         >
-          Remove
-        </button>
-      {/if}
-    </div>
-
-    {#if profileBook && profileBook.rating !== null}
-      <p class="text-center dark:text-white">Your rating is {profileBook.rating}/10</p>
-    {:else if profileBook && profileBook.rating === null && (profileBook.status === E_BookStatus.READ.text || profileBook.status === E_BookStatus.DID_NOT_FINISH.text)}
-      <div class="flex flex-col gap-4 p-4 bg-neutral-100 dark:bg-neutral-900 rounded-lg">
-        <div class="flex flex-col gap-2">
-          <p class="dark:text-white">Rating</p>
-          <div class="flex flex-col gap-4 items-center bg-neutral-200 dark:bg-neutral-800 p-4 rounded-lg">
-            <p class="flex justify-center items-center w-16 h-16 rounded-full dark:text-white"><span class={`st-font-bold text-2xl`}>{rating}</span>/10</p>
-            <Counter bind:value={rating} />
-          </div>
-        </div>
-        <div class="flex flex-col gap-2">
-          <label for="review" class="dark:text-white">Review</label>
-          <textarea
-            rows="5"
-            maxlength="4000"
-            class={`p-2 box-border w-full rounded-lg dark:bg-neutral-800 dark:text-white`}
-            placeholder="Write a review (maximum 4000 characters)"
-            value={review}
-          />
-        </div>
-        <button
-          class="rounded px-4 py-2 bg-blue-500 text-white st-font-bold disabled:opacity-50"
-          on:click={async () => await handleAddEditRatingReview()}
-        >
-          Submit
+          {E_BookStatus.READING}
         </button>
       </div>
-    {:else}
-      <p class="text-center dark:text-white">You can start rating this book after marking it as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DID_NOT_FINISH.text}</span></p>
+      <p class="w-full text-center dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READ}</span> or <span class="st-font-italic">{E_BookStatus.DNF}</span> 3 days after publication day</p>
     {/if}
+    {#if currentProfile && (dateDifference?.differenceDays > 3)}
+      <div class="flex flex-col gap-4 w-full">
+        <div class="grid sm:grid-cols-4 gap-2 w-full">
+          <button
+            class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ ? 'bg-blue-500 border-blue-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-black dark:text-white border-neutral-100 dark:border-black'}`}
+            type="button"
+            on:click={async () => {
+              await handleToReadStatus(E_BookStatus.TO_READ);
+            }}
+          >
+            {E_BookStatus.TO_READ}
+          </button>
+          <button
+            class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? 'bg-blue-500 border-blue-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-black dark:text-white border-neutral-100 dark:border-black'}`}
+            type="button"
+            on:click={async () => {
+              await handleReadingStatus(E_BookStatus.READING);
+            }}
+          >
+            {E_BookStatus.READING}
+          </button>
+          <button
+            class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ ? 'bg-blue-500 border-blue-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-black dark:text-white border-neutral-100 dark:border-black'}`}
+            type="button"
+            on:click={async () => {
+              await handleReadStatus(E_BookStatus.READ);
+            }}
+          >
+            {E_BookStatus.READ}
+          </button>
+          <button
+            class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF ? 'bg-blue-500 border-blue-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-black dark:text-white border-neutral-100 dark:border-black'}`}
+            type="button"
+            on:click={async () => {
+              await handleDNFStatus(E_BookStatus.DNF);
+            }}
+          >
+            {E_BookStatus.DNF}
+          </button>
+        </div>
+        {#if (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING) || (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ) || (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF)}
+          <DatePicker
+            label="Start Date"
+            bind:year={startYear}
+            bind:month={startMonth}
+            bind:day={startDay}
+            bind:showError={showInvalidDateRangeError}
+            errorMessage="Start Date cannot be after End Date"
+          />
+        {/if}
+        {#if (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ) || (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF)}
+          <DatePicker
+            label="End Date"
+            bind:year={endYear}
+            bind:month={endMonth}
+            bind:day={endDay}
+            bind:showError={showInvalidDateRangeError}
+            errorMessage="End Date cannot be before Start Date"
+          />
+        {/if}
+        {#if profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.TO_READ}
+          <button
+            class={`border-2 border-blue-500 px-4 py-2 rounded st-font-bold bg-blue-500 text-white disabled:opacity-50`}
+            type="button"
+            disabled={
+              (profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING && (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date))) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(startYear, startMonth.monthNumber, startDay))) ||
+              (profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.READING && (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date))) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(startYear, startMonth.monthNumber, startDay)) &&
+              (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].end_date)) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(endYear, endMonth.monthNumber, endDay)))) ||
+              showInvalidDateRangeError
+            }
+            on:click={async () => {
+              await handleUpdateProfileBook();
+            }}
+          >
+            Update Status
+          </button>
+        {/if}
+      </div>
+    {/if}
+  </Card>
+  <Card>
+    {#if profileBook && ((profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ) || (profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF))}
+      <h1 class="w-full dark:text-white st-font-bold text-2xl text-center p-4">Rating/Review</h1>
+      <div class="w-full flex flex-col gap-2">
+        <p class="dark:text-white">Rating</p>
+        <div class="flex flex-col gap-4 items-center p-4 bg-neutral-100 dark:bg-black rounded-lg">
+          <div class="w-full flex flex-col gap-2">
+            <p class="dark:text-white text-center text-2xl st-font-bold ">{rating}</p>
+            <p class="dark:text-white text-center st-font-italic">{E_Rating[rating].label}</p>
+          </div>
+          <Slider bind:value={rating} />
+        </div>
+      </div>
+      <div class="w-full flex flex-col gap-2">
+        <label for="review" class="dark:text-white">Review</label>
+        <textarea
+          rows="10"
+          maxlength="4000"
+          class={`resize-none p-2 box-border w-full rounded-lg border-2 border-neutral-100 dark:border-black dark:bg-black dark:text-white`}
+          placeholder="Write a review (maximum 4000 characters)"
+          bind:value={review}
+        />
+      </div>
+      <button
+        class="w-full rounded px-4 py-2 border-2 border-blue-500 bg-blue-500 text-white st-font-bold disabled:opacity-50"
+        on:click={async () => await handleRatingInstance()}
+        disabled={
+          profileBook[`${getCurrentEnvironment()}_rating_instance`] &&
+          profileBook[`${getCurrentEnvironment()}_rating_instance`].rating === rating &&
+          profileBook[`${getCurrentEnvironment()}_rating_instance`].review === review
+        }
+      >
+        {profileBook[`${getCurrentEnvironment()}_rating_instance`] ? 'Update Review/Rating' : 'Add Review/Rating'}
+      </button>
+    {:else}
+      <p class="w-full text-center dark:text-white">You can start rating this book after marking it as <span class="st-font-italic">{E_BookStatus.READ}</span> or <span class="st-font-italic">{E_BookStatus.DNF}</span></p>
+    {/if}
+  </Card>
+  {#if profileBook}
+    <Card>
+      <h1 class="w-full dark:text-white st-font-bold text-2xl text-center p-4">Danger Zone</h1>
+      <button
+        class="w-full px-4 py-2 rounded st-font-bold bg-red-500 text-white border-2 border-red-500"
+        type="button"
+        on:click={async () => await handleDeleteProfileBook()}
+      >
+        Delete Book
+      </button>
+    </Card>
   {/if}
   {#if !currentProfile}
-    <p class="dark:text-white text-center"><a href='/sign-in' class="text-blue-500">Sign in</a> to start managing your books</p>
+    <Card>
+      <p class="w-full text-center dark:text-white"><a href='/sign-in' class="text-blue-500">Sign in</a> to start managing your books</p>
+    </Card>
   {/if}
 </div>

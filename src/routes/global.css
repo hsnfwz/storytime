@@ -63,40 +63,70 @@ body {
   border-radius: 0.5rem;
 }
 
-.slider-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 9999px;
-  width: 100%;
-}
-
-.slider {
-  -webkit-appearance: none;  /* Override default CSS styles */
+.slider-light {
+  -webkit-appearance: none;
   appearance: none;
-  outline: none;
-  /* padding-top: 1rem;
-  padding-bottom: 1rem; */
+
+  padding-top: 1rem;
+  padding-bottom: 1rem;
   width: 100%;
   height: 1rem;
-  background-image: linear-gradient(to right, #ef4444 , #eab308, #22c55e);
   border-radius: 9999px;
+
+  background-color: white;
+
+  cursor: pointer;
 }
 
-/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none; /* Override default look */
+.slider-light::-webkit-slider-thumb {
+  -webkit-appearance: none;
   appearance: none;
 
   width: 2rem;
   height: 2rem;
-  background: white;
+  background: #d4d4d4;
   border-radius: 9999px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 
-.slider::-moz-range-thumb {
+.slider-light::-moz-range-thumb {
   width: 2rem;
   height: 2rem;
-  background: white;
+  background: #d4d4d4;
   border-radius: 9999px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.dark .dark\:slider-dark {
+  -webkit-appearance: none;
+  appearance: none;
+
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  width: 100%;
+  height: 1rem;
+  border-radius: 9999px;
+
+  background-color: #262626;
+
+  cursor: pointer;
+}
+
+.dark .dark\:slider-dark::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+
+  width: 2rem;
+  height: 2rem;
+  background: #525252;
+  border-radius: 9999px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.dark .dark\:slider-dark::-moz-range-thumb {
+  width: 2rem;
+  height: 2rem;
+  background: #525252;
+  border-radius: 9999px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }

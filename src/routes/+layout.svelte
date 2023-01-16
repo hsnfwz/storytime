@@ -17,6 +17,7 @@
 
   // components
   import Nav from '$components/Nav.svelte';
+  import Footer from '$components/Footer.svelte';
 
   // state
   let isLoading = true;
@@ -35,7 +36,7 @@
     }
 
     const bodyElement = document.querySelector('body');
-    bodyElement?.classList.add('bg-white');
+    bodyElement?.classList.add('bg-neutral-100');
     bodyElement?.classList.add('dark:bg-black');
 
     subscriptionAuthStateChange = supabase.auth.onAuthStateChange((event, currentSession) => {
@@ -70,13 +71,10 @@
 </script>
 
 <!-- VERSION 2 FEATURES/FIXES -->
-<!-- todo: update/delete rating/review -->
-<!-- todo: sync between status and rating (close loophole where users need tp have read or dnf before rating and cannot switch back to other options unless they are willing to remove their rating/review) -->
-<!-- todo: maybe introduce 'interested' and 'want to reread' options -->
-<!-- todo: keep track of reread count -->
 
+<!-- todo: loading screens everywhere ! -->
 <!-- todo: queue, rankings, lists -->
-<!-- todo: maybe put nav bar on bottom (for mobile only) and make it sticky (for mobile and desktop when scrolling back up) -->
+<!-- todo: nav bar on bottom (for mobile only) and make it sticky (for mobile and desktop) -->
 <!-- todo: filter, sort, search -->
 
 <!-- VERSION 3 FEATURES/FIXES -->
@@ -91,14 +89,16 @@
 <!-- BEFORE RELEASE -->
 <!-- todo: log all data that is being fetched in each url and test by switching pages to see how many requests we make each time, then we will figure out how to reduce requests from there (i.e. caching, look up pros and cons and what to consider) -->
 <!-- todo: update supabase RLS -->
+<!-- todo: look into cleanup (to avoid memory leaks) for svelte subcription functions -->
 
 
 {#if !isLoading}
-  <main class="flex flex-col gap-4">
+  <main class="flex flex-col gap-8">
     <Nav />
-    <div class="ml-2 mr-2 mt-4 mb-4">
+    <div class="mx-2">
       <slot />
     </div>
+    <Footer />
   </main>
 {:else}
   <p class="dark:text-white text-center">Loading...</p>

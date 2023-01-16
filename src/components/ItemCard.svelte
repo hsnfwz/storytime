@@ -15,7 +15,7 @@
 <img
   src={getPublicUrl('book-covers', `${formatFileName(item.title, item.id)}/${formatFileName(item.title, item.id, true)}`)}
   alt={item.title}
-  width="320px"
+  width="250"
   height=""
   class="rounded-lg"
 />

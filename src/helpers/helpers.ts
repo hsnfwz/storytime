@@ -1,3 +1,5 @@
+import { dev } from '$app/environment';
+
 const formatText = (text: string) => {
   let _text: string = '';
   
@@ -81,40 +83,69 @@ const sortBy = (data: any, column: string, ascending: boolean = false) => {
   return sortedData;
 }
 
-const getTotalRatings = (item: any) => {
+const getItemTotalRatings = (item: any) => {
   const total: number = item.rating_0_count + item.rating_1_count + item.rating_2_count + item.rating_3_count + item.rating_4_count + item.rating_5_count + item.rating_6_count + item.rating_7_count + item.rating_8_count + item.rating_9_count + item.rating_10_count;
 
   return total;
 }
 
-const getRatingsAverage = (item: any) => {
-  let average: number = +((0*(item.rating_0_count) + 1*(item.rating_1_count) + 2*(item.rating_2_count) + 3*(item.rating_3_count) + 4*(item.rating_4_count) + 5*(item.rating_5_count) + 6*(item.rating_6_count) + 7*(item.rating_7_count) + 8*(item.rating_8_count) + 9*(item.rating_9_count) + 10*(item.rating_10_count)) / getTotalRatings(item)).toFixed(1);
+const getItemRatingsAverage = (item: any) => {
+  let average: number = +((0*(item.rating_0_count) + 1*(item.rating_1_count) + 2*(item.rating_2_count) + 3*(item.rating_3_count) + 4*(item.rating_4_count) + 5*(item.rating_5_count) + 6*(item.rating_6_count) + 7*(item.rating_7_count) + 8*(item.rating_8_count) + 9*(item.rating_9_count) + 10*(item.rating_10_count)) / getItemTotalRatings(item)).toFixed(1);
   
   if (isNaN(average)) average = 0;
 
   return average;
 }
 
-const getDateDifference = (date: any) => {
-  const today = new Date().setHours(0,0,0,0);
+const getProfileTotalRatings = (profile: any) => {
+  const total: number = profile.book_rating_0_count + profile.book_rating_1_count + profile.book_rating_2_count + profile.book_rating_3_count + profile.book_rating_4_count + profile.book_rating_5_count + profile.book_rating_6_count + profile.book_rating_7_count + profile.book_rating_8_count + profile.book_rating_9_count + profile.book_rating_10_count;
 
-  const utcToday = Date.parse(formatDate(today));
-  const utcDate = Date.parse(formatDate(date));
+  return total;
+}
 
-  const differenceTime = Math.abs(utcToday - utcDate);
+const getProfileRatingsAverage = (profile: any) => {
+  let average: number = +((0*(profile.book_rating_0_count) + 1*(profile.book_rating_1_count) + 2*(profile.book_rating_2_count) + 3*(profile.book_rating_3_count) + 4*(profile.book_rating_4_count) + 5*(profile.book_rating_5_count) + 6*(profile.book_rating_6_count) + 7*(profile.book_rating_7_count) + 8*(profile.book_rating_8_count) + 9*(profile.book_rating_9_count) + 10*(profile.book_rating_10_count)) / getProfileTotalRatings(profile)).toFixed(1);
+  
+  if (isNaN(average)) average = 0;
+
+  return average;
+}
+
+const getDateDifference = (date1: any, date2: any = new Date().setHours(0)) => {
+  const utcDate1 = Date.parse(formatDate(date1));
+  const utcDate2 = Date.parse(formatDate(date2));
+
+  const differenceTime = utcDate2 - utcDate1;
   const differenceDays = Math.ceil(differenceTime / (1000 * 60 * 60 * 24));
+  // const differenceTime = Math.abs(utcDate1 - utcDate2);
+  const differenceDaysAbs = Math.abs(differenceDays);
 
-  if (utcToday < utcDate) {
-    return {
-      differenceDays,
-      afterDate: false,
-    };
+  // interpretation for release date
+  // if differenceDays > 0, the book is released/passed its release date
+  // if differenceDays = 0, the book is released
+  // if differenceDays < 0, the book is not released
+
+  // interpretation for date range
+  // if differenceDays > 0, valid date range
+  // if differenceDays = 0, valid date range
+  // if differenceDays < 0, invalid date range
+
+  return {
+    differenceDays,
+    differenceDaysAbs,
+  };
+}
+
+const getCurrentEnvironment = () => {
+  let currentEnvironment: string = '';
+
+  if (dev) {
+    currentEnvironment = 'dev';
   } else {
-    return {
-      differenceDays,
-      afterDate: true,
-    };
+    currentEnvironment = 'prod';
   }
+
+  return currentEnvironment;
 }
 
 export {
@@ -124,7 +155,10 @@ export {
   groupBy,
   sortBy,
   formatDate,
-  getTotalRatings,
-  getRatingsAverage,
+  getItemTotalRatings,
+  getItemRatingsAverage,
+  getProfileTotalRatings,
+  getProfileRatingsAverage,
   getDateDifference,
+  getCurrentEnvironment,
 };
