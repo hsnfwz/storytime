@@ -26,7 +26,7 @@
   });
 </script>
 
-<nav class="flex justify-center items-center gap-2 p-2 bg-white dark:bg-slate-800 border-b-2 border-neutral-200 dark:border-slate-700">
+<nav class="w-full flex justify-center items-center gap-2 p-2 bg-neutral-100/75 dark:bg-slate-900/75 border-t-2 sm:border-b-2 sm:border-t-0 border-neutral-200 dark:border-slate-700 z-50 fixed bottom-0 sm:sticky sm:top-0 backdrop-blur">
   <a href="/">
     {#if $page.url.pathname === '/'}
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-10 h-10 p-2 fill-sky-500">

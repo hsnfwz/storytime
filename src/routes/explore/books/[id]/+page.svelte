@@ -17,6 +17,7 @@
   import DatePicker from '$components/DatePicker.svelte';
   import Slider from '$components/Slider.svelte';
   import Card from '$components/Card.svelte';
+  import Button from '$components/Button.svelte';
 
   // helpers
   import { formatDate, getItemRatingsAverage, getItemTotalRatings, getProfileTotalRatings, getDateDifference, getCurrentEnvironment } from '$helpers/helpers';
@@ -931,8 +932,8 @@
   }
 </script>
 
-<div class="flex flex-col items-center sm:flex-row sm:justify-center sm:items-start gap-4">
-  <div class="w-full flex flex-col items-center gap-4 sm:max-w-[300px]">
+<div class="flex flex-col items-center md:flex-row md:justify-center md:items-start gap-4">
+  <div class="w-full flex flex-col items-center gap-4 md:max-w-[300px]">
     <ItemCard item={data.item} />
     <Card>
       <h1 class="w-full dark:text-white st-font-bold text-xl text-center">{data.item.title}</h1>
@@ -958,19 +959,15 @@
       <p class="w-full text-center dark:text-white">{data.item.read_count === 1 ? `${data.item.read_count} total read` : `${data.item.read_count} total reads`}</p>
     </Card>
   </div>
-  <div class="w-full flex flex-col gap-4 sm:max-w-[500px]">
+  <div class="w-full flex flex-col gap-4 md:max-w-[500px]">
     <Card>
       <h1 class="w-full dark:text-white st-font-bold text-xl text-center">Status</h1>
       {#if currentProfile && (dateDifference?.differenceDays < 0)}
-        <button
-          class={`w-full border-2 border-neutral-100 dark:border-slate-600 bg-neutral-100 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-white dark:bg-slate-600 dark:text-white'}`}
-          type="button"
-          on:click={async () => {
-            await handleToReadStatus(E_BookStatus.TO_READ);
-          }}
-        >
-          {E_BookStatus.TO_READ}
-        </button>
+        <Button
+          label={E_BookStatus.TO_READ}
+          handleClick={async () => await handleToReadStatus(E_BookStatus.TO_READ)}
+          isSelected={profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ}
+        />
         <div class="flex flex-col gap-2">
           <p class="w-full text-center dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READING}</span> on publication day</p>
           <p class="w-full text-center dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READ}</span> or <span class="st-font-italic">{E_BookStatus.DNF}</span> 3 days after publication day</p>
@@ -978,66 +975,42 @@
       {/if}
       {#if currentProfile && (dateDifference?.differenceDays >= 0) && (dateDifference?.differenceDays <= 3)}
         <div class="flex gap-2 w-full">
-          <button
-            class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-slate-600 dark:text-white border-neutral-100 dark:border-slate-600'}`}
-            type="button"
-            on:click={async () => {
-              await handleToReadStatus(E_BookStatus.TO_READ);
-            }}
-          >
-            {E_BookStatus.TO_READ}
-          </button>
-          <button
-            class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-slate-600 dark:text-white border-neutral-100 dark:border-slate-600'}`}
-            type="button"
-            on:click={async () => {
-              await handleReadingStatus(E_BookStatus.READING);
-            }}
-          >
-            {E_BookStatus.READING}
-          </button>
+          <Button
+            label={E_BookStatus.TO_READ}
+            handleClick={async () => await handleToReadStatus(E_BookStatus.TO_READ)}
+            isSelected={profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ}
+          />
+          <Button
+            label={E_BookStatus.READING}
+            handleClick={async () => await handleReadingStatus(E_BookStatus.READING)}
+            isSelected={profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING}
+          />
         </div>
         <p class="w-full text-center dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READ}</span> or <span class="st-font-italic">{E_BookStatus.DNF}</span> 3 days after publication day</p>
       {/if}
       {#if currentProfile && (dateDifference?.differenceDays > 3)}
         <div class="flex flex-col gap-4 w-full">
-          <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-2 w-full">
-            <button
-              class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-slate-600 dark:text-white border-neutral-100 dark:border-slate-600'}`}
-              type="button"
-              on:click={async () => {
-                await handleToReadStatus(E_BookStatus.TO_READ);
-              }}
-            >
-              {E_BookStatus.TO_READ}
-            </button>
-            <button
-              class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-slate-600 dark:text-white border-neutral-100 dark:border-slate-600'}`}
-              type="button"
-              on:click={async () => {
-                await handleReadingStatus(E_BookStatus.READING);
-              }}
-            >
-              {E_BookStatus.READING}
-            </button>
-            <button
-              class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-slate-600 dark:text-white border-neutral-100 dark:border-slate-600'}`}
-              type="button"
-              on:click={async () => {
-                await handleReadStatus(E_BookStatus.READ);
-              }}
-            >
-              {E_BookStatus.READ}
-            </button>
-            <button
-              class={`w-full border-2 px-4 py-2 rounded st-font-bold ${profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF ? 'bg-sky-500 border-sky-500 text-white pointer-events-none' : 'bg-neutral-100 dark:bg-slate-600 dark:text-white border-neutral-100 dark:border-slate-600'}`}
-              type="button"
-              on:click={async () => {
-                await handleDNFStatus(E_BookStatus.DNF);
-              }}
-            >
-              {E_BookStatus.DNF}
-            </button>
+          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-2 w-full">
+            <Button
+              label={E_BookStatus.TO_READ}
+              handleClick={async () => await handleToReadStatus(E_BookStatus.TO_READ)}
+              isSelected={profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ}
+            />
+            <Button
+              label={E_BookStatus.READING}
+              handleClick={async () => await handleReadingStatus(E_BookStatus.READING)}
+              isSelected={profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING}
+            />
+            <Button
+              label={E_BookStatus.READ}
+              handleClick={async () => await handleReadStatus(E_BookStatus.READ)}
+              isSelected={profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ}
+            />
+            <Button
+              label={E_BookStatus.DNF}
+              handleClick={async () => await handleDNFStatus(E_BookStatus.DNF)}
+              isSelected={profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF}
+            />
           </div>
           {#if (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING) || (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ) || (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF)}
             <DatePicker
@@ -1060,21 +1033,16 @@
             />
           {/if}
           {#if profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.TO_READ}
-            <button
-              class={`border-2 border-sky-500 px-4 py-2 rounded st-font-bold bg-sky-500 text-white disabled:opacity-50`}
-              type="button"
-              disabled={
+            <Button
+              label="Update Status"
+              handleClick={async () => await handleUpdateProfileBook()}
+              isDisabled={
                 (profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING && (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date))) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(startYear, startMonth.monthNumber, startDay))) ||
                 (profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.READING && (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date))) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(startYear, startMonth.monthNumber, startDay)) &&
                 (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].end_date)) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(endYear, endMonth.monthNumber, endDay)))) ||
                 showInvalidDateRangeError
               }
-              on:click={async () => {
-                await handleUpdateProfileBook();
-              }}
-            >
-              Update Status
-            </button>
+            />
           {/if}
         </div>
       {/if}
@@ -1102,17 +1070,15 @@
             bind:value={review}
           />
         </div>
-        <button
-          class="w-full rounded px-4 py-2 border-2 border-sky-500 bg-sky-500 text-white st-font-bold disabled:opacity-50"
-          on:click={async () => await handleRatingInstance()}
-          disabled={
+        <Button
+          label={profileBook[`${getCurrentEnvironment()}_rating_instance`] ? 'Update Rating/Review' : 'Add Rating/Review'}
+          handleClick={async () => await handleRatingInstance()}
+          isDisabled={
             profileBook[`${getCurrentEnvironment()}_rating_instance`] &&
             profileBook[`${getCurrentEnvironment()}_rating_instance`].rating === rating &&
             profileBook[`${getCurrentEnvironment()}_rating_instance`].review === review
           }
-        >
-          {profileBook[`${getCurrentEnvironment()}_rating_instance`] ? 'Update Rating/Review' : 'Add Rating/Review'}
-        </button>
+        />
       {:else}
         <p class="w-full text-center dark:text-white">You can start rating this book after marking it as <span class="st-font-italic">{E_BookStatus.READ}</span> or <span class="st-font-italic">{E_BookStatus.DNF}</span></p>
       {/if}
@@ -1120,13 +1086,10 @@
     {#if profileBook}
       <Card>
         <h1 class="w-full dark:text-white st-font-bold text-xl text-center">Danger Zone</h1>
-        <button
-          class="w-full px-4 py-2 rounded st-font-bold bg-rose-500 text-white border-2 border-rose-500"
-          type="button"
-          on:click={async () => await handleDeleteProfileBook()}
-        >
-          Remove Book
-        </button>
+        <Button
+          label="Remove Book"
+          handleClick={async () => await handleDeleteProfileBook()}
+        />
       </Card>
     {/if}
     {#if !currentProfile}

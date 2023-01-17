@@ -1,4 +1,7 @@
 <script lang="ts">
+  // components
+  import Button from '$components/Button.svelte';
+
   // props
   export let value: number;
 </script>
@@ -12,82 +15,61 @@
     value={value}
     on:input={(e) => value = +e.target.value}
   />
-  <div class="w-full grid grid-cols-11">
-    <button
-      type="button"
-      class={`w-full text-center dark:text-white rounded-full py-2 ${value === 0 ? 'rounded-full bg-neutral-100 dark:bg-slate-600' : ''}`}
-      on:click={() => value = 0}
-    >
-      0
-    </button>
-    <button
-      type="button"
-      class={`w-full text-center dark:text-white rounded-full py-2 ${value === 1 ? 'rounded-full bg-neutral-100 dark:bg-slate-600' : ''}`}
-      on:click={() => value = 1}
-    >
-      1
-    </button>
-    <button
-      type="button"
-      class={`w-full text-center dark:text-white rounded-full py-2 ${value === 2 ? 'rounded-full bg-neutral-100 dark:bg-slate-600' : ''}`}
-      on:click={() => value = 2}
-    >
-      2
-    </button>
-    <button
-      type="button"
-      class={`w-full text-center dark:text-white rounded-full py-2 ${value === 3 ? 'rounded-full bg-neutral-100 dark:bg-slate-600' : ''}`}
-      on:click={() => value = 3}
-    >
-      3
-    </button>
-    <button
-      type="button"
-      class={`w-full text-center dark:text-white rounded-full py-2 ${value === 4 ? 'rounded-full bg-neutral-100 dark:bg-slate-600' : ''}`}
-      on:click={() => value = 4}
-    >
-      4
-    </button>
-    <button
-      type="button"
-      class={`w-full text-center dark:text-white rounded-full py-2 ${value === 5 ? 'rounded-full bg-neutral-100 dark:bg-slate-600' : ''}`}
-      on:click={() => value = 5}
-    >
-      5
-    </button>
-    <button
-      type="button"
-      class={`w-full text-center dark:text-white rounded-full py-2 ${value === 6 ? 'rounded-full bg-neutral-100 dark:bg-slate-600' : ''}`}
-      on:click={() => value = 6}
-    >
-      6
-    </button>
-    <button
-      type="button"
-      class={`w-full text-center dark:text-white rounded-full py-2 ${value === 7 ? 'rounded-full bg-neutral-100 dark:bg-slate-600' : ''}`}
-      on:click={() => value = 7}
-    >
-      7
-    </button>
-    <button
-      type="button"
-      class={`w-full text-center dark:text-white rounded-full py-2 ${value === 8 ? 'rounded-full bg-neutral-100 dark:bg-slate-600' : ''}`}
-      on:click={() => value = 8}
-    >
-      8
-    </button>
-    <button
-      type="button"
-      class={`w-full text-center dark:text-white rounded-full py-2 ${value === 9 ? 'rounded-full bg-neutral-100 dark:bg-slate-600' : ''}`}
-      on:click={() => value = 9}
-    >
-      9
-    </button>
-    <button
-      type="button"
-      class={`w-full text-center dark:text-white rounded-full py-2 ${value === 10 ? 'rounded-full bg-neutral-100 dark:bg-slate-600' : ''}`}
-      on:click={() => value = 10}
-    >
-    10</button>
+  <div class="w-full grid grid-cols-11 gap-2">
+    <Button
+      label="0"
+      handleClick={() => value = 0}
+      isSelected={value === 0}
+    />
+    <Button
+      label="1"
+      handleClick={() => value = 1}
+      isSelected={value === 1}
+    />
+    <Button
+      label="2"
+      handleClick={() => value = 2}
+      isSelected={value === 2}
+    />
+    <Button
+      label="3"
+      handleClick={() => value = 3}
+      isSelected={value === 3}
+    />
+    <Button
+      label="4"
+      handleClick={() => value = 4}
+      isSelected={value === 4}
+    />
+    <Button
+      label="5"
+      handleClick={() => value = 5}
+      isSelected={value === 5}
+    />
+    <Button
+      label="6"
+      handleClick={() => value = 6}
+      isSelected={value === 6}
+    />
+    <Button
+      label="7"
+      handleClick={() => value = 7}
+      isSelected={value === 7}
+    />
+    <Button
+      label="8"
+      handleClick={() => value = 8}
+      isSelected={value === 8}
+    />
+    <Button
+      label="9"
+      handleClick={() => value = 9}
+      isSelected={value === 9}
+    />
+    <Button
+      label="10"
+      handleClick={() => value = 10}
+      isSelected={value === 10}
+    />
   </div>
 </div>
