@@ -21,7 +21,7 @@
   const limit: number = 47;
 </script>
 
-<div class="flex flex-col items-center gap-8">
+<div class="flex flex-col items-center gap-4">
   {#if isLoading}
     <p class="dark:text-white text-center">Loading...</p>
   {:else}

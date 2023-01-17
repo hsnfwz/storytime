@@ -14,7 +14,7 @@
   let isLoading: boolean = false;
 </script>
 
-<div class="flex flex-col items-center gap-8">
+<div class="flex flex-col items-center gap-4">
   {#if isLoading}
     <p class="dark:text-white text-center">Loading...</p>
   {:else}
@@ -29,7 +29,7 @@
 </div>
 
 <!-- todo: use in profile page -->
-<!-- <div class="flex flex-col items-center gap-8">
+<!-- <div class="flex flex-col items-center gap-4">
   <ItemGrid items={data.books} />
   <div class="flex gap-4">
     <button
