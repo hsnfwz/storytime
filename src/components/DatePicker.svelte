@@ -80,7 +80,7 @@
       }}
     >
       <button
-        class={`${showError ? 'border-red-500' : 'border-neutral-100 dark:border-slate-600'} w-full p-2 flex gap-2 justify-center items-center ${showYearsList ? 'rounded-t border-x-2 border-t-2' : 'rounded border-2'} dark:text-white bg-neutral-100 dark:bg-slate-600`}
+        class={`${showError ? 'border-red-500' : 'border-neutral-100 dark:border-slate-600'} w-full p-2 flex gap-2 justify-center items-center ${showYearsList ? 'rounded-t border-x border-t' : 'rounded border'} dark:text-white bg-neutral-100 dark:bg-slate-600`}
         type="button"
         on:click={() => showYearsList = !showYearsList}
       >
@@ -98,7 +98,7 @@
       {#if showYearsList}
         <div
           id="list"
-          class={`flex flex-col max-h-40 overflow-y-auto absolute top-full left-0 bg-neutral-100 z-50 w-full ${showYearsList ? 'rounded-b border-x-2 border-b-2 border-neutral-100 dark:border-slate-600' : ''}`}
+          class={`flex flex-col max-h-40 overflow-y-auto absolute top-full left-0 bg-neutral-100 z-50 w-full ${showYearsList ? 'rounded-b border-x border-b border-neutral-100 dark:border-slate-600' : ''}`}
         >
           {#each yearsList as yearItem}
             <button
@@ -123,7 +123,7 @@
       }}
     >
       <button
-        class={`${showError ? 'border-red-500' : 'border-neutral-100 dark:border-slate-600'} w-full p-2 flex gap-2 justify-center items-center ${showMonthsList ? 'rounded-t border-x-2 border-t-2' : 'rounded border-2'} dark:text-white bg-neutral-100 dark:bg-slate-600`}
+        class={`${showError ? 'border-red-500' : 'border-neutral-100 dark:border-slate-600'} w-full p-2 flex gap-2 justify-center items-center ${showMonthsList ? 'rounded-t border-x border-t' : 'rounded border'} dark:text-white bg-neutral-100 dark:bg-slate-600`}
         type="button"
         on:click={() => showMonthsList = !showMonthsList}
       >
@@ -141,7 +141,7 @@
       {#if showMonthsList}
         <div
           id="list"
-          class={`flex flex-col max-h-40 overflow-y-auto absolute top-full left-0 bg-neutral-100 z-50 w-full ${showMonthsList ? 'rounded-b border-x-2 border-b-2 border-neutral-100 dark:border-slate-600' : ''}`}
+          class={`flex flex-col max-h-40 overflow-y-auto absolute top-full left-0 bg-neutral-100 z-50 w-full ${showMonthsList ? 'rounded-b border-x border-b border-neutral-100 dark:border-slate-600' : ''}`}
         >
           {#each monthsList as monthItem}
             <button
@@ -166,7 +166,7 @@
       }}
     >
       <button
-        class={`${showError ? 'border-red-500' : 'border-neutral-100 dark:border-slate-600'} w-full p-2 flex gap-2 justify-center items-center ${showDaysList ? 'rounded-t border-x-2 border-t-2' : 'rounded border-2'} dark:text-white bg-neutral-100 dark:bg-slate-600`}
+        class={`${showError ? 'border-red-500' : 'border-neutral-100 dark:border-slate-600'} w-full p-2 flex gap-2 justify-center items-center ${showDaysList ? 'rounded-t border-x border-t' : 'rounded border'} dark:text-white bg-neutral-100 dark:bg-slate-600`}
         type="button"
         on:click={() => showDaysList = !showDaysList}
       >
@@ -184,7 +184,7 @@
       {#if showDaysList}
         <div
           id="list"
-          class={`flex flex-col max-h-40 overflow-y-auto absolute top-full left-0 bg-neutral-100 z-50 w-full ${showDaysList ? 'rounded-b border-x-2 border-b-2 border-neutral-100 dark:border-slate-600' : ''}`}
+          class={`flex flex-col max-h-40 overflow-y-auto absolute top-full left-0 bg-neutral-100 z-50 w-full ${showDaysList ? 'rounded-b border-x border-b border-neutral-100 dark:border-slate-600' : ''}`}
         >
           {#each daysList as dayItem}
             <button

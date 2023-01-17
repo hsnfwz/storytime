@@ -58,7 +58,7 @@
               // maintain aspect ratio in div
               div.classList.add('h-[400px]');
               div.classList.add('bg-slate-700');
-              div.classList.add('rounded-lg');
+              div.classList.add('rounded');
               link.appendChild(div);
             }
 

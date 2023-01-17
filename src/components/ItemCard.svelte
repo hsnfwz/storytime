@@ -22,7 +22,7 @@
       img.src = getPublicUrl('book-covers', `${formatFileName(item.title, item.id)}/${formatFileName(item.title, item.id, true)}`);
       img.alt = item.title;
       img.width = 300;
-      img.classList.add('rounded-lg');
+      img.classList.add('rounded');
 
       img.onload = () => {
         imgContainer.appendChild(img);
@@ -33,7 +33,7 @@
         div.classList.add('w-[300px]');
         div.classList.add('h-[400px]');
         div.classList.add('bg-slate-700');
-        div.classList.add('rounded-lg');
+        div.classList.add('rounded');
         imgContainer.appendChild(div);
       }
     }

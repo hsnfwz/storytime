@@ -31,7 +31,7 @@
   <h1 class="dark:text-white text-center text-2xl st-font-bold">Upload</h1>
   {#if currentProfile && currentProfile.is_contributor}
     <form
-      class="flex flex-col gap-4 w-60 bg-neutral-100 dark:bg-neutral-900 p-4 rounded-lg"
+      class="flex flex-col gap-4 w-60 bg-neutral-100 dark:bg-neutral-900 p-4 rounded"
       method="post"
       enctype="multipart/form-data"
       use:enhance
@@ -41,7 +41,7 @@
       <div class="flex flex-col gap-2">
         <label for="title" class={`${form?.message && form?.isTitleFail ? 'text-red-500' : 'dark:text-white'}`}>* Title</label>
         <input
-          class={`${form?.isTitleFail ? 'border-red-500' : 'border-white'} p-2 box-border border-2 w-full rounded`}
+          class={`${form?.isTitleFail ? 'border-red-500' : 'border-white'} p-2 box-border border w-full rounded`}
           id="title"
           name="title"
           type="text"
@@ -55,7 +55,7 @@
       <div class="flex flex-col gap-2">
         <label for="releaseDate" class={`${form?.message && form?.isReleaseDateFail ? 'text-red-500' : 'dark:text-white'}`}>* Release Date</label>
         <input
-          class={`${form?.isReleaseDateFail ? 'border-red-500' : 'border-white'} p-2 box-border border-2 w-full rounded`}
+          class={`${form?.isReleaseDateFail ? 'border-red-500' : 'border-white'} p-2 box-border border w-full rounded`}
           id="releaseDate"
           name="releaseDate"
           type="text"

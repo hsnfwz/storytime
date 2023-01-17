@@ -78,7 +78,7 @@
 
   <div class="flex gap-2">
     <input
-      class="p-2 border-2 border-neutral-100 rounded"
+      class="p-2 border border-neutral-100 rounded"
       type="number"
       min={1}
       max={data.books.length}

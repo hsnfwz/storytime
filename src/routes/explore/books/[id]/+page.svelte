@@ -1065,7 +1065,7 @@
           <textarea
             rows="10"
             maxlength="4000"
-            class={`resize-none p-2 box-border w-full rounded-lg border-2 border-neutral-100 bg-neutral-100 dark:border-slate-600 dark:bg-slate-600 dark:text-white`}
+            class={`resize-none p-2 box-border w-full rounded border border-neutral-100 bg-neutral-100 dark:border-slate-600 dark:bg-slate-600 dark:text-white`}
             placeholder="Write a review (maximum 4000 characters)"
             bind:value={review}
           />

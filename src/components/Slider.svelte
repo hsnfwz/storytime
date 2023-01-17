@@ -6,15 +6,15 @@
   export let value: number;
 </script>
 
-<div class="flex flex-col gap-2 justify-center items-center rounded-full w-full">
-  <input
+<!-- <div class="flex flex-col gap-2 justify-center items-center rounded-full w-full"> -->
+  <!-- <input
     class="slider-light dark:slider-dark"
     type="range"
     min="0"
     max="10"
     value={value}
     on:input={(e) => value = +e.target.value}
-  />
+  /> -->
   <div class="w-full grid grid-cols-11 gap-2">
     <Button
       label="0"
@@ -72,4 +72,4 @@
       isSelected={value === 10}
     />
   </div>
-</div>
+<!-- </div> -->

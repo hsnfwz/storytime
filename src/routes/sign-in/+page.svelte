@@ -47,7 +47,7 @@
         </p>
       </div>
     {:else}
-      <form class="flex flex-col gap-4 w-60 bg-neutral-100 dark:bg-neutral-900 p-4 rounded-lg">
+      <form class="flex flex-col gap-4 w-60 bg-neutral-100 dark:bg-neutral-900 p-4 rounded">
         <div class="flex flex-col gap-2">
           <label for="user-email" class={`${showErrorMessage ? 'text-red-500' : 'dark:text-white'}`}>* Email</label>
           <input
@@ -55,7 +55,7 @@
             type="email"
             autoComplete="off"
             bind:value={email}
-            class={`${showErrorMessage ? 'border-red-500' : 'border-white'} p-2 box-border border-2 w-full rounded`}
+            class={`${showErrorMessage ? 'border-red-500' : 'border-white'} p-2 box-border border w-full rounded`}
             placeholder="Email"
           />
         </div>
