@@ -36,7 +36,7 @@
 </script>
 
 <div class="flex flex-col items-center gap-4">
-  <h1 class="dark:text-white st-font-bold text-2xl text-center">Sign In</h1>
+  <h1 class="dark:text-white st-font-bold text-xl text-center">Sign In</h1>
   {#if currentSession}
     <p class="darK:text-white text-center">You are already signed in!</p>
   {:else}

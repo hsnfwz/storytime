@@ -12,7 +12,7 @@
 </script>
 
 <div class="flex flex-col items-center gap-4">
-  <h1 class="dark:text-white st-font-bold text-2xl text-center">Sign Out</h1>
+  <h1 class="dark:text-white st-font-bold text-xl text-center">Sign Out</h1>
   {#if currentSession}
     <button
       class="px-4 py-2 bg-neutral-100 dark:bg-neutral-900 dark:text-white rounded st-font-bold"

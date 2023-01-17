@@ -18,7 +18,7 @@
   {#if isLoading}
     <p class="dark:text-white text-center">Loading...</p>
   {:else}
-    <h1 class="dark:text-white text-center st-font-bold text-2xl">Explore</h1>
+    <h1 class="dark:text-white text-center st-font-bold text-xl">Explore</h1>
     <ItemGrid items={data.items} />
     <Paginator
       currentPage={data.currentPage}

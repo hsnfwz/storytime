@@ -22,7 +22,7 @@
 </script>
 
 <div class="flex flex-col items-center gap-4">
-  <h1 class="dark:text-white text-center text-2xl st-font-bold">Profile {data.profile.id} Books</h1>
+  <h1 class="dark:text-white text-center text-xl st-font-bold">Profile {data.profile.id} Books</h1>
   <div class="flex flex-wrap justify-center gap-4">
     <a href={`/profiles/${$page.params.id}/books`} class={`${$page.url.pathname === `/profiles/${$page.params.id}/books` ? 'bg-blue-500 text-white' : ''} text-center rounded px-4 py-2 bg-neutral-100`}>All ({data.profile.book_total_status_count})</a>
     <a href={`/profiles/${$page.params.id}/books/${E_BookStatus.READING.url}`} class={`${$page.url.pathname === `/profiles/${$page.params.id}/books/${E_BookStatus.READING.url}` ? 'bg-blue-500 text-white' : ''} text-center rounded px-4 py-2 bg-neutral-100`}>{E_BookStatus.READING.text} ({data.profile.book_reading_status_count})</a>

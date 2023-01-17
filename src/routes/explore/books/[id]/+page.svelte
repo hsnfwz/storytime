@@ -1054,7 +1054,7 @@
           <p class="dark:text-white">Rating</p>
           <div class="flex flex-col gap-4 items-center">
             <div class="w-full flex flex-col gap-2">
-              <p class="dark:text-white text-center text-2xl st-font-bold ">{rating}</p>
+              <p class="dark:text-white text-center text-xl st-font-bold ">{rating}</p>
               <p class="dark:text-white text-center st-font-italic">{E_Rating[rating].label}</p>
             </div>
             <Slider bind:value={rating} />

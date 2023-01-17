@@ -28,7 +28,7 @@
 </script>
 
 <div class="flex flex-col gap-4 items-center">
-  <h1 class="dark:text-white text-center text-2xl st-font-bold">Upload</h1>
+  <h1 class="dark:text-white text-center text-xl st-font-bold">Upload</h1>
   {#if currentProfile && currentProfile.is_contributor}
     <form
       class="flex flex-col gap-4 w-60 bg-neutral-100 dark:bg-neutral-900 p-4 rounded"

@@ -25,7 +25,7 @@
   {#if isLoading}
     <p class="dark:text-white text-center">Loading...</p>
   {:else}
-    <h1 class="dark:text-white text-center st-font-bold text-2xl">Profiles</h1>
+    <h1 class="dark:text-white text-center st-font-bold text-xl">Profiles</h1>
     <ProfileGrid {profiles} />
     <div class="flex gap-4">
       <a
