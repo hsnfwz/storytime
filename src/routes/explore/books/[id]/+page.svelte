@@ -76,7 +76,10 @@
 
         if (profileBook[`${getCurrentEnvironment()}_rating_instance`]) {
           rating = profileBook[`${getCurrentEnvironment()}_rating_instance`].rating;
-          review = profileBook[`${getCurrentEnvironment()}_rating_instance`].review;
+        }
+
+        if (profileBook[`${getCurrentEnvironment()}_review_instance`]) {
+          review = profileBook[`${getCurrentEnvironment()}_review_instance`].review;
         }
 
         if (profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.TO_READ) {

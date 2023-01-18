@@ -71,12 +71,10 @@
 </script>
 
 <!-- VERSION 2 FEATURES/FIXES -->
-
-<!-- todo: add a shortcut for creating another read or rating instance, and update related data accordingly -->
-<!-- todo: confirm dialog when user clicks remove button -->
-<!-- todo: loading screens everywhere ! -->
+<!-- todo: add another read, rating, and review instance -->
+<!-- todo: remove book confirm dialog -->
+<!-- todo: loading screen when switching pages -->
 <!-- todo: queue, rankings, lists -->
-<!-- todo: nav bar on bottom (for mobile only) and make it sticky (for mobile and desktop) -->
 <!-- todo: filter, sort, search -->
 
 <!-- VERSION 3 FEATURES/FIXES -->
@@ -84,8 +82,7 @@
 <!-- todo: film, games, music, series_title, series_entry, synopsis -->
 <!-- todo: option to import any csv files (similar to IFTA Fuel Card) -->
 <!-- todo: editions (cover, page count, isbn, release date) ? -->
-<!-- todo: detect user device as pc or not, if not, disable hover effects if any -->
-<!-- todo: name and username -->
+<!-- todo: account display name and username -->
 <!-- todo: convert sign in form to svelte form -->
 
 <!-- BEFORE RELEASE -->
