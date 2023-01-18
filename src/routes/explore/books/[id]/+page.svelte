@@ -20,6 +20,7 @@
   import Button from '$components/Button.svelte';
   import InfoCard from '$components/InfoCard.svelte';
   import SuccessCard from '$components/SuccessCard.svelte';
+  import ErrorCard from '$components/ErrorCard.svelte';
 
   // helpers
   import { formatDate, getItemRatingsAverage, getItemTotalRatings, getDateDifference, getCurrentEnvironment } from '$helpers/helpers';
@@ -42,17 +43,11 @@
   today.setHours(0);
 
   let startYear: number = today.getUTCFullYear();
-  let startMonth: { monthName: string, monthNumber: number } = {
-    monthName: new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'UTC' }).format(today),
-    monthNumber: today.getUTCMonth(),
-  }
+  let startMonth: number = today.getUTCMonth() + 1;
   let startDay: number = today.getUTCDate();
 
   let endYear: number = today.getUTCFullYear();
-  let endMonth: { monthName: string, monthNumber: number } = {
-    monthName: new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'UTC' }).format(today),
-    monthNumber: today.getUTCMonth(),
-  }
+  let endMonth: number = today.getUTCMonth() + 1;
   let endDay: number = today.getUTCDate();
 
   let rating: number = 5;
@@ -85,10 +80,7 @@
         if (profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.TO_READ) {
           if (profileBook[`${getCurrentEnvironment()}_status_instance`].start_date) {
             startYear = new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date).getUTCFullYear();
-            startMonth = {
-              monthName: new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date)),
-              monthNumber: new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date).getUTCMonth(),
-            }
+            startMonth = new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date).getUTCMonth() + 1;
             startDay = new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date).getUTCDate();
           }
         }
@@ -96,10 +88,7 @@
         if ((profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ) || (profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF)) {
           if (profileBook[`${getCurrentEnvironment()}_status_instance`].end_date) {
             endYear = new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].end_date).getUTCFullYear();
-            endMonth = {
-              monthName: new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].end_date)),
-              monthNumber: new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].end_date).getUTCMonth(),
-            }
+            endMonth = new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].end_date).getUTCMonth() + 1;
             endDay = new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].end_date).getUTCDate();
           }
         }
@@ -114,7 +103,7 @@
   const handleUpdateProfileBook = async () => {
     isLoading = true;
 
-    const _dateDifference: any = getDateDifference(new Date(startYear, startMonth.monthNumber, startDay), new Date(endYear, endMonth.monthNumber, endDay));
+    const _dateDifference: any = getDateDifference(new Date(startYear, startMonth-1, startDay), new Date(endYear, endMonth-1, endDay));
 
     if (_dateDifference.differenceDays < 0) {
       showInvalidDateRangeError = true;
@@ -127,7 +116,7 @@
     if (profileBookStatus === E_BookStatus.READING) {
       // status instance
       const updatedStatusInstanceData: any = {
-        start_date: new Date(startYear, startMonth.monthNumber, startDay),
+        start_date: new Date(startYear, startMonth-1, startDay),
       };
 
       const latestStatusInstanceRecords = await updateRecords('status_instance', [updatedStatusInstanceData], { id: profileBook.latest_status_instance_id });
@@ -136,14 +125,14 @@
     } else if (profileBookStatus === E_BookStatus.READ) {
       // read instance
       const updatedReadInstanceData: any = {
-        start_date: new Date(startYear, startMonth.monthNumber, startDay),
-        end_date: new Date(endYear, endMonth.monthNumber, endDay),
+        start_date: new Date(startYear, startMonth-1, startDay),
+        end_date: new Date(endYear, endMonth-1, endDay),
       };
 
       // status instance
       const updatedStatusInstanceData: any = {
-        start_date: new Date(startYear, startMonth.monthNumber, startDay),
-        end_date: new Date(endYear, endMonth.monthNumber, endDay),
+        start_date: new Date(startYear, startMonth-1, startDay),
+        end_date: new Date(endYear, endMonth-1, endDay),
       };
 
       const [
@@ -159,8 +148,8 @@
     } else if (profileBookStatus === E_BookStatus.DNF) {
       // status instance
       const updatedStatusInstanceData: any = {
-        start_date: new Date(startYear, startMonth.monthNumber, startDay),
-        end_date: new Date(endYear, endMonth.monthNumber, endDay),
+        start_date: new Date(startYear, startMonth-1, startDay),
+        end_date: new Date(endYear, endMonth-1, endDay),
       };
 
       const latestStatusInstanceRecords = await updateRecords('status_instance', [updatedStatusInstanceData], { id: profileBook.latest_status_instance_id });
@@ -246,17 +235,11 @@
     _today.setHours(0);
     
     startYear = _today.getUTCFullYear();
-    startMonth = {
-      monthName: new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'UTC' }).format(_today),
-      monthNumber: _today.getUTCMonth(),
-    }
+    startMonth = _today.getUTCMonth() + 1;
     startDay = _today.getUTCDate();
 
     endYear = _today.getUTCFullYear();
-    endMonth = {
-      monthName: new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'UTC' }).format(_today),
-      monthNumber: _today.getUTCMonth(),
-    }
+    endMonth = _today.getUTCMonth() + 1;
     endDay = _today.getUTCDate();
 
     rating = 5;
@@ -381,17 +364,11 @@
     }
 
     startYear = _today.getUTCFullYear();
-    startMonth = {
-      monthName: new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'UTC' }).format(_today),
-      monthNumber: _today.getUTCMonth(),
-    }
+    startMonth = _today.getUTCMonth() + 1;
     startDay = _today.getUTCDate();
 
     endYear = _today.getUTCFullYear();
-    endMonth = {
-      monthName: new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'UTC' }).format(_today),
-      monthNumber: _today.getUTCMonth(),
-    }
+    endMonth = _today.getUTCMonth() + 1;
     endDay = _today.getUTCDate();
 
     isLoading = false;
@@ -515,17 +492,11 @@
     }
 
     startYear = _today.getUTCFullYear();
-    startMonth = {
-      monthName: new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'UTC' }).format(_today),
-      monthNumber: _today.getUTCMonth(),
-    }
+    startMonth = _today.getUTCMonth() + 1;
     startDay = _today.getUTCDate();
 
     endYear = _today.getUTCFullYear();
-    endMonth = {
-      monthName: new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'UTC' }).format(_today),
-      monthNumber: _today.getUTCMonth(),
-    }
+    endMonth = _today.getUTCMonth() + 1;
     endDay = _today.getUTCDate();
 
     isLoading = false;
@@ -539,8 +510,8 @@
       const readInstanceData: any = {
         profile_id: currentProfile.id,
         book_id: data.item.id,
-        start_date: profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? profileBook[`${getCurrentEnvironment()}_status_instance`].start_date : new Date(startYear, startMonth.monthNumber, startDay),
-        end_date: new Date(endYear, endMonth.monthNumber, endDay),
+        start_date: profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? profileBook[`${getCurrentEnvironment()}_status_instance`].start_date : new Date(startYear, startMonth-1, startDay),
+        end_date: new Date(endYear, endMonth-1, endDay),
       };
 
       // status instance
@@ -548,8 +519,8 @@
         profile_id: currentProfile.id,
         book_id: data.item.id,
         status,
-        start_date: profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? profileBook[`${getCurrentEnvironment()}_status_instance`].start_date : new Date(startYear, startMonth.monthNumber, startDay),
-        end_date: new Date(endYear, endMonth.monthNumber, endDay),
+        start_date: profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? profileBook[`${getCurrentEnvironment()}_status_instance`].start_date : new Date(startYear, startMonth-1, startDay),
+        end_date: new Date(endYear, endMonth-1, endDay),
       };
 
       const [
@@ -627,8 +598,8 @@
       const readInstanceData: any = {
         profile_id: currentProfile.id,
         book_id: data.item.id,
-        start_date: new Date(startYear, startMonth.monthNumber, startDay),
-        end_date: new Date(endYear, endMonth.monthNumber, endDay),
+        start_date: new Date(startYear, startMonth-1, startDay),
+        end_date: new Date(endYear, endMonth-1, endDay),
       };
 
       // status instance
@@ -636,8 +607,8 @@
         profile_id: currentProfile.id,
         book_id: data.item.id,
         status,
-        start_date: new Date(startYear, startMonth.monthNumber, startDay),
-        end_date: new Date(endYear, endMonth.monthNumber, endDay),
+        start_date: new Date(startYear, startMonth-1, startDay),
+        end_date: new Date(endYear, endMonth-1, endDay),
       };
 
       const [
@@ -697,8 +668,8 @@
         profile_id: currentProfile.id,
         book_id: data.item.id,
         status,
-        start_date: profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? profileBook[`${getCurrentEnvironment()}_status_instance`].start_date : new Date(startYear, startMonth.monthNumber, startDay),
-        end_date: new Date(endYear, endMonth.monthNumber, endDay),
+        start_date: profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? profileBook[`${getCurrentEnvironment()}_status_instance`].start_date : new Date(startYear, startMonth-1, startDay),
+        end_date: new Date(endYear, endMonth-1, endDay),
       };
 
       const newStatusInstanceRecord = await insertRecords('status_instance', [statusInstanceData]);
@@ -766,8 +737,8 @@
         profile_id: currentProfile.id,
         book_id: data.item.id,
         status,
-        start_date: new Date(startYear, startMonth.monthNumber, startDay),
-        end_date: new Date(endYear, endMonth.monthNumber, endDay),
+        start_date: new Date(startYear, startMonth-1, startDay),
+        end_date: new Date(endYear, endMonth-1, endDay),
       };
 
       const newStatusInstanceRecord = await insertRecords('status_instance', [statusInstanceData]);
@@ -1011,14 +982,13 @@
             </div>
           </div>
         {/if}
-        {#if (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING) || (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ) || (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF)}
+        {#if (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.TO_READ)}
           <DatePicker
             label="Start Date"
             bind:year={startYear}
             bind:month={startMonth}
             bind:day={startDay}
             bind:showError={showInvalidDateRangeError}
-            errorMessage={profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? 'Start date cannot be after current date' : 'Start date cannot be after end date'}
           />
         {/if}
         {#if (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ) || (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF)}
@@ -1028,17 +998,23 @@
             bind:month={endMonth}
             bind:day={endDay}
             bind:showError={showInvalidDateRangeError}
-            errorMessage={profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? 'Start date cannot be after current date' : 'Start date cannot be after end date'}
           />
+        {/if}
+        {#if (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.TO_READ)}
+          {#if showInvalidDateRangeError}
+            <ErrorCard>
+              <p>{profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? 'Start date cannot be after current date' : 'Start date cannot be after end date'}</p>
+            </ErrorCard>
+          {/if}
         {/if}
         {#if profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.TO_READ}
           <Button
             label="Update Status"
             handleClick={async () => await handleUpdateProfileBook()}
             isDisabled={
-              (profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING && (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date))) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(startYear, startMonth.monthNumber, startDay))) ||
-              (profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.READING && (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date))) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(startYear, startMonth.monthNumber, startDay)) &&
-              (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].end_date)) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(endYear, endMonth.monthNumber, endDay)))) ||
+              (profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING && (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date))) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(startYear, startMonth-1, startDay))) ||
+              (profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.READING && (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date))) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(startYear, startMonth-1, startDay)) &&
+              (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].end_date)) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(endYear, endMonth-1, endDay)))) ||
               showInvalidDateRangeError ||
               isLoading
             }

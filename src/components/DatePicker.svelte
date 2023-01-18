@@ -1,20 +1,19 @@
 <script lang="ts">
+  // helpers
+  import { formatDate } from '$helpers/helpers';
+
   // state
   let today: any = new Date();
+  const todayYear: number = today.getUTCFullYear();
   const todayMonth: number = today.getUTCMonth();
   const todayDay: number = today.getUTCDate();
-  const todayYear: number = today.getUTCFullYear();
 
   // props
   export let label: string = 'Date';
-  export let month: { monthName: string, monthNumber: number } = {
-    monthName: new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'UTC' }).format(today),
-    monthNumber: todayMonth,
-  }
-  export let day: number = todayDay;
   export let year: number = todayYear;
+  export let month: number = todayMonth;
+  export let day: number = todayDay;
   export let showError: boolean = false;
-  export let errorMessage: string = '';
 
   // state
   const monthsList: { monthName: string, monthNumber: number }[] = [
@@ -64,9 +63,11 @@
   let showYearsList: boolean = false;
   let showMonthsList: boolean = false;
   let showDaysList: boolean = false;
+
+  const regex = new RegExp('^[0-9]+$');
 </script>
 
-<div class="flex flex-col gap-2 w-full" id="date-picker">
+<!-- <div class="flex flex-col gap-2 w-full">
   <p class={`${showError ? 'text-rose-500' : 'dark:text-white'}`}>{label}</p>
   <div class="grid sm:grid-cols-3 gap-2 items-start">
     <div
@@ -95,7 +96,7 @@
       {#if showYearsList}
         <div
           id="list"
-          class={`date-picker-list flex flex-col max-h-40 overflow-y-auto absolute top-full left-0 bg-neutral-100 z-50 w-full ${showYearsList ? 'rounded-b border-x border-b border-neutral-100 dark:border-slate-600' : ''}`}
+          class={`flex flex-col max-h-40 overflow-y-auto absolute top-full left-0 bg-neutral-100 z-50 w-full ${showYearsList ? 'rounded-b border-x border-b border-neutral-100 dark:border-slate-600' : ''}`}
         >
           {#each yearsList as yearItem}
             <button
@@ -138,7 +139,7 @@
       {#if showMonthsList}
         <div
           id="list"
-          class={`date-picker-list flex flex-col max-h-40 overflow-y-auto absolute top-full left-0 bg-neutral-100 z-50 w-full ${showMonthsList ? 'rounded-b border-x border-b border-neutral-100 dark:border-slate-600' : ''}`}
+          class={`flex flex-col max-h-40 overflow-y-auto absolute top-full left-0 bg-neutral-100 z-50 w-full ${showMonthsList ? 'rounded-b border-x border-b border-neutral-100 dark:border-slate-600' : ''}`}
         >
           {#each monthsList as monthItem}
             <button
@@ -181,7 +182,7 @@
       {#if showDaysList}
         <div
           id="list"
-          class={`date-picker-list flex flex-col max-h-40 overflow-y-auto absolute top-full left-0 bg-neutral-100 z-50 w-full ${showDaysList ? 'rounded-b border-x border-b border-neutral-100 dark:border-slate-600' : ''}`}
+          class={`flex flex-col max-h-40 overflow-y-auto absolute top-full left-0 bg-neutral-100 z-50 w-full ${showDaysList ? 'rounded-b border-x border-b border-neutral-100 dark:border-slate-600' : ''}`}
         >
           {#each daysList as dayItem}
             <button
@@ -202,4 +203,55 @@
   {#if showError && errorMessage}
     <p class="text-rose-500">{errorMessage}</p>
   {/if}
+</div> -->
+<div class="flex flex-col gap-4">
+  <p class={`${showError ? 'text-rose-500' : 'dark:text-whtie'}`}>{label}</p>
+  <div class="flex gap-2 w-full">
+    <div class="flex flex-col gap-2">
+      <label for="" class={`${showError ? 'text-rose-500' : 'dark:text-whtie'}`}>Year</label>
+      <input
+        class={`${showError ? 'border-rose-500' : 'border-neutral-100 dark:border-slate-600'} border-2 w-full box-border p-2 bg-neutral-100 dark:text-white dark:bg-slate-600 rounded`}
+        type="text"
+        placeholder="YYYY"
+        value={year}
+        on:input={(e) => {
+          if (regex.test(e.target.value)) {
+            year = e.target.value;
+          }
+        }}
+        maxlength="4"
+      />
+    </div>
+    <div class="flex flex-col gap-2">
+      <label for="" class={`${showError ? 'text-rose-500' : 'dark:text-whtie'}`}>Month</label>
+      <input
+        class={`${showError ? 'border-rose-500' : 'border-neutral-100 dark:border-slate-600'} border-2 w-full box-border p-2 bg-neutral-100 dark:text-white dark:bg-slate-600 rounded`}
+        type="text"
+        placeholder="MM"
+        value={month}
+        on:input={(e) => {
+          if (regex.test(e.target.value)) {
+            month = e.target.value;
+          }
+        }}
+        maxlength="2"
+      />
+    </div>
+    <div class="flex flex-col gap-2">
+      <label for="" class={`${showError ? 'text-rose-500' : 'dark:text-whtie'}`}>Day</label>
+      <input
+        class={`${showError ? 'border-rose-500' : 'border-neutral-100 dark:border-slate-600'} border-2 w-full box-border p-2 bg-neutral-100 dark:text-white dark:bg-slate-600 rounded`}
+        type="text"
+        placeholder="DD"
+        value={day}
+        on:input={(e) => {
+          if (regex.test(e.target.value)) {
+            day = e.target.value;
+          }
+        }}
+        maxlength="2"
+      />
+    </div>
+  </div>
+  <p class="st-font-italic">{formatDate(new Date(year, month-1, day))}</p>
 </div>

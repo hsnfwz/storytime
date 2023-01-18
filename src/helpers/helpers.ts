@@ -28,7 +28,7 @@ const formatFileName = (text: string, id: number, includeFileType: boolean = fal
 
 const formatDate = (date: any) => {
   const formattedDate = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(date));
-
+  
   return formattedDate;
 }
 
