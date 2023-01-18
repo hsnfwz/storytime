@@ -79,6 +79,7 @@
 <!-- todo: loading screen when switching pages -->
 <!-- todo: queue, rankings, lists -->
 <!-- todo: filter, sort, search -->
+<!-- once we have rearranged nav icons, make icons bigger and easier to see when clicked -->
 
 <!-- VERSION 3 FEATURES/FIXES -->
 <!-- todo: authors, shelves (tags), stats, social features, newsletter, recommendations -->

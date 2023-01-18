@@ -905,6 +905,12 @@
       <p class="w-full text-center dark:text-white">{data.item.unique_read_count === 1 ? `${data.item.unique_read_count} unique read` : `${data.item.unique_read_count} unique reads`}</p>
       <p class="w-full text-center dark:text-white">{data.item.read_count === 1 ? `${data.item.read_count} total read` : `${data.item.read_count} total reads`}</p>
     </Card>
+    <Card>
+      <a href="/" class="st-font-bold hover:text-sky-500 transition-all decoration-sky-500 underline">Ratings</a>
+      <a href="/" class="st-font-bold hover:text-sky-500 transition-all decoration-sky-500 underline">Reviews</a>
+      <a href="/" class="st-font-bold hover:text-sky-500 transition-all decoration-sky-500 underline">Discussions</a>
+      <a href="/" class="st-font-bold hover:text-sky-500 transition-all decoration-sky-500 underline">Statistics</a>
+    </Card>
   </div>
   {#if currentProfile}
     <div class="w-full flex flex-col gap-4 md:max-w-[500px]">
@@ -1091,7 +1097,7 @@
   {:else}
     <div class="w-full md:max-w-[500px]">
       <Card>
-        <p class="w-full text-center dark:text-white"><a href='/sign-in' class="text-sky-500">Sign in</a> to start managing your books</p>
+        <p class="w-full text-center dark:text-white"><a href='/sign-in' class="st-font-bold underline decoration-sky-500 hover:text-sky-500">Sign in</a> to start managing your books</p>
       </Card>
     </div>
   {/if}
