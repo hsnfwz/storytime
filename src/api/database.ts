@@ -7,7 +7,7 @@ import supabase from '$config/supabase';
 // get 1 or more records
 const getRecords = async (
   table: string,
-  columns: string = 'id',
+  columns: string = '*',
   match: {
     [key: string]: string | number,
   } = {},
@@ -53,6 +53,7 @@ const getRecords = async (
 const insertRecords = async (
   table: string,
   values: any[],
+  columns: string = '*',
 ) => {
   let _table: string = table;
 
@@ -65,7 +66,7 @@ const insertRecords = async (
   const { data, error } = await supabase
   .from(_table)
   .insert(values)
-  .select('*')
+  .select(columns)
 
   if (error) {
     console.log(error);
@@ -81,7 +82,8 @@ const updateRecords = async (
   values: {},
   match: {
     [key: string]: string,
-  } = {}
+  } = {},
+  columns: string = '*',
 ) => {
   let _table: string = table;
 
@@ -95,7 +97,7 @@ const updateRecords = async (
   .from(_table)
   .update(values)
   .match(match)
-  .select('*')
+  .select(columns)
 
   if (error) {
     console.log(error);
@@ -110,7 +112,8 @@ const deleteRecords = async (
   table: string,
   match: {
     [key: string]: string,
-  } = {}
+  } = {},
+  columns: string = '*',
 ) => {
   let _table: string = table;
 
@@ -124,7 +127,7 @@ const deleteRecords = async (
   .from(_table)
   .delete()
   .match(match)
-  .select('id')
+  .select(columns)
 
   if (error) {
     console.log(error);

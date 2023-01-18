@@ -72,6 +72,8 @@
 
 <!-- VERSION 2 FEATURES/FIXES -->
 
+<!-- todo: add a shortcut for creating another read or rating instance, and update related data accordingly -->
+<!-- todo: confirm dialog when user clicks remove button -->
 <!-- todo: loading screens everywhere ! -->
 <!-- todo: queue, rankings, lists -->
 <!-- todo: nav bar on bottom (for mobile only) and make it sticky (for mobile and desktop) -->

@@ -69,8 +69,8 @@
   let showDaysList: boolean = false;
 </script>
 
-<div class="flex flex-col gap-2">
-  <p class={`${showError ? 'text-red-500' : 'dark:text-white'}`}>{label}</p>
+<div class="flex flex-col gap-2 w-full">
+  <p class={`${showError ? 'text-rose-500' : 'dark:text-white'}`}>{label}</p>
   <div class="grid sm:grid-cols-3 gap-2 items-start">
     <div
       class="flex flex-col gap-2 items-center relative rounded"
@@ -80,7 +80,7 @@
       }}
     >
       <button
-        class={`${showError ? 'border-red-500' : 'border-neutral-100 dark:border-slate-600'} w-full p-2 flex gap-2 justify-center items-center ${showYearsList ? 'rounded-t border-x border-t' : 'rounded border'} dark:text-white bg-neutral-100 dark:bg-slate-600`}
+        class={`${showError ? 'border-rose-500' : 'border-neutral-100 dark:border-slate-600'} w-full p-2 flex gap-2 justify-center items-center ${showYearsList ? 'rounded-t border-x border-t' : 'rounded border'} dark:text-white bg-neutral-100 dark:bg-slate-600`}
         type="button"
         on:click={() => showYearsList = !showYearsList}
       >
@@ -123,7 +123,7 @@
       }}
     >
       <button
-        class={`${showError ? 'border-red-500' : 'border-neutral-100 dark:border-slate-600'} w-full p-2 flex gap-2 justify-center items-center ${showMonthsList ? 'rounded-t border-x border-t' : 'rounded border'} dark:text-white bg-neutral-100 dark:bg-slate-600`}
+        class={`${showError ? 'border-rose-500' : 'border-neutral-100 dark:border-slate-600'} w-full p-2 flex gap-2 justify-center items-center ${showMonthsList ? 'rounded-t border-x border-t' : 'rounded border'} dark:text-white bg-neutral-100 dark:bg-slate-600`}
         type="button"
         on:click={() => showMonthsList = !showMonthsList}
       >
@@ -166,7 +166,7 @@
       }}
     >
       <button
-        class={`${showError ? 'border-red-500' : 'border-neutral-100 dark:border-slate-600'} w-full p-2 flex gap-2 justify-center items-center ${showDaysList ? 'rounded-t border-x border-t' : 'rounded border'} dark:text-white bg-neutral-100 dark:bg-slate-600`}
+        class={`${showError ? 'border-rose-500' : 'border-neutral-100 dark:border-slate-600'} w-full p-2 flex gap-2 justify-center items-center ${showDaysList ? 'rounded-t border-x border-t' : 'rounded border'} dark:text-white bg-neutral-100 dark:bg-slate-600`}
         type="button"
         on:click={() => showDaysList = !showDaysList}
       >
@@ -203,6 +203,6 @@
     </div>
   </div>
   {#if showError && errorMessage}
-    <p class="text-red-500">{errorMessage}</p>
+    <p class="text-rose-500">{errorMessage}</p>
   {/if}
 </div>
