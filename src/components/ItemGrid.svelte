@@ -54,10 +54,9 @@
 
             img.onerror = () => {
               let div = document.createElement('div');
-              // div.classList.add('w-[300px]');
-              // maintain aspect ratio in div
               div.classList.add('h-[400px]');
-              div.classList.add('bg-slate-700');
+              div.classList.add('bg-white');
+              div.classList.add('dark:bg-slate-700');
               div.classList.add('rounded');
               link.appendChild(div);
             }

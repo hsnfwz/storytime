@@ -23,6 +23,7 @@
       img.alt = item.title;
       img.width = 300;
       img.classList.add('rounded');
+      img.classList.add('shadow-md');
 
       img.onload = () => {
         imgContainer.appendChild(img);
@@ -32,7 +33,8 @@
         let div = document.createElement('div');
         div.classList.add('w-[300px]');
         div.classList.add('h-[400px]');
-        div.classList.add('bg-slate-700');
+        div.classList.add('bg-white');
+        div.classList.add('dark:bg-slate-700');
         div.classList.add('rounded');
         imgContainer.appendChild(div);
       }

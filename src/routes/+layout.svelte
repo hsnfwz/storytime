@@ -71,6 +71,7 @@
 </script>
 
 <!-- VERSION 2 FEATURES/FIXES -->
+<!-- todo: scroll position is no longer remembered - need fix -->
 <!-- todo: add another read, rating, and review instance -->
 <!-- todo: remove book confirm dialog -->
 <!-- todo: loading screen when switching pages -->
