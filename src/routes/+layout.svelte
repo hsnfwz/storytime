@@ -72,7 +72,9 @@
 
 <!-- VERSION 2 FEATURES/FIXES -->
 <!-- todo: scroll position is no longer remembered - need fix -->
-<!-- todo: add another read, rating, and review instance -->
+<!-- todo: replace "update rating" and "update review" with add another instance -->
+<!-- todo: allow user to create another read instance -->
+<!-- todo: make date input more robust -->
 <!-- todo: remove book confirm dialog -->
 <!-- todo: loading screen when switching pages -->
 <!-- todo: queue, rankings, lists -->
