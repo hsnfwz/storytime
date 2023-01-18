@@ -21,6 +21,7 @@
   import InfoCard from '$components/InfoCard.svelte';
   import SuccessCard from '$components/SuccessCard.svelte';
   import ErrorCard from '$components/ErrorCard.svelte';
+  import Link from '$components/Link.svelte';
 
   // helpers
   import { formatDate, getItemRatingsAverage, getItemTotalRatings, getDateDifference, getCurrentEnvironment } from '$helpers/helpers';
@@ -906,10 +907,10 @@
       <p class="w-full text-center dark:text-white">{data.item.read_count === 1 ? `${data.item.read_count} total read` : `${data.item.read_count} total reads`}</p>
     </Card>
     <Card>
-      <a href="/" class="st-font-bold hover:text-sky-500 transition-all decoration-sky-500 underline">Ratings</a>
-      <a href="/" class="st-font-bold hover:text-sky-500 transition-all decoration-sky-500 underline">Reviews</a>
-      <a href="/" class="st-font-bold hover:text-sky-500 transition-all decoration-sky-500 underline">Discussions</a>
-      <a href="/" class="st-font-bold hover:text-sky-500 transition-all decoration-sky-500 underline">Statistics</a>
+      <Link link="/" label="Ratings" />
+      <Link link="/" label="Reviews" />
+      <Link link="/" label="Discussions" />
+      <Link link="/" label="Statistics" />
     </Card>
   </div>
   {#if currentProfile}
@@ -1097,7 +1098,7 @@
   {:else}
     <div class="w-full md:max-w-[500px]">
       <Card>
-        <p class="w-full text-center dark:text-white"><a href='/sign-in' class="st-font-bold underline decoration-sky-500 hover:text-sky-500">Sign in</a> to start managing your books</p>
+        <p class="w-full text-center dark:text-white"><Link link="/sign-in" label="Sign in" /> to start managing your books</p>
       </Card>
     </div>
   {/if}
