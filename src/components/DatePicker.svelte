@@ -1,7 +1,4 @@
 <script lang="ts">
-  // components
-  import Button from '$components/Button.svelte';
-
   // state
   let today: any = new Date();
   const todayMonth: number = today.getUTCMonth();
@@ -69,7 +66,7 @@
   let showDaysList: boolean = false;
 </script>
 
-<div class="flex flex-col gap-2 w-full">
+<div class="flex flex-col gap-2 w-full" id="date-picker">
   <p class={`${showError ? 'text-rose-500' : 'dark:text-white'}`}>{label}</p>
   <div class="grid sm:grid-cols-3 gap-2 items-start">
     <div
@@ -80,7 +77,7 @@
       }}
     >
       <button
-        class={`${showError ? 'border-rose-500' : 'border-neutral-100 dark:border-slate-600'} w-full p-2 flex gap-2 justify-center items-center ${showYearsList ? 'rounded-t border-x border-t' : 'rounded border'} dark:text-white bg-neutral-100 dark:bg-slate-600`}
+        class={`${showError ? 'border-rose-500' : 'border-neutral-100 dark:border-slate-600'} w-full p-2 flex gap-2 justify-center items-center ${showYearsList ? 'rounded-t border-x border-t' : 'rounded border'} dark:text-white bg-neutral-100 dark:bg-slate-600 transition-all hover:dark:bg-slate-500 hover:dark:border-slate-500 hover:bg-neutral-200 hover:border-neutral-200`}
         type="button"
         on:click={() => showYearsList = !showYearsList}
       >
@@ -98,11 +95,11 @@
       {#if showYearsList}
         <div
           id="list"
-          class={`flex flex-col max-h-40 overflow-y-auto absolute top-full left-0 bg-neutral-100 z-50 w-full ${showYearsList ? 'rounded-b border-x border-b border-neutral-100 dark:border-slate-600' : ''}`}
+          class={`date-picker-list flex flex-col max-h-40 overflow-y-auto absolute top-full left-0 bg-neutral-100 z-50 w-full ${showYearsList ? 'rounded-b border-x border-b border-neutral-100 dark:border-slate-600' : ''}`}
         >
           {#each yearsList as yearItem}
             <button
-              class="p-2 dark:text-white dark:bg-slate-600"
+              class="p-2 dark:text-white dark:bg-slate-600 transition-all hover:dark:bg-slate-500 hover:bg-neutral-200 hover:border-neutral-200"
               type="button"
               on:click={() => {
                 year = yearItem;
@@ -123,7 +120,7 @@
       }}
     >
       <button
-        class={`${showError ? 'border-rose-500' : 'border-neutral-100 dark:border-slate-600'} w-full p-2 flex gap-2 justify-center items-center ${showMonthsList ? 'rounded-t border-x border-t' : 'rounded border'} dark:text-white bg-neutral-100 dark:bg-slate-600`}
+        class={`${showError ? 'border-rose-500' : 'border-neutral-100 dark:border-slate-600'} w-full p-2 flex gap-2 justify-center items-center ${showMonthsList ? 'rounded-t border-x border-t' : 'rounded border'} dark:text-white bg-neutral-100 dark:bg-slate-600 transition-all hover:dark:bg-slate-500 hover:dark:border-slate-500 hover:bg-neutral-200 hover:border-neutral-200`}
         type="button"
         on:click={() => showMonthsList = !showMonthsList}
       >
@@ -141,11 +138,11 @@
       {#if showMonthsList}
         <div
           id="list"
-          class={`flex flex-col max-h-40 overflow-y-auto absolute top-full left-0 bg-neutral-100 z-50 w-full ${showMonthsList ? 'rounded-b border-x border-b border-neutral-100 dark:border-slate-600' : ''}`}
+          class={`date-picker-list flex flex-col max-h-40 overflow-y-auto absolute top-full left-0 bg-neutral-100 z-50 w-full ${showMonthsList ? 'rounded-b border-x border-b border-neutral-100 dark:border-slate-600' : ''}`}
         >
           {#each monthsList as monthItem}
             <button
-              class="p-2 dark:text-white dark:bg-slate-600"
+              class="p-2 dark:text-white dark:bg-slate-600 transition-all hover:dark:bg-slate-500 hover:dark:border-slate-500 hover:bg-neutral-200 hover:border-neutral-200"
               type="button"
               on:click={() => {
                 month = monthItem;
@@ -166,7 +163,7 @@
       }}
     >
       <button
-        class={`${showError ? 'border-rose-500' : 'border-neutral-100 dark:border-slate-600'} w-full p-2 flex gap-2 justify-center items-center ${showDaysList ? 'rounded-t border-x border-t' : 'rounded border'} dark:text-white bg-neutral-100 dark:bg-slate-600`}
+        class={`${showError ? 'border-rose-500' : 'border-neutral-100 dark:border-slate-600'} w-full p-2 flex gap-2 justify-center items-center ${showDaysList ? 'rounded-t border-x border-t' : 'rounded border'} dark:text-white bg-neutral-100 dark:bg-slate-600 transition-all hover:dark:bg-slate-500 hover:dark:border-slate-500 hover:bg-neutral-200 hover:border-neutral-200`}
         type="button"
         on:click={() => showDaysList = !showDaysList}
       >
@@ -184,11 +181,11 @@
       {#if showDaysList}
         <div
           id="list"
-          class={`flex flex-col max-h-40 overflow-y-auto absolute top-full left-0 bg-neutral-100 z-50 w-full ${showDaysList ? 'rounded-b border-x border-b border-neutral-100 dark:border-slate-600' : ''}`}
+          class={`date-picker-list flex flex-col max-h-40 overflow-y-auto absolute top-full left-0 bg-neutral-100 z-50 w-full ${showDaysList ? 'rounded-b border-x border-b border-neutral-100 dark:border-slate-600' : ''}`}
         >
           {#each daysList as dayItem}
             <button
-              class="p-2 dark:text-white dark:bg-slate-600"
+              class="p-2 dark:text-white dark:bg-slate-600 transition-all hover:dark:bg-slate-500 hover:dark:border-slate-500 hover:bg-neutral-200 hover:border-neutral-200"
               type="button"
               on:click={() => {
                 day = dayItem;
