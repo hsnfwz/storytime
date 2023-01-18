@@ -1082,6 +1082,9 @@
           <InfoCard>
             <p class="dark:text-white">You can start rating this book after marking it as <span class="st-font-italic">{E_BookStatus.READ}</span> or <span class="st-font-italic">{E_BookStatus.DNF}</span></p>
           </InfoCard>
+          <InfoCard>
+            <p class="dark:text-white">You can start reviewing this book after marking it as <span class="st-font-italic">{E_BookStatus.READ}</span> or <span class="st-font-italic">{E_BookStatus.DNF}</span></p>
+          </InfoCard>
         </Card>
       {/if}
       {#if profileBook}
