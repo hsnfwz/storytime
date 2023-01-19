@@ -1,7 +1,4 @@
 <script lang="ts">
-  //svelte
-  import { onMount } from 'svelte';
-
   // interfaces
   import type I_Book from '$interfaces/I_Book';
 
@@ -13,33 +10,10 @@
 
   // props
   export let item: I_Book;
-
-  onMount(() => {
-    const imgContainer = document.querySelector('.img-container');
-
-    if (imgContainer) {
-      let img = document.createElement('img');
-      img.src = getPublicUrl('book-covers', `${formatFileName(item.title, item.id)}/${formatFileName(item.title, item.id, true)}`);
-      img.alt = item.title;
-      img.width = 300;
-      img.classList.add('rounded');
-      img.classList.add('shadow-md');
-
-      img.onload = () => {
-        imgContainer.appendChild(img);
-      }
-
-      img.onerror = () => {
-        let div = document.createElement('div');
-        div.classList.add('w-[300px]');
-        div.classList.add('h-[400px]');
-        div.classList.add('bg-white');
-        div.classList.add('dark:bg-slate-700');
-        div.classList.add('rounded');
-        imgContainer.appendChild(div);
-      }
-    }
-  });
 </script>
 
-<div class="img-container"></div>
+<img
+  src={getPublicUrl('book-covers', `${formatFileName(item.title, item.id)}/${formatFileName(item.title, item.id, true)}`)}
+  alt={item.title}
+  class="w-full h-full rounded shadow-md"
+/>

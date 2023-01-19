@@ -1,105 +1,148 @@
 <script lang="ts">
   // svelte
-  import { afterUpdate } from 'svelte';
+  import { onMount, tick } from 'svelte';
 
-  // storage
-  import { getPublicUrl } from '$api/storage';
+  // api
+  import { getRecords } from '$api/database';
 
-  // helpers
-  import { formatFileName } from '$helpers/helpers';
+  // components
+  import ItemCard from '$components/ItemCard.svelte';
+  import Button from '$components/Button.svelte';
 
-  // props
-  export let items: any;
+  // state
+  let isLoading: boolean = false;
+  let items: any;
+  let columns: any;
+  let columnsCount: number;
 
-  afterUpdate(() => {
-    const generateMasonryGrid = (columns: any, items: any) => {
-      const containerElement: any = document.querySelector('#masonry-grid-container');
+  $: {
+    if (columnsCount) {
+      console.log(columnsCount);
 
-      if (containerElement) {
-        containerElement.innerHTML = '';
+      let columnWrappers: any = {};
 
-        let columnWrappers = {};
-
-        for (let i = 0; i < columns; i++) {
-          columnWrappers[`column${i}`] = [];
-        }
-
-        for (let i = 0; i < items.length; i++) {
-          const column = i % columns;
-          columnWrappers[`column${column}`].push(items[i]);
-        }
-
-        for (let i = 0; i < columns; i++) {
-          let columnItems = columnWrappers[`column${i}`];
-
-          let div = document.createElement('div');
-          div.classList.add('masonry-grid-column');
-          div.id = `column-${i}`;
-
-          columnItems.forEach((item: any, index: any) => {
-            let itemDiv = document.createElement('div');
-            itemDiv.classList.add('masonry-grid-item-container');
-
-            let img = document.createElement('img');
-            img.src = getPublicUrl('book-covers', `${formatFileName(item.title, item.id)}/${formatFileName(item.title, item.id, true)}`);
-            img.alt = item.title;
-            img.classList.add('masonry-grid-item-image');
-
-            const link = document.createElement('a');
-            link.href = `/explore/books/${item.id}`;
-
-            img.onload = () => {
-              link.append(img);
-            }
-
-            img.onerror = () => {
-              let div = document.createElement('div');
-              div.classList.add('h-[400px]');
-              div.classList.add('bg-white');
-              div.classList.add('dark:bg-slate-700');
-              div.classList.add('rounded');
-              link.appendChild(div);
-            }
-
-            itemDiv.append(link);
-            div.appendChild(itemDiv);
-          });
-
-          containerElement.appendChild(div);
-        }
+      for (let i = 0; i < columnsCount; i++) {
+        columnWrappers[`column${i}`] = [];
       }
+
+      for (let i = 0; i < items.length; i++) {
+        const column = i % columnsCount;
+        columnWrappers[`column${column}`].push(items[i]);
+      }
+
+      columns = columnWrappers;
+    }
+  }
+
+  onMount(async () => {
+    isLoading = true;
+
+    const exploreBooks: any = sessionStorage.getItem('explore-books');
+
+    if (exploreBooks) {
+      items = JSON.parse(exploreBooks);
+    } else {
+      items = await getRecords(
+        'book',
+        'id, title',
+        undefined,
+        {
+          column: 'release_date',
+          ascending: false
+        },
+        {
+          from: 0,
+          to: 23,
+        }
+      );
     }
 
     let previousScreenSize = window.innerWidth;
 
+    if (previousScreenSize < 640) {
+      columnsCount = 2;
+    } else if (previousScreenSize >= 640 && previousScreenSize < 1024) {
+      columnsCount = 4;
+    } else if (previousScreenSize >= 1024 && previousScreenSize < 1536) {
+      columnsCount = 6;
+    } else {
+      columnsCount = 8;
+    }
+
     window.addEventListener('resize', () => {
       if (window.innerWidth < 640 && previousScreenSize >= 640) {
-        generateMasonryGrid(2, items);
+        columnsCount = 2;
       } else if (window.innerWidth >= 640 && window.innerWidth < 1024 && (previousScreenSize < 640 || previousScreenSize >= 1024)) {
-        generateMasonryGrid(4, items);
+        columnsCount = 4;
       } else if (window.innerWidth >= 1024 && window.innerWidth < 1536 && (previousScreenSize < 1024 || previousScreenSize >= 1536)) {
-        generateMasonryGrid(6, items);
+        columnsCount = 6;
       } else if (window.innerWidth >= 1536 && previousScreenSize < 1536) {
-        generateMasonryGrid(8, items);
+        columnsCount = 8;
       }
 
       previousScreenSize = window.innerWidth;
     });
 
-    if (previousScreenSize < 640) {
-      generateMasonryGrid(2, items);
-    } else if (previousScreenSize >= 640 && previousScreenSize < 1024) {
-      generateMasonryGrid(4, items);
-    } else if (previousScreenSize >= 1024 && previousScreenSize < 1536) {
-      generateMasonryGrid(6, items);
-    } else {
-      generateMasonryGrid(8, items);
+    await tick();
+    const exploreBooksScrollY: any = sessionStorage.getItem('explore-books-scroll-y');
+    if (exploreBooksScrollY) {
+      const _exploreBooksScrollY: any = JSON.parse(exploreBooksScrollY);
+      window.scrollTo(0, _exploreBooksScrollY);
     }
+
+    isLoading = false;
   });
 </script>
 
-{#if items.length === 0}
-  <p class="dark:text-white text-center">Empty</p>
-{:else}
-  <div id="masonry-grid-container"></div>
+{#if columns}
+  <div class={`grid grid-cols-${columnsCount} gap-4`}>
+    {#each Object.values(columns) as column}
+      <div class="flex flex-col gap-4">
+        {#each column as item}
+          <a
+            href={`/explore/books/${item.id}`}
+            on:click={() => sessionStorage.setItem('explore-books-scroll-y', JSON.stringify(window.scrollY))}
+          >
+            <ItemCard {item} />
+          </a>
+        {/each}
+      </div>
+    {/each}
+  </div>
 {/if}
+
+{#if isLoading}
+  <h1 class="dark:text-white">Loading...</h1>
+{/if}
+
+<Button
+  label="Show More"
+  handleClick={async () => {
+    isLoading = true;
+
+    const limit = 23;
+    const from = items.length;
+    const to = items.length + limit;
+
+    const _items = await getRecords(
+      'book',
+      'id, title',
+      undefined,
+      {
+        column: 'release_date',
+        ascending: false
+      },
+      {
+        from,
+        to,
+      }
+    );
+
+    items = [...items, ..._items];
+
+    sessionStorage.setItem('explore-books', JSON.stringify(items));
+    sessionStorage.setItem('explore-books-scroll-y', JSON.stringify(window.scrollY));
+
+    isLoading = false;
+  }}
+/>
