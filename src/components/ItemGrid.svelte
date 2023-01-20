@@ -137,4 +137,5 @@
 
     masonry(items, Object.keys(columns).length);
   }}
+  isDisabled={items && items.length % 24 !== 0}
 />

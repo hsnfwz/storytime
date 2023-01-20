@@ -71,7 +71,6 @@
 </script>
 
 <!-- VERSION 2 FEATURES/FIXES -->
-<!-- todo: scroll position is no longer remembered - need fix -->
 <!-- todo: replace "update rating" and "update review" with add another instance -->
 <!-- todo: allow user to create another read instance -->
 <!-- todo: make date input more robust -->
