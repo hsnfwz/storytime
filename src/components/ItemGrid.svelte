@@ -10,33 +10,25 @@
   import Button from '$components/Button.svelte';
 
   // state
-  let isLoading: boolean = false;
   let items: any;
   let columns: any;
-  let columnsCount: number;
 
-  $: {
-    if (columnsCount) {
-      console.log(columnsCount);
+  const masonry = (_items: any, _columnsCount: number) => {
+    let columnWrappers: any = {};
 
-      let columnWrappers: any = {};
-
-      for (let i = 0; i < columnsCount; i++) {
-        columnWrappers[`column${i}`] = [];
-      }
-
-      for (let i = 0; i < items.length; i++) {
-        const column = i % columnsCount;
-        columnWrappers[`column${column}`].push(items[i]);
-      }
-
-      columns = columnWrappers;
+    for (let i = 0; i < _columnsCount; i++) {
+      columnWrappers[`column${i}`] = [];
     }
+
+    for (let i = 0; i < _items.length; i++) {
+      const column = i % _columnsCount;
+      columnWrappers[`column${column}`].push(_items[i]);
+    }
+
+    columns = columnWrappers;
   }
 
   onMount(async () => {
-    isLoading = true;
-
     const exploreBooks: any = sessionStorage.getItem('explore-books');
 
     if (exploreBooks) {
@@ -57,31 +49,39 @@
       );
     }
 
-    let previousScreenSize = window.innerWidth;
-
-    if (previousScreenSize < 640) {
-      columnsCount = 2;
-    } else if (previousScreenSize >= 640 && previousScreenSize < 1024) {
-      columnsCount = 4;
-    } else if (previousScreenSize >= 1024 && previousScreenSize < 1536) {
-      columnsCount = 6;
-    } else {
-      columnsCount = 8;
-    }
-
     window.addEventListener('resize', () => {
       if (window.innerWidth < 640 && previousScreenSize >= 640) {
-        columnsCount = 2;
+        // columnsCount = 2;
+        masonry(items, 2);
       } else if (window.innerWidth >= 640 && window.innerWidth < 1024 && (previousScreenSize < 640 || previousScreenSize >= 1024)) {
-        columnsCount = 4;
+        masonry(items, 4);
+        // columnsCount = 4;
       } else if (window.innerWidth >= 1024 && window.innerWidth < 1536 && (previousScreenSize < 1024 || previousScreenSize >= 1536)) {
-        columnsCount = 6;
+        masonry(items, 6);
+        // columnsCount = 6;
       } else if (window.innerWidth >= 1536 && previousScreenSize < 1536) {
-        columnsCount = 8;
+        masonry(items, 8);
+        // columnsCount = 8;
       }
 
       previousScreenSize = window.innerWidth;
     });
+
+    let previousScreenSize = window.innerWidth;
+
+    if (previousScreenSize < 640) {
+      // columnsCount = 2;
+      masonry(items, 2);
+    } else if (previousScreenSize >= 640 && previousScreenSize < 1024) {
+      // columnsCount = 4;
+      masonry(items, 4);
+    } else if (previousScreenSize >= 1024 && previousScreenSize < 1536) {
+      // columnsCount = 6;
+      masonry(items, 6);
+    } else {
+      // columnsCount = 8;
+      masonry(items, 8);
+    }
 
     await tick();
     const exploreBooksScrollY: any = sessionStorage.getItem('explore-books-scroll-y');
@@ -89,13 +89,11 @@
       const _exploreBooksScrollY: any = JSON.parse(exploreBooksScrollY);
       window.scrollTo(0, _exploreBooksScrollY);
     }
-
-    isLoading = false;
   });
 </script>
 
 {#if columns}
-  <div class={`grid grid-cols-${columnsCount} gap-4`}>
+  <div class={`grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 2xl:grid-cols-8 gap-4`}>
     {#each Object.values(columns) as column}
       <div class="flex flex-col gap-4">
         {#each column as item}
@@ -111,15 +109,9 @@
   </div>
 {/if}
 
-{#if isLoading}
-  <h1 class="dark:text-white">Loading...</h1>
-{/if}
-
 <Button
   label="Show More"
   handleClick={async () => {
-    isLoading = true;
-
     const limit = 23;
     const from = items.length;
     const to = items.length + limit;
@@ -143,6 +135,6 @@
     sessionStorage.setItem('explore-books', JSON.stringify(items));
     sessionStorage.setItem('explore-books-scroll-y', JSON.stringify(window.scrollY));
 
-    isLoading = false;
+    masonry(items, Object.keys(columns).length);
   }}
 />
