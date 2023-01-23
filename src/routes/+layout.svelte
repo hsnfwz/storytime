@@ -71,6 +71,7 @@
 </script>
 
 <!-- VERSION 2 FEATURES/FIXES -->
+<!-- todo: sync status and page together -->
 <!-- todo: replace "update rating" and "update review" with add another instance -->
 <!-- todo: allow user to create another read instance -->
 <!-- todo: make date input more robust -->
