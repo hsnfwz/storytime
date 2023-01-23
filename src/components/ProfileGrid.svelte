@@ -1,23 +1,87 @@
 <script lang="ts">
+  // svelte
+  import { onMount, tick } from 'svelte';
+
+  // api
+  import { getRecords } from '$api/database';
+
+  // components
+  import Link from '$components/Link.svelte';
+  import Button from '$components/Button.svelte';
+  import Card from '$components/Card.svelte';
+
   // props
-  export let profiles: any;
+  let profiles: any = [];
+
+  onMount(async () => {
+    const _profiles: any = sessionStorage.getItem('profiles');
+
+    if (_profiles) {
+      profiles = JSON.parse(_profiles);
+    } else {
+      profiles = await getRecords(
+        'profile',
+        '*',
+        undefined,
+        {
+          column: 'created_at',
+          ascending: false
+        },
+        {
+          from: 0,
+          to: 23,
+        }
+      );
+
+      sessionStorage.setItem('profiles', JSON.stringify(profiles));
+    }
+
+    await tick();
+    const profilesScrollY: any = sessionStorage.getItem('profiles-scroll-y');
+    if (profilesScrollY) {
+      const _profilesScrollY: any = JSON.parse(profilesScrollY);
+      window.scrollTo(0, _profilesScrollY);
+    }
+  });
 </script>
 
-{#if profiles.length === 0}
-  <p class="dark:text-white text-center">Empty</p>
-{:else}
-  <div class="flex flex-col gap-4">
-    {#each profiles as profile}
-      <div class="flex flex-col items-center gap-2 bg-neutral-100 dark:bg-neutral-900 rounded p-4">
-        <p class="dark:text-white st-font-bold">Profile {profile.id}</p>
-        <p class="dark:text-white">Joined {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' }).format(new Date(profile.created_at))}</p>
-        <a
-          href={`/profiles/${profile.id}`}
-          class="text-blue-500"
-        >
-          View Profile
-        </a>
-      </div>
-    {/each}
-  </div>
-{/if}
+<div class={`grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 2xl:grid-cols-8 gap-4`}>
+  {#each profiles as profile}
+    <Card>
+      <p class="dark:text-white text-center st-font-bold">Profile {profile.id}</p>
+      <p class="dark:text-white text-center">Joined {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' }).format(new Date(profile.created_at))}</p>
+      <Link
+        label="View Profile"
+        link={`/profiles/${profile.id}`}
+      />
+    </Card>
+  {/each}
+</div>
+
+<Button
+  label="Show More"
+  handleClick={async () => {
+    const limit = 23;
+    const from = profiles.length;
+    const to = profiles.length + limit;
+
+    const _profiles = await getRecords(
+      'profile',
+      '*',
+      undefined,
+      {
+        column: 'created_at',
+        ascending: false
+      },
+      {
+        from,
+        to,
+      }
+    );
+
+    profiles = [...profiles, ..._profiles];
+
+    sessionStorage.setItem('profiles', JSON.stringify(profiles));
+  }}
+  isDisabled={profiles.length === 0 || profiles.length % 24 !== 0}
+/>

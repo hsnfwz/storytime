@@ -97,7 +97,7 @@
 {#if !isLoading}
   <main class="flex flex-col gap-4 mt-4 mb-[58px] sm:mt-0 sm:mb-0">
     <Nav />
-    <div class="mx-4">
+    <div class="flex flex-col gap-4 mx-4">
       <slot />
     </div>
     <Footer />

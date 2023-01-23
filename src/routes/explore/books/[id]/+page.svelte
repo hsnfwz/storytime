@@ -78,7 +78,7 @@
           review = profileBook[`${getCurrentEnvironment()}_review_instance`].review;
         }
 
-        if (profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.TO_READ) {
+        if (profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.TO_READ.text) {
           if (profileBook[`${getCurrentEnvironment()}_status_instance`].start_date) {
             startYear = new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date).getUTCFullYear();
             startMonth = new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date).getUTCMonth() + 1;
@@ -86,7 +86,7 @@
           }
         }
         
-        if ((profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ) || (profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF)) {
+        if ((profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ.text) || (profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF.text)) {
           if (profileBook[`${getCurrentEnvironment()}_status_instance`].end_date) {
             endYear = new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].end_date).getUTCFullYear();
             endMonth = new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].end_date).getUTCMonth() + 1;
@@ -114,7 +114,7 @@
 
     const profileBookStatus: string = profileBook[`${getCurrentEnvironment()}_status_instance`].status;
 
-    if (profileBookStatus === E_BookStatus.READING) {
+    if (profileBookStatus === E_BookStatus.READING.text) {
       // status instance
       const updatedStatusInstanceData: any = {
         start_date: new Date(startYear, startMonth-1, startDay),
@@ -123,7 +123,7 @@
       const latestStatusInstanceRecords = await updateRecords('status_instance', [updatedStatusInstanceData], { id: profileBook.latest_status_instance_id });
 
       profileBook[`${getCurrentEnvironment()}_status_instance`] = latestStatusInstanceRecords[0];
-    } else if (profileBookStatus === E_BookStatus.READ) {
+    } else if (profileBookStatus === E_BookStatus.READ.text) {
       // read instance
       const updatedReadInstanceData: any = {
         start_date: new Date(startYear, startMonth-1, startDay),
@@ -146,7 +146,7 @@
 
       profileBook[`${getCurrentEnvironment()}_read_instance`] = latestReadInstanceRecords[0];
       profileBook[`${getCurrentEnvironment()}_status_instance`] = latestStatusInstanceRecords[0];
-    } else if (profileBookStatus === E_BookStatus.DNF) {
+    } else if (profileBookStatus === E_BookStatus.DNF.text) {
       // status instance
       const updatedStatusInstanceData: any = {
         start_date: new Date(startYear, startMonth-1, startDay),
@@ -172,22 +172,22 @@
     let bookCountAttribute: string = '';
     let bookCountValue: number = 0;
 
-    if (profileBookStatus === E_BookStatus.READING) {
+    if (profileBookStatus === E_BookStatus.READING.text) {
       profileCountAttribute = 'book_status_reading_count';
       profileCountValue = currentProfile.book_status_reading_count - 1;
       bookCountAttribute = 'status_reading_count';
       bookCountValue = data.item.status_reading_count - 1;
-    } else if (profileBookStatus === E_BookStatus.TO_READ) {
+    } else if (profileBookStatus === E_BookStatus.TO_READ.text) {
       profileCountAttribute = 'book_status_to_read_count';
       profileCountValue = currentProfile.book_status_to_read_count - 1;
       bookCountAttribute = 'status_to_read_count';
       bookCountValue = data.item.status_to_read_count - 1;
-    } else if (profileBookStatus === E_BookStatus.READ) {
+    } else if (profileBookStatus === E_BookStatus.READ.text) {
       profileCountAttribute = 'book_status_read_count';
       profileCountValue = currentProfile.book_status_read_count - 1;
       bookCountAttribute = 'status_read_count';
       bookCountValue = data.item.status_read_count - 1;
-    } else if (profileBookStatus === E_BookStatus.DNF) {
+    } else if (profileBookStatus === E_BookStatus.DNF.text) {
       profileCountAttribute = 'book_status_dnf_count';
       profileCountValue = currentProfile.book_status_dnf_count - 1;
       bookCountAttribute = 'status_dnf_count';
@@ -280,17 +280,17 @@
       let minusBookAttribute: string = '';
       let minusBookCount: number = 0;
 
-      if (profileBookStatus === E_BookStatus.READING) {
+      if (profileBookStatus === E_BookStatus.READING.text) {
         minusProfileAttribute = 'book_status_reading_count';
         minusProfileCount = currentProfile[minusProfileAttribute] - 1;
         minusBookAttribute = 'status_reading_count';
         minusBookCount = data.item[minusBookAttribute] - 1;
-      } else if (profileBookStatus === E_BookStatus.READ) {
+      } else if (profileBookStatus === E_BookStatus.READ.text) {
         minusProfileAttribute = 'book_status_read_count';
         minusProfileCount = currentProfile[minusProfileAttribute] - 1;
         minusBookAttribute = 'status_read_count';
         minusBookCount = data.item[minusBookAttribute] - 1;
-      } else if (profileBookStatus === E_BookStatus.DNF) {
+      } else if (profileBookStatus === E_BookStatus.DNF.text) {
         minusProfileAttribute = 'book_status_dnf_count';
         minusProfileCount = currentProfile[minusProfileAttribute] - 1;
         minusBookAttribute = 'status_dnf_count';
@@ -407,17 +407,17 @@
       let minusBookAttribute: string = '';
       let minusBookCount: number = 0;
 
-      if (profileBookStatus === E_BookStatus.TO_READ) {
+      if (profileBookStatus === E_BookStatus.TO_READ.text) {
         minusProfileAttribute = 'book_status_to_read_count';
         minusProfileCount = currentProfile[minusProfileAttribute] - 1;
         minusBookAttribute = 'status_to_read_count';
         minusBookCount = data.item[minusBookAttribute] - 1;
-      } else if (profileBookStatus === E_BookStatus.READ) {
+      } else if (profileBookStatus === E_BookStatus.READ.text) {
         minusProfileAttribute = 'book_status_read_count';
         minusProfileCount = currentProfile[minusProfileAttribute] - 1;
         minusBookAttribute = 'status_read_count';
         minusBookCount = data.item[minusBookAttribute] - 1;
-      } else if (profileBookStatus === E_BookStatus.DNF) {
+      } else if (profileBookStatus === E_BookStatus.DNF.text) {
         minusProfileAttribute = 'book_status_dnf_count';
         minusProfileCount = currentProfile[minusProfileAttribute] - 1;
         minusBookAttribute = 'status_dnf_count';
@@ -511,7 +511,7 @@
       const readInstanceData: any = {
         profile_id: currentProfile.id,
         book_id: data.item.id,
-        start_date: profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? profileBook[`${getCurrentEnvironment()}_status_instance`].start_date : new Date(startYear, startMonth-1, startDay),
+        start_date: profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING.text ? profileBook[`${getCurrentEnvironment()}_status_instance`].start_date : new Date(startYear, startMonth-1, startDay),
         end_date: new Date(endYear, endMonth-1, endDay),
       };
 
@@ -520,7 +520,7 @@
         profile_id: currentProfile.id,
         book_id: data.item.id,
         status,
-        start_date: profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? profileBook[`${getCurrentEnvironment()}_status_instance`].start_date : new Date(startYear, startMonth-1, startDay),
+        start_date: profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING.text ? profileBook[`${getCurrentEnvironment()}_status_instance`].start_date : new Date(startYear, startMonth-1, startDay),
         end_date: new Date(endYear, endMonth-1, endDay),
       };
 
@@ -549,17 +549,17 @@
       let minusBookAttribute: string = '';
       let minusBookCount: number = 0;
 
-      if (profileBookStatus === E_BookStatus.TO_READ) {
+      if (profileBookStatus === E_BookStatus.TO_READ.text) {
         minusProfileAttribute = 'book_status_to_read_count';
         minusProfileCount = currentProfile[minusProfileAttribute] - 1;
         minusBookAttribute = 'status_to_read_count';
         minusBookCount = data.item[minusBookAttribute] - 1;
-      } else if (profileBookStatus === E_BookStatus.READING) {
+      } else if (profileBookStatus === E_BookStatus.READING.text) {
         minusProfileAttribute = 'book_status_reading_count';
         minusProfileCount = currentProfile[minusProfileAttribute] - 1;
         minusBookAttribute = 'status_reading_count';
         minusBookCount = data.item[minusBookAttribute] - 1;
-      } else if (profileBookStatus === E_BookStatus.DNF) {
+      } else if (profileBookStatus === E_BookStatus.DNF.text) {
         minusProfileAttribute = 'book_status_dnf_count';
         minusProfileCount = currentProfile[minusProfileAttribute] - 1;
         minusBookAttribute = 'status_dnf_count';
@@ -669,7 +669,7 @@
         profile_id: currentProfile.id,
         book_id: data.item.id,
         status,
-        start_date: profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? profileBook[`${getCurrentEnvironment()}_status_instance`].start_date : new Date(startYear, startMonth-1, startDay),
+        start_date: profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING.text ? profileBook[`${getCurrentEnvironment()}_status_instance`].start_date : new Date(startYear, startMonth-1, startDay),
         end_date: new Date(endYear, endMonth-1, endDay),
       };
 
@@ -690,17 +690,17 @@
       let minusBookAttribute: string = '';
       let minusBookCount: number = 0;
 
-      if (profileBookStatus === E_BookStatus.TO_READ) {
+      if (profileBookStatus === E_BookStatus.TO_READ.text) {
         minusProfileAttribute = 'book_status_to_read_count';
         minusProfileCount = currentProfile[minusProfileAttribute] - 1;
         minusBookAttribute = 'status_to_read_count';
         minusBookCount = data.item[minusBookAttribute] - 1;
-      } else if (profileBookStatus === E_BookStatus.READING) {
+      } else if (profileBookStatus === E_BookStatus.READING.text) {
         minusProfileAttribute = 'book_status_reading_count';
         minusProfileCount = currentProfile[minusProfileAttribute] - 1;
         minusBookAttribute = 'status_reading_count';
         minusBookCount = data.item[minusBookAttribute] - 1;
-      } else if (profileBookStatus === E_BookStatus.READ) {
+      } else if (profileBookStatus === E_BookStatus.READ.text) {
         minusProfileAttribute = 'book_status_read_count';
         minusProfileCount = currentProfile[minusProfileAttribute] - 1;
         minusBookAttribute = 'status_read_count';
@@ -926,70 +926,70 @@
         {/if}
         {#if currentProfile && (dateDifference?.differenceDays < 0)}
           <Button
-            label={E_BookStatus.TO_READ}
-            handleClick={async () => await handleToReadStatus(E_BookStatus.TO_READ)}
-            isSelected={profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ}
+            label={E_BookStatus.TO_READ.text}
+            handleClick={async () => await handleToReadStatus(E_BookStatus.TO_READ.text)}
+            isSelected={profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ.text}
             isDisabled={isLoading}
           />
           <div class="w-full flex flex-col gap-2">
             <InfoCard>
-              <p class="dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READING}</span> on publication day</p>
+              <p class="dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READING.text}</span> on publication day</p>
             </InfoCard>
             <InfoCard>
-              <p class="dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READ}</span> or <span class="st-font-italic">{E_BookStatus.DNF}</span> 3 days after publication</p>
+              <p class="dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DNF.text}</span> 3 days after publication</p>
             </InfoCard>
           </div>
         {/if}
         {#if currentProfile && (dateDifference?.differenceDays >= 0) && (dateDifference?.differenceDays <= 3)}
           <div class="flex gap-2 w-full">
             <Button
-              label={E_BookStatus.TO_READ}
-              handleClick={async () => await handleToReadStatus(E_BookStatus.TO_READ)}
-              isSelected={profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ}
+              label={E_BookStatus.TO_READ.text}
+              handleClick={async () => await handleToReadStatus(E_BookStatus.TO_READ.text)}
+              isSelected={profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ.text}
               isDisabled={isLoading}
             />
             <Button
-              label={E_BookStatus.READING}
-              handleClick={async () => await handleReadingStatus(E_BookStatus.READING)}
-              isSelected={profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING}
+              label={E_BookStatus.READING.text}
+              handleClick={async () => await handleReadingStatus(E_BookStatus.READING.text)}
+              isSelected={profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING.text}
               isDisabled={isLoading}
             />
           </div>
           <InfoCard>
-            <p class="dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READ}</span> or <span class="st-font-italic">{E_BookStatus.DNF}</span> 3 days after publication</p>
+            <p class="dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DNF.text}</span> 3 days after publication</p>
           </InfoCard>
         {/if}
         {#if currentProfile && (dateDifference?.differenceDays > 3)}
           <div class="flex flex-col gap-4 w-full">
-            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-2 w-full">
+            <div class="grid sm:grid-cols-2 gap-2 w-full">
               <Button
-                label={E_BookStatus.TO_READ}
-                handleClick={async () => await handleToReadStatus(E_BookStatus.TO_READ)}
-                isSelected={profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ}
+                label={E_BookStatus.TO_READ.text}
+                handleClick={async () => await handleToReadStatus(E_BookStatus.TO_READ.text)}
+                isSelected={profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ.text}
                 isDisabled={isLoading}
               />
               <Button
-                label={E_BookStatus.READING}
-                handleClick={async () => await handleReadingStatus(E_BookStatus.READING)}
-                isSelected={profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING}
+                label={E_BookStatus.READING.text}
+                handleClick={async () => await handleReadingStatus(E_BookStatus.READING.text)}
+                isSelected={profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING.text}
                 isDisabled={isLoading}
               />
               <Button
-                label={E_BookStatus.READ}
-                handleClick={async () => await handleReadStatus(E_BookStatus.READ)}
-                isSelected={profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ}
+                label={E_BookStatus.READ.text}
+                handleClick={async () => await handleReadStatus(E_BookStatus.READ.text)}
+                isSelected={profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ.text}
                 isDisabled={isLoading}
               />
               <Button
-                label={E_BookStatus.DNF}
-                handleClick={async () => await handleDNFStatus(E_BookStatus.DNF)}
-                isSelected={profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF}
+                label={E_BookStatus.DNF.text}
+                handleClick={async () => await handleDNFStatus(E_BookStatus.DNF.text)}
+                isSelected={profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF.text}
                 isDisabled={isLoading}
               />
             </div>
           </div>
         {/if}
-        {#if (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.TO_READ)}
+        {#if (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.TO_READ.text)}
           <DatePicker
             label="Start Date"
             bind:year={startYear}
@@ -998,7 +998,7 @@
             bind:showError={showInvalidDateRangeError}
           />
         {/if}
-        {#if (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ) || (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF)}
+        {#if (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ.text) || (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF.text)}
           <DatePicker
             label="End Date"
             bind:year={endYear}
@@ -1007,20 +1007,20 @@
             bind:showError={showInvalidDateRangeError}
           />
         {/if}
-        {#if (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.TO_READ)}
+        {#if (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.TO_READ.text)}
           {#if showInvalidDateRangeError}
             <ErrorCard>
-              <p>{profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING ? 'Start date cannot be after current date' : 'Start date cannot be after end date'}</p>
+              <p>{profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING.text ? 'Start date cannot be after current date' : 'Start date cannot be after end date'}</p>
             </ErrorCard>
           {/if}
         {/if}
-        {#if profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.TO_READ}
+        {#if profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.TO_READ.text}
           <Button
             label="Update Status"
             handleClick={async () => await handleUpdateProfileBook()}
             isDisabled={
-              (profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING && (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date))) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(startYear, startMonth-1, startDay))) ||
-              (profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.READING && (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date))) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(startYear, startMonth-1, startDay)) &&
+              (profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING.text && (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date))) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(startYear, startMonth-1, startDay))) ||
+              (profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.READING.text && (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date))) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(startYear, startMonth-1, startDay)) &&
               (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].end_date)) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(endYear, endMonth-1, endDay)))) ||
               showInvalidDateRangeError ||
               isLoading
@@ -1028,7 +1028,7 @@
           />
         {/if}
       </Card>
-      {#if profileBook && ((profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ) || (profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF))}
+      {#if profileBook && ((profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ.text) || (profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF.text))}
         <Card>
           <h1 class="w-full dark:text-white st-font-bold text-xl text-center">Rating</h1>
           {#if profileBook[`${getCurrentEnvironment()}_rating_instance`]}
@@ -1080,10 +1080,10 @@
       {:else}
         <Card>
           <InfoCard>
-            <p class="dark:text-white">You can start rating this book after marking it as <span class="st-font-italic">{E_BookStatus.READ}</span> or <span class="st-font-italic">{E_BookStatus.DNF}</span></p>
+            <p class="dark:text-white">You can start rating this book after marking it as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DNF.text}</span></p>
           </InfoCard>
           <InfoCard>
-            <p class="dark:text-white">You can start reviewing this book after marking it as <span class="st-font-italic">{E_BookStatus.READ}</span> or <span class="st-font-italic">{E_BookStatus.DNF}</span></p>
+            <p class="dark:text-white">You can start reviewing this book after marking it as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DNF.text}</span></p>
           </InfoCard>
         </Card>
       {/if}

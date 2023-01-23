@@ -1,16 +1,15 @@
 <script lang="ts">
   // svelte
-  import { onMount, tick } from 'svelte';
-
-  // api
-  import { getRecords } from '$api/database';
+  import { afterUpdate } from 'svelte';
 
   // components
   import ItemCard from '$components/ItemCard.svelte';
-  import Button from '$components/Button.svelte';
+  import Card from '$components/Card.svelte';
+
+  // props
+  export let items: any = [];
 
   // state
-  let items: any = [];
   let columns: any;
 
   const masonry = (_items: any, _columnsCount: number) => {
@@ -28,29 +27,7 @@
     columns = columnWrappers;
   }
 
-  onMount(async () => {
-    const exploreBooks: any = sessionStorage.getItem('explore-books');
-
-    if (exploreBooks) {
-      items = JSON.parse(exploreBooks);
-    } else {
-      items = await getRecords(
-        'book',
-        'id, title',
-        undefined,
-        {
-          column: 'release_date',
-          ascending: false
-        },
-        {
-          from: 0,
-          to: 23,
-        }
-      );
-
-      sessionStorage.setItem('explore-books', JSON.stringify(items));
-    }
-
+  afterUpdate(async () => {
     window.addEventListener('resize', () => {
       if (window.innerWidth < 640 && previousScreenSize >= 640) {
         masonry(items, 2);
@@ -76,25 +53,19 @@
     } else {
       masonry(items, 8);
     }
-
-    await tick();
-    const exploreBooksScrollY: any = sessionStorage.getItem('explore-books-scroll-y');
-    if (exploreBooksScrollY) {
-      const _exploreBooksScrollY: any = JSON.parse(exploreBooksScrollY);
-      window.scrollTo(0, _exploreBooksScrollY);
-    }
   });
 </script>
 
-{#if columns}
+{#if items.length === 0}
+  <Card>
+    <p>No books</p>
+  </Card>
+{:else if items.length !== 0 && columns}
   <div class={`grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 2xl:grid-cols-8 gap-4`}>
     {#each Object.values(columns) as column}
       <div class="flex flex-col gap-4">
         {#each column as item}
-          <a
-            href={`/explore/books/${item.id}`}
-            on:click={() => sessionStorage.setItem('explore-books-scroll-y', JSON.stringify(window.scrollY))}
-          >
+          <a href={`/explore/books/${item.id}`}>
             <ItemCard {item} />
           </a>
         {/each}
@@ -102,33 +73,3 @@
     {/each}
   </div>
 {/if}
-
-<Button
-  label="Show More"
-  handleClick={async () => {
-    const limit = 23;
-    const from = items.length;
-    const to = items.length + limit;
-
-    const _items = await getRecords(
-      'book',
-      'id, title',
-      undefined,
-      {
-        column: 'release_date',
-        ascending: false
-      },
-      {
-        from,
-        to,
-      }
-    );
-
-    items = [...items, ..._items];
-
-    sessionStorage.setItem('explore-books', JSON.stringify(items));
-
-    masonry(items, Object.keys(columns).length);
-  }}
-  isDisabled={items.length === 0 || items.length % 24 !== 0}
-/>

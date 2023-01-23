@@ -8,13 +8,13 @@ const config = {
 	kit: {
 		adapter: adapter(),
 		alias: {
-			'$components': resolve('./src/components/'),
-			'$interfaces': resolve('./src/interfaces/'),
-			'$stores': resolve('./src/stores/'),
-			'$config': resolve('./src/config/'),
-			'$api': resolve('./src/api/'),
-			'$helpers': resolve('./src/helpers/'),
-			'$enums': resolve('./src/enums/'),
+			'$components': resolve('./src/components'),
+			'$interfaces': resolve('./src/interfaces'),
+			'$stores': resolve('./src/stores'),
+			'$config': resolve('./src/config'),
+			'$api': resolve('./src/api'),
+			'$helpers': resolve('./src/helpers'),
+			'$enums': resolve('./src/enums'),
     }
 	}
 };

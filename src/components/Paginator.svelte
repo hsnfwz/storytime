@@ -5,10 +5,10 @@
   export let maxPageItemsCount: number;
 </script>
 
-<div class="flex gap-4">
+<div class="flex justify-center gap-4">
   <a
     href={`?page=${currentPage}`}
-    class={`rounded-full w-8 h-8 bg-blue-500 text-white st-font-bold disabled:opacity-50 flex justify-center items-center gap-2 ${currentPage === 1 ? 'opacity-50 pointer-events-none' : ''}`}
+    class={`rounded-full w-8 h-8 bg-sky-500 text-white st-font-bold disabled:opacity-50 flex justify-center items-center gap-2 ${currentPage === 1 ? 'opacity-50 pointer-events-none' : ''}`}
     on:click={() => currentPage = currentPage - 1}
   >
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
@@ -17,7 +17,7 @@
   </a>
   <a
     href={`?page=${currentPage}`}
-    class={`rounded-full w-8 h-8 bg-blue-500 text-white st-font-bold disabled:opacity-50 flex justify-center items-center gap-2 ${currentItemsCount <= maxPageItemsCount ? 'opacity-50 pointer-events-none' : ''}`}
+    class={`rounded-full w-8 h-8 bg-sky-500 text-white st-font-bold disabled:opacity-50 flex justify-center items-center gap-2 ${currentItemsCount < maxPageItemsCount ? 'opacity-50 pointer-events-none' : ''}`}
     on:click={() => currentPage = currentPage + 1}
   >
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">

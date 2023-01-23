@@ -1,8 +1,7 @@
 <script lang="ts">
+
   // components
   import Heading from '$components/Heading.svelte';
-  import ItemGrid from '$components/ItemGrid.svelte';
 </script>
 
-<Heading label="Explore" />
-<ItemGrid />
+<Heading label="Community" />

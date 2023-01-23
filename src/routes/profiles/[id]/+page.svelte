@@ -1,14 +1,17 @@
 <script lang="ts">
+  // components
+  import Heading from '$components/Heading.svelte';
+  import Link from '$components/Link.svelte';
+  import Card from '$components/Card.svelte';
+
   // data
   export let data: { item: any };
 </script>
 
-<div class="flex flex-col items-center gap-4">
-  <h1 class="dark:text-white text-center st-font-bold text-xl">Profile {data.item.id}</h1>
-  <a
-    href={`/profiles/${data.item.id}/books`}
-    class="text-blue-500"
-  >
-    View Books
-  </a>
-</div>
+<Heading label={`Profile ${data.item.id}`} />
+<Card>
+  <Link
+    label="Books"
+    link={`/profiles/${data.item.id}/books`}
+  />
+</Card>

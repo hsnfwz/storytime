@@ -1,46 +1,56 @@
 // svelte
 import { error } from '@sveltejs/kit';
-import { dev } from '$app/environment';
 
 // api
 import { getRecords } from '$api/database';
 
 // helpers
-import { sortBy } from '$helpers/helpers';
+import { sortBy, getCurrentEnvironment } from '$helpers/helpers';
+
+// enums
+import E_BookStatus from '$enums/E_BookStatus';
 
 export async function load({ url, params }: any) {
+  // status filter
+  let currentStatus = url.searchParams.get('status') || E_BookStatus.ALL.url;
+  const words = currentStatus.split('-');
+  const _words = words.map((word: string) => {
+    const firstChar = word[0].toUpperCase();
+    const remainingChars = word.substring(1);
+    const _word = firstChar + remainingChars;
+    return _word;
+  });
+  currentStatus = _words.join(' ');
+
+  // page filter
   const currentPage = +url.searchParams.get('page') || 1;
-  const maxPageItemsCount: number = 47;
-  const from: number = (currentPage - 1) * (maxPageItemsCount + 1);
-  const to: number = currentPage * maxPageItemsCount;
+  const maxPageItemsCount: number = 24;
+  const from: number = (currentPage - 1) * maxPageItemsCount;
+  const to: number = from + (maxPageItemsCount - 1);
 
   const { id } = params;
 
-  let currentEnv: string = '';
+  let match: any;
 
-  if (dev) {
-    currentEnv = 'dev';
-  } else {
-    currentEnv = 'prod';
-  }
-
-  const profiles: any = await getRecords(
-    'profile',
-    'id, created_at, book_total_status_count, book_reading_status_count, book_want_to_read_status_count, book_read_status_count, book_did_not_finish_status_count',
-    {
-      id
+  if (currentStatus !== E_BookStatus.ALL.text) {
+    match = {
+      profile_id: id,
+      [`${getCurrentEnvironment()}_status_instance.status`]: currentStatus,
     }
-  );
-
-  if (!profiles || !profiles[0]) throw error(404, 'Not Found');
+  } else {
+    match = {
+      profile_id: id,
+    }
+  }
 
   const profileBooks: any = await getRecords(
     'profile_book',
-    `id, profile_id, book_id, status, ${currentEnv}_book (id, title, release_date)`,
+    `*, ${getCurrentEnvironment()}_book(id, title, release_date), ${getCurrentEnvironment()}_status_instance!inner(*)`,
+    match,
     {
-      profile_id: id
+      column: 'created_at',
+      ascending: false
     },
-    undefined,
     {
       from,
       to,
@@ -49,13 +59,13 @@ export async function load({ url, params }: any) {
 
   if (!profileBooks) throw error(404, 'Not Found');
 
-  const books: any = profileBooks.map((profileBook: any) => profileBook[`${currentEnv}_book`]);
+  const books: any = profileBooks.map((profileBook: any) => profileBook[`${getCurrentEnvironment()}_book`]);
   const items: any = sortBy(books, 'release_date', false);
 
   return {
-    profile: profiles[0],
     items,
     currentPage,
     maxPageItemsCount,
+    currentStatus,
   };
 }
