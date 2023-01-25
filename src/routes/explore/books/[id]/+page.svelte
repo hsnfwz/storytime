@@ -22,6 +22,13 @@
   import SuccessCard from '$components/SuccessCard.svelte';
   import ErrorCard from '$components/ErrorCard.svelte';
   import Link from '$components/Link.svelte';
+  import Heading from '$components/Heading.svelte';
+  import PlusButton from '$components/PlusButton.svelte';
+  import MinusButton from '$components/MinusButton.svelte';
+  import ArrowDownButton from '$components/ArrowDownButton.svelte';
+  import ArrowUpButton from '$components/ArrowUpButton.svelte';
+  import VerticalDivider from '$components/VerticalDivider.svelte';
+  import HorizontalDivider from '$components/HorizontalDivider.svelte';
 
   // helpers
   import { formatDate, getItemRatingsAverage, getItemTotalRatings, getDateDifference, getCurrentEnvironment } from '$helpers/helpers';
@@ -54,21 +61,61 @@
   let rating: number = 5;
   let review: string = '';
 
+  let bookCollections: any = [];
+  let bookCollectionIds: any = [];
+
+  let isFollowing: boolean = false;
+  let bookCollectionTitle: string = '';
+  let bookCollectionDescription: string = '';
+
+  let expandStatusCard: boolean = false;
+  let expandCollectionsCard: boolean = false;
+  let expandRatingCard: boolean = false;
+  let expandReviewCard: boolean = false;
+
   const dateDifference = getDateDifference(data.item.release_date);
 
   profile.subscribe(async (value) => {
     if (!currentProfile && value) {
-      const profileBooks: any = await getRecords(
-        'profile_book',
-        `*, ${getCurrentEnvironment()}_status_instance (*), ${getCurrentEnvironment()}_read_instance (*), ${getCurrentEnvironment()}_rating_instance (*), ${getCurrentEnvironment()}_review_instance (*)`,
-        {
-          profile_id: value.id,
-          book_id: data.item.id,
-        },
-      );
+      const [
+        bookCollectionRecords,
+        bookCollectionBookRecords,
+        profileBookRecords,
+      ] = await Promise.all([
+        getRecords(
+          'book_collection',
+          `id, title, total_count`,
+          {
+            profile_id: value.id,
+          },
+          {
+            column: 'title',
+            ascending: true
+          },
+        ),
+        getRecords(
+          'book_collection_book',
+          `id, book_collection_id`,
+          {
+            profile_id: value.id,
+            book_id: data.item.id,
+          },
+        ),
+        getRecords(
+          'profile_book',
+          `*, ${getCurrentEnvironment()}_status_instance (*), ${getCurrentEnvironment()}_read_instance (*), ${getCurrentEnvironment()}_rating_instance (*), ${getCurrentEnvironment()}_review_instance (*)`,
+          {
+            profile_id: value.id,
+            book_id: data.item.id,
+          },
+        ),
+      ]);
 
-      if (profileBooks[0]) {
-        profileBook = profileBooks[0];
+      bookCollections = bookCollectionRecords;
+      bookCollectionIds = bookCollectionBookRecords.map((bookCollectionBook: any) => bookCollectionBook.book_collection_id);
+
+      if (profileBookRecords[0]) {
+        profileBook = profileBookRecords[0];
 
         if (profileBook[`${getCurrentEnvironment()}_rating_instance`]) {
           rating = profileBook[`${getCurrentEnvironment()}_rating_instance`].rating;
@@ -100,6 +147,56 @@
       currentProfile = value;
     }
   });
+
+  const handleAddToCollection = async (bookCollection: any) => {
+    isLoading = true;
+
+    const bookCollectionBookData: any = {
+      profile_id: currentProfile.id,
+      book_id: data.item.id,
+      book_collection_id: bookCollection.id,
+    }
+
+    const updatedBookCollectionData: any = {
+      total_count: bookCollection.total_count + 1,
+    };
+
+    const [
+      newBookCollectionBookRecords,
+      latestBookCollectionRecords
+    ] = await Promise.all([
+      insertRecords('book_collection_book', [bookCollectionBookData]),
+      updateRecords('book_collection', [updatedBookCollectionData], { id: bookCollection.id }),
+    ]);
+
+    const index = bookCollections.findIndex((previousBookCollection: any) => previousBookCollection.id === bookCollection.id);
+    bookCollections[index] = latestBookCollectionRecords[0];
+    bookCollectionIds = [ ...bookCollectionIds, bookCollection.id ];
+
+    isLoading = false;
+  }
+
+  const handleRemoveFromCollection = async (bookCollection: any) => {
+    isLoading = true;
+
+    const updatedBookCollectionData: any = {
+      total_count: bookCollection.total_count - 1,
+    };
+
+    const [
+      deletedBookCollectionBookRecords,
+      latestBookCollectionRecords
+    ] = await Promise.all([
+      deleteRecords('book_collection_book', { book_collection_id: bookCollection.id, book_id: data.item.id }),
+      updateRecords('book_collection', [updatedBookCollectionData], { id: bookCollection.id }),
+    ]);
+
+    const index = bookCollections.findIndex((previousBookCollection: any) => previousBookCollection.id === bookCollection.id);
+    bookCollections[index] = latestBookCollectionRecords[0];
+    bookCollectionIds = bookCollectionIds.filter((bookCollectionBookId: number) => bookCollectionBookId !== bookCollection.id);
+
+    isLoading = false;
+  }
 
   const handleUpdateProfileBook = async () => {
     isLoading = true;
@@ -878,96 +975,103 @@
 
     isLoading = false;
   }
+
+  const handleTrackingStatus = async (status: string) => {
+    console.log(status);
+  }
 </script>
 
 <div class="flex flex-col items-center md:flex-row md:justify-center md:items-start gap-4">
-  <div class="w-full flex flex-col items-center gap-4 md:max-w-[300px]">
+  <div class="w-full md:max-w-[300px]">
     <ItemCard item={data.item} />
+  </div>
+  <VerticalDivider />
+  <div class="w-full flex flex-col items-center gap-4 md:max-w-[600px]">
     <Card>
-      <h1 class="w-full dark:text-white st-font-bold text-xl text-center">{data.item.title}</h1>
-      {#if dateDifference?.differenceDays < 0}
-        <p class="w-full text-center dark:text-white">
-          Expected Publication {formatDate(data.item.release_date)} ({dateDifference.differenceDaysAbs === 1 ? `${dateDifference.differenceDaysAbs} day` : `${dateDifference.differenceDaysAbs} days`})
-        </p>
-      {:else}
-        <p class="w-full text-center dark:text-white">
-          Published {formatDate(data.item.release_date)}
-        </p>
-      {/if}
-      {#if getItemTotalRatings(data.item) !== 0}
-        <p class="w-full text-center dark:text-white">{getItemRatingsAverage(data.item)} / 10</p>
-      {/if}
-      <p class="w-full text-center dark:text-white">{getItemTotalRatings(data.item) === 1 ? `${getItemTotalRatings(data.item)} rating`: `${getItemTotalRatings(data.item)} ratings`}</p>
-      <p class="w-full text-center dark:text-white">{data.item.review_count ===  1 ? `${data.item.review_count} review` : `${data.item.review_count} reviews`}</p>
-      <p class="w-full text-center dark:text-white">{data.item.status_to_read_count === 1 ? `${data.item.status_to_read_count} to read status` : `${data.item.status_to_read_count} to read statuses`}</p>
-      <p class="w-full text-center dark:text-white">{data.item.status_reading_count === 1 ? `${data.item.status_reading_count} reading status` : `${data.item.status_reading_count} reading statuses`}</p>
-      <p class="w-full text-center dark:text-white">{data.item.status_read_count === 1 ? `${data.item.status_read_count} read status` : `${data.item.status_read_count} read statuses`}</p>
-      <p class="w-full text-center dark:text-white">{data.item.status_dnf_count === 1 ? `${data.item.status_dnf_count} dnf status` : `${data.item.status_dnf_count} dnf statuses`}</p>
-      <p class="w-full text-center dark:text-white">{data.item.unique_read_count === 1 ? `${data.item.unique_read_count} unique read` : `${data.item.unique_read_count} unique reads`}</p>
-      <p class="w-full text-center dark:text-white">{data.item.read_count === 1 ? `${data.item.read_count} total read` : `${data.item.read_count} total reads`}</p>
+      <Heading label={data.item.title} />
+      <div class="w-full flex flex-col gap-2">
+        {#if dateDifference?.differenceDays < 0}
+          <p class="w-full dark:text-white">
+            Expected Publication {formatDate(data.item.release_date)} ({dateDifference.differenceDaysAbs === 1 ? `${dateDifference.differenceDaysAbs} day` : `${dateDifference.differenceDaysAbs} days`})
+          </p>
+        {:else}
+          <p class="w-full dark:text-white">
+            Published {formatDate(data.item.release_date)}
+          </p>
+        {/if}
+        {#if getItemTotalRatings(data.item) !== 0}
+          <p class="w-full dark:text-white">{getItemRatingsAverage(data.item)} / 10</p>
+        {/if}
+      </div>
+      <div class="w-full flex flex-col gap-2">
+        <p class="w-full dark:text-white">{getItemTotalRatings(data.item) === 1 ? `${getItemTotalRatings(data.item)} rating`: `${getItemTotalRatings(data.item)} ratings`}</p>
+        <p class="w-full dark:text-white">{data.item.review_count ===  1 ? `${data.item.review_count} review` : `${data.item.review_count} reviews`}</p>
+        <p class="w-full dark:text-white">{data.item.status_to_read_count === 1 ? `${data.item.status_to_read_count} to read status` : `${data.item.status_to_read_count} to read statuses`}</p>
+        <p class="w-full dark:text-white">{data.item.status_reading_count === 1 ? `${data.item.status_reading_count} reading status` : `${data.item.status_reading_count} reading statuses`}</p>
+        <p class="w-full dark:text-white">{data.item.status_read_count === 1 ? `${data.item.status_read_count} read status` : `${data.item.status_read_count} read statuses`}</p>
+        <p class="w-full dark:text-white">{data.item.status_dnf_count === 1 ? `${data.item.status_dnf_count} dnf status` : `${data.item.status_dnf_count} dnf statuses`}</p>
+        <p class="w-full dark:text-white">{data.item.unique_read_count === 1 ? `${data.item.unique_read_count} unique read` : `${data.item.unique_read_count} unique reads`}</p>
+        <p class="w-full dark:text-white">{data.item.read_count === 1 ? `${data.item.read_count} total read` : `${data.item.read_count} total reads`}</p>
+      </div>
     </Card>
+    <HorizontalDivider />
     <Card>
-      <Link link="/" label="Ratings" />
-      <Link link="/" label="Reviews" />
-      <Link link="/" label="Discussions" />
-      <Link link="/" label="Statistics" />
+      <Heading label="More Info" />
+      <div class="w-full flex flex-col gap-2">
+        <Link link="/" label="Ratings" />
+        <Link link="/" label="Reviews" />
+        <Link link="/" label="Discussions" />
+        <Link link="/" label="Statistics" />
+      </div>
     </Card>
   </div>
+  <VerticalDivider />
   {#if currentProfile}
-    <div class="w-full flex flex-col gap-4 md:max-w-[500px]">
+    <div class="w-full flex flex-col gap-4 md:max-w-[300px]">
       <Card>
-        <h1 class="w-full dark:text-white st-font-bold text-xl text-center">Status</h1>
-        {#if profileBook}
-          <SuccessCard>
-            <p class="dark:text-white">
-              You marked this book as <span class="st-font-italic">{profileBook[`${getCurrentEnvironment()}_status_instance`].status}</span>
-            </p>
-          </SuccessCard>
-        {/if}
-        {#if currentProfile && (dateDifference?.differenceDays < 0)}
-          <Button
-            label={E_BookStatus.TO_READ.text}
-            handleClick={async () => await handleToReadStatus(E_BookStatus.TO_READ.text)}
-            isSelected={profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ.text}
-            isDisabled={isLoading}
-          />
-          <div class="w-full flex flex-col gap-2">
-            <InfoCard>
-              <p class="dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READING.text}</span> on publication day</p>
-            </InfoCard>
-            <InfoCard>
-              <p class="dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DNF.text}</span> 3 days after publication</p>
-            </InfoCard>
+        <div class="flex items-center gap-4 w-full">
+          <Heading label="Status" />
+          <div class="flex-shrink">
+            {#if expandStatusCard}
+              <ArrowUpButton
+                handleClick={() => {
+                  expandStatusCard = !expandStatusCard;
+                }}
+              />
+            {:else}
+              <ArrowDownButton
+                handleClick={() => {
+                  expandCollectionsCard = false;
+                  expandRatingCard = false;
+                  expandReviewCard = false;
+                  expandStatusCard = !expandStatusCard;
+                }}
+              />
+            {/if}
           </div>
-        {/if}
-        {#if currentProfile && (dateDifference?.differenceDays >= 0) && (dateDifference?.differenceDays <= 3)}
-          <div class="flex gap-2 w-full">
+        </div>
+        <div class={`${expandStatusCard ? 'w-full flex flex-col gap-4' : 'hidden'} transition-all`}>
+          {#if profileBook}
+            <SuccessCard>
+              <p class="dark:text-white">
+                You marked this book as <span class="st-font-italic">{profileBook[`${getCurrentEnvironment()}_status_instance`].status}</span>
+              </p>
+            </SuccessCard>
+          {/if}
+          <div class="flex flex-col gap-2 w-full">
+            <Button
+              label={E_BookStatus.TRACKING.text}
+              handleClick={async () => await handleTrackingStatus(E_BookStatus.TRACKING.text)}
+              isSelected={profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TRACKING.text}
+              isDisabled={isLoading}
+            />
             <Button
               label={E_BookStatus.TO_READ.text}
               handleClick={async () => await handleToReadStatus(E_BookStatus.TO_READ.text)}
               isSelected={profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ.text}
               isDisabled={isLoading}
             />
-            <Button
-              label={E_BookStatus.READING.text}
-              handleClick={async () => await handleReadingStatus(E_BookStatus.READING.text)}
-              isSelected={profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING.text}
-              isDisabled={isLoading}
-            />
-          </div>
-          <InfoCard>
-            <p class="dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DNF.text}</span> 3 days after publication</p>
-          </InfoCard>
-        {/if}
-        {#if currentProfile && (dateDifference?.differenceDays > 3)}
-          <div class="flex flex-col gap-4 w-full">
-            <div class="grid sm:grid-cols-2 gap-2 w-full">
-              <Button
-                label={E_BookStatus.TO_READ.text}
-                handleClick={async () => await handleToReadStatus(E_BookStatus.TO_READ.text)}
-                isSelected={profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.TO_READ.text}
-                isDisabled={isLoading}
-              />
+            {#if currentProfile && (dateDifference?.differenceDays >= 0)}
               <Button
                 label={E_BookStatus.READING.text}
                 handleClick={async () => await handleReadingStatus(E_BookStatus.READING.text)}
@@ -986,110 +1090,236 @@
                 isSelected={profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF.text}
                 isDisabled={isLoading}
               />
-            </div>
+            {/if}
           </div>
-        {/if}
-        {#if (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.TO_READ.text)}
-          <DatePicker
-            label="Start Date"
-            bind:year={startYear}
-            bind:month={startMonth}
-            bind:day={startDay}
-            bind:showError={showInvalidDateRangeError}
-          />
-        {/if}
-        {#if (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ.text) || (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF.text)}
-          <DatePicker
-            label="End Date"
-            bind:year={endYear}
-            bind:month={endMonth}
-            bind:day={endDay}
-            bind:showError={showInvalidDateRangeError}
-          />
-        {/if}
-        {#if (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.TO_READ.text)}
-          {#if showInvalidDateRangeError}
-            <ErrorCard>
-              <p>{profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING.text ? 'Start date cannot be after current date' : 'Start date cannot be after end date'}</p>
-            </ErrorCard>
+          {#if currentProfile && (dateDifference?.differenceDays < 0)}
+            <InfoCard>
+              <p class="dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READING.text}</span>, <span class="st-font-italic">{E_BookStatus.READ.text}</span>, or <span class="st-font-italic">{E_BookStatus.DNF.text}</span> after publication</p>
+            </InfoCard>
           {/if}
-        {/if}
-        {#if profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.TO_READ.text}
-          <Button
-            label="Update Status"
-            handleClick={async () => await handleUpdateProfileBook()}
-            isDisabled={
-              (profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING.text && (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date))) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(startYear, startMonth-1, startDay))) ||
-              (profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.READING.text && (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date))) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(startYear, startMonth-1, startDay)) &&
-              (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].end_date)) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(endYear, endMonth-1, endDay)))) ||
-              showInvalidDateRangeError ||
-              isLoading
-            }
-          />
-        {/if}
+          {#if (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.TO_READ.text)}
+            <DatePicker
+              label="Start Date"
+              bind:year={startYear}
+              bind:month={startMonth}
+              bind:day={startDay}
+              bind:showError={showInvalidDateRangeError}
+            />
+          {/if}
+          {#if (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ.text) || (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF.text)}
+            <DatePicker
+              label="End Date"
+              bind:year={endYear}
+              bind:month={endMonth}
+              bind:day={endDay}
+              bind:showError={showInvalidDateRangeError}
+            />
+          {/if}
+          {#if (profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.TO_READ.text)}
+            {#if showInvalidDateRangeError}
+              <ErrorCard>
+                <p>{profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING.text ? 'Start date cannot be after current date' : 'Start date cannot be after end date'}</p>
+              </ErrorCard>
+            {/if}
+          {/if}
+          {#if profileBook && profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.TO_READ.text}
+            <Button
+              label="Update Status"
+              handleClick={async () => await handleUpdateProfileBook()}
+              isDisabled={
+                (profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READING.text && (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date))) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(startYear, startMonth-1, startDay))) ||
+                (profileBook[`${getCurrentEnvironment()}_status_instance`].status !== E_BookStatus.READING.text && (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].start_date))) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(startYear, startMonth-1, startDay)) &&
+                (new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(profileBook[`${getCurrentEnvironment()}_status_instance`].end_date)) === new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(endYear, endMonth-1, endDay)))) ||
+                showInvalidDateRangeError ||
+                isLoading
+              }
+            />
+          {/if}
+        </div>
       </Card>
-      {#if profileBook && ((profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ.text) || (profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF.text))}
-        <Card>
-          <h1 class="w-full dark:text-white st-font-bold text-xl text-center">Rating</h1>
-          {#if profileBook[`${getCurrentEnvironment()}_rating_instance`]}
-            <SuccessCard>
-              <p class="dark:text-white">
-                You rated this book <span class="st-font-italic">{profileBook[`${getCurrentEnvironment()}_rating_instance`].rating}/10</span>
-              </p>
-            </SuccessCard>
-          {/if}
-          <div class="w-full flex flex-col gap-4 items-center">
-            <p class="dark:text-white text-center text-xl st-font-bold ">{rating}</p>
-            <p class="dark:text-white text-center st-font-italic">{E_Rating[rating].label}</p>
-            <Slider bind:value={rating} />
+      <Card>
+        <div class="flex items-center gap-4 w-full">
+          <Heading label="Collections" />
+          <div class="flex-shrink">
+            {#if expandCollectionsCard}
+              <ArrowUpButton
+                handleClick={() => {
+                  expandCollectionsCard = !expandCollectionsCard;
+                }}
+              />
+            {:else}
+              <ArrowDownButton
+                handleClick={() => {
+                  expandStatusCard = false;
+                  expandRatingCard = false;
+                  expandReviewCard = false;
+                  expandCollectionsCard = !expandCollectionsCard;
+                }}
+              />
+            {/if}
           </div>
-          <Button
-            label={profileBook[`${getCurrentEnvironment()}_rating_instance`] ? 'Update Rating' : 'Add Rating'}
-            handleClick={async () => await handleRatingInstance()}
-            isDisabled={
-              isLoading ||
-              (profileBook[`${getCurrentEnvironment()}_rating_instance`] &&
-              profileBook[`${getCurrentEnvironment()}_rating_instance`].rating === rating)
-            }
-          />
-        </Card>
-        <Card>
-          <h1 class="w-full dark:text-white st-font-bold text-xl text-center">Review</h1>
-          {#if profileBook[`${getCurrentEnvironment()}_review_instance`]}
+        </div>
+        <div class={`${expandCollectionsCard ? 'w-full flex flex-col gap-4' : 'hidden'} transition-all`}>
+          {#if bookCollectionIds.length > 0}
             <SuccessCard>
-              <p class="dark:text-white">You reviewed this book</p>
+              <p>You added this book to {bookCollectionIds.length} {bookCollectionIds.length === 1 ? 'collection' : 'collections'}</p>
             </SuccessCard>
           {/if}
-          <textarea
-            rows="8"
-            maxlength="4000"
-            class={`resize-none p-2 box-border w-full rounded border border-neutral-100 bg-neutral-100 dark:border-slate-600 dark:bg-slate-600 dark:text-white`}
-            placeholder="Write a review (maximum 4000 characters)"
-            bind:value={review}
-          />
-          <Button
-            label={profileBook[`${getCurrentEnvironment()}_review_instance`] ? 'Update Review' : 'Add Review'}
-            handleClick={async () => await handleReviewInstance()}
-            isDisabled={
-              isLoading ||
-              (profileBook[`${getCurrentEnvironment()}_review_instance`] && profileBook[`${getCurrentEnvironment()}_review_instance`].review === review) ||
-              (!profileBook[`${getCurrentEnvironment()}_review_instance`] && !review)
-            }
-          />
-        </Card>
-      {:else}
-        <Card>
-          <InfoCard>
-            <p class="dark:text-white">You can start rating this book after marking it as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DNF.text}</span></p>
-          </InfoCard>
-          <InfoCard>
-            <p class="dark:text-white">You can start reviewing this book after marking it as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DNF.text}</span></p>
-          </InfoCard>
-        </Card>
-      {/if}
+          {#if profileBook}
+            <div class="flex flex-col gap-2">
+              <input
+                placeholder="Title (max. 40 characters)"
+                class={`p-1 box-border w-full rounded border border-neutral-100 bg-neutral-100 dark:border-slate-600 dark:bg-slate-600 dark:text-white`}
+                type="text"
+                bind:value={bookCollectionTitle}
+                maxlength="40"
+              />
+              <textarea
+                rows="6"
+                maxlength="400"
+                class={`resize-none p-1 box-border w-full rounded border border-neutral-100 bg-neutral-100 dark:border-slate-600 dark:bg-slate-600 dark:text-white`}
+                placeholder="Description (max. 400 characters)"
+                bind:value={bookCollectionDescription}
+              />
+              <Button
+                label="Add Collection"
+                handleClick={async () => console.log(bookCollectionTitle)}
+                isDisabled={
+                  isLoading ||
+                  (bookCollectionTitle === '')
+                }
+              />
+            </div>
+            <div class="w-full grid gap-2">
+              {#each bookCollections as bookCollection}
+                <div class="flex gap-2 items-center">
+                  {#if bookCollectionIds.indexOf(bookCollection.id) !== -1}
+                    <SuccessCard>
+                      <p class="flex-grow">{bookCollection.title} ({bookCollection.total_count})</p>
+                    </SuccessCard>
+                    <MinusButton handleClick={async () => await handleRemoveFromCollection(bookCollection)} isDisabled={isLoading} />
+                  {:else}
+                    <p class="flex-grow">{bookCollection.title} ({bookCollection.total_count})</p>
+                    <PlusButton handleClick={async () => await handleAddToCollection(bookCollection)} isDisabled={isLoading} />
+                  {/if}
+                </div>
+              {/each}
+            </div>
+          {:else}
+            <InfoCard>
+              <p class="dark:text-white">You can start adding this book to your collections after marking a status</p>
+            </InfoCard>
+          {/if}
+        </div>
+      </Card>
+      <Card>
+        <div class="flex items-center gap-4 w-full">
+          <Heading label="Rating" />
+            <div class="flex-shrink">
+            {#if expandRatingCard}
+              <ArrowUpButton
+                handleClick={() => {
+                  expandRatingCard = !expandRatingCard;
+                }}
+              />
+            {:else}
+              <ArrowDownButton
+                handleClick={() => {
+                  expandStatusCard = false;
+                  expandCollectionsCard = false;
+                  expandReviewCard = false;
+                  expandRatingCard = !expandRatingCard;
+                }}
+              />
+            {/if}
+          </div>
+        </div>
+        <div class={`${expandRatingCard ? 'w-full flex flex-col gap-4' : 'hidden'} transition-all`}>
+          {#if profileBook && ((profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ.text) || (profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF.text))}
+            {#if profileBook[`${getCurrentEnvironment()}_rating_instance`]}
+              <SuccessCard>
+                <p class="dark:text-white">You rated this book <span class="st-font-italic">{profileBook[`${getCurrentEnvironment()}_rating_instance`].rating}/10</span></p>
+              </SuccessCard>
+            {/if}
+            <div class="w-full flex flex-col gap-2 items-center">
+              <p class="dark:text-white text-center text-lg st-font-bold ">{rating}</p>
+              <p class="dark:text-white text-center st-font-italic">{E_Rating[rating].label}</p>
+              <Slider bind:value={rating} />
+              <Button
+                label={profileBook[`${getCurrentEnvironment()}_rating_instance`] ? 'Update Rating' : 'Add Rating'}
+                handleClick={async () => await handleRatingInstance()}
+                isDisabled={
+                  isLoading ||
+                  (profileBook[`${getCurrentEnvironment()}_rating_instance`] &&
+                  profileBook[`${getCurrentEnvironment()}_rating_instance`].rating === rating)
+                }
+              />
+            </div>
+          {:else}
+            <InfoCard>
+              <p class="dark:text-white">You can start rating this book after marking it as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DNF.text}</span></p>
+            </InfoCard>
+          {/if}
+        </div>
+      </Card>
+      <Card>
+        <div class="flex items-center gap-4 w-full">
+          <Heading label="Review" />
+          <div class="flex-shrink">
+            {#if expandReviewCard}
+              <ArrowUpButton
+                handleClick={() => {
+                  expandReviewCard = !expandReviewCard;
+                }}
+              />
+            {:else}
+              <ArrowDownButton
+                handleClick={() => {
+                  expandStatusCard = false;
+                  expandRatingCard = false;
+                  expandCollectionsCard = false;
+                  expandReviewCard = !expandReviewCard;
+                }}
+              />
+            {/if}
+          </div>
+        </div>
+        <div class={`${expandReviewCard ? 'w-full flex flex-col gap-4' : 'hidden'} transition-all`}>
+          {#if profileBook && ((profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ.text) || (profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF.text))}
+            {#if profileBook[`${getCurrentEnvironment()}_review_instance`]}
+              <SuccessCard>
+                <p class="dark:text-white">You reviewed this book</p>
+              </SuccessCard>
+            {/if}
+            <div class="flex flex-col gap-2">
+              <textarea
+                rows="6"
+                maxlength="4000"
+                class={`resize-none p-1 box-border w-full rounded border border-neutral-100 bg-neutral-100 dark:border-slate-600 dark:bg-slate-600 dark:text-white`}
+                placeholder="Review (max. 4000 characters)"
+                bind:value={review}
+              />
+              <Button
+                label={profileBook[`${getCurrentEnvironment()}_review_instance`] ? 'Update Review' : 'Add Review'}
+                handleClick={async () => await handleReviewInstance()}
+                isDisabled={
+                  isLoading ||
+                  (profileBook[`${getCurrentEnvironment()}_review_instance`] && profileBook[`${getCurrentEnvironment()}_review_instance`].review === review) ||
+                  (!profileBook[`${getCurrentEnvironment()}_review_instance`] && !review)
+                }
+              />
+            </div>
+          {:else}
+            <InfoCard>
+              <p class="dark:text-white">You can start reviewing this book after marking it as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DNF.text}</span></p>
+            </InfoCard>
+          {/if}
+        </div>
+      </Card>
       {#if profileBook}
+        <HorizontalDivider />
         <Card>
-          <h1 class="w-full dark:text-white st-font-bold text-xl text-center">Danger Zone</h1>
+          <Heading label="Danger Zone" />
           <Button
             label="Remove Book"
             handleClick={async () => await handleDeleteProfileBook()}
@@ -1099,9 +1329,12 @@
       {/if}
     </div>
   {:else}
-    <div class="w-full md:max-w-[500px]">
+    <div class="w-full md:max-w-[300px]">
       <Card>
-        <p class="w-full text-center dark:text-white"><Link link="/sign-in" label="Sign in" /> to start managing your books</p>
+        <Heading label="Sign In" />
+        <InfoCard>
+          <p><Link link="/sign-in" label="Sign in" /> to start managing your books</p>
+        </InfoCard>
       </Card>
     </div>
   {/if}

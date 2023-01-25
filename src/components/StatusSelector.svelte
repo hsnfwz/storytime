@@ -1,4 +1,7 @@
 <script lang="ts">
+  // svelte
+  import { page } from '$app/stores';
+
   // enums
   import E_BookStatus from '$enums/E_BookStatus';
 
@@ -42,6 +45,10 @@
       label={`${E_BookStatus.DNF.text} (${bookStatusDNFCount})`}
       link={`?status=${E_BookStatus.DNF.url}`}
       isSelected={currentStatus === E_BookStatus.DNF.text}
+    />
+    <Link 
+      label="Collections"
+      link={`${$page.url.pathname}/collections`}
     />
   </div>
 </Card>

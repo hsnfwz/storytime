@@ -107,6 +107,37 @@ const updateRecords = async (
   return data;
 }
 
+const updateRecordsGreatherThan = async (
+  table: string,
+  values: {},
+  greaterThan: {
+    column: string,
+    value: any,
+  },
+  columns: string = '*',
+) => {
+  let _table: string = table;
+
+  if (dev) {
+    _table = `dev_${table}`;
+  } else {
+    _table = `prod_${table}`;
+  }
+
+  const { data, error } = await supabase
+  .from(_table)
+  .update(values)
+  .gt(greaterThan.column, greaterThan.value)
+  .select(columns)
+
+  if (error) {
+    console.log(error);
+    return [];
+  }
+
+  return data;
+}
+
 // delete 1 or more records
 const deleteRecords = async (
   table: string,
@@ -137,12 +168,10 @@ const deleteRecords = async (
   return data;
 }
 
-// unique functions will appear here
-// ...
-
 export {
   getRecords,
   insertRecords,
   updateRecords,
+  updateRecordsGreatherThan,
   deleteRecords,
 };

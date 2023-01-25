@@ -36,8 +36,8 @@
     }
 
     const bodyElement = document.querySelector('body');
-    bodyElement?.classList.add('bg-neutral-100');
-    bodyElement?.classList.add('dark:bg-slate-900');
+    bodyElement?.classList.add('bg-white');
+    bodyElement?.classList.add('dark:bg-black');
 
     subscriptionAuthStateChange = supabase.auth.onAuthStateChange((event, currentSession) => {
       if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
@@ -71,21 +71,23 @@
 </script>
 
 <!-- VERSION 2 FEATURES/FIXES -->
-<!-- todo: sync status and page together -->
+<!-- todo: handle tracking status and counts -->
+<!-- todo: delete collection books when clikcing remove and update counts -->
+<!-- todo: handle create collection -->
+<!-- todo: sync status and page number together -->
 <!-- todo: replace "update rating" and "update review" with add another instance -->
 <!-- todo: allow user to create another read instance -->
 <!-- todo: make date input more robust -->
 <!-- todo: remove book confirm dialog -->
 <!-- todo: loading screen when switching pages -->
-<!-- todo: queue, rankings, lists -->
 <!-- todo: filter, sort, search -->
 <!-- once we have rearranged nav icons, make icons bigger and easier to see when clicked -->
+<!-- todo: authors, stats -->
+<!-- todo: films, games, series_title, series_entry, synopsis -->
+<!-- todo: editions (cover, page count, isbn, release date) ? -->
 
 <!-- VERSION 3 FEATURES/FIXES -->
-<!-- todo: authors, shelves (tags), stats, social features, newsletter, recommendations -->
-<!-- todo: film, games, music, series_title, series_entry, synopsis -->
 <!-- todo: option to import any csv files (similar to IFTA Fuel Card) -->
-<!-- todo: editions (cover, page count, isbn, release date) ? -->
 <!-- todo: account display name and username -->
 <!-- todo: convert sign in form to svelte form -->
 

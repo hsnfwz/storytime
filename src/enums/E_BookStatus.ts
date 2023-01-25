@@ -3,6 +3,10 @@ const E_BookStatus = Object.freeze({
     text: 'All',
     url: 'all',
   },
+  'TRACKING': {
+    text: 'Tracking',
+    url: 'tracking',
+  },
   'READING': {
     text: 'Reading',
     url: 'reading',
