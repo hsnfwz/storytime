@@ -1,6 +1,6 @@
 <script lang="ts">
   // svelte
-  import { afterUpdate, onMount } from 'svelte';
+  import { afterUpdate } from 'svelte';
 
   // components
   import Heading from 'src/components/Heading.svelte';
@@ -24,9 +24,17 @@
         scrollPosition = window.scrollY;
         body.classList.add('overflow-hidden');
         body.classList.add('fixed');
+        body.classList.add('top-0');
+        body.classList.add('left-0');
+        body.classList.add('bottom-0');
+        body.classList.add('right-0');
       } else {
         body.classList.remove('overflow-hidden');
         body.classList.remove('fixed');
+        body.classList.remove('top-0');
+        body.classList.remove('left-0');
+        body.classList.remove('bottom-0');
+        body.classList.remove('right-0');
         window.scrollTo(0, scrollPosition);
       }
     }
