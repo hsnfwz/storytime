@@ -20,13 +20,10 @@
     if (body) {
       if (showModal) {
         body.classList.add('overflow-hidden');
-        body.classList.add('touch-none');
-        // body.classList.add('overflow-hidden');
-        // body.classList.add('relative');
+        body.classList.add('fixed');
       } else {
         body.classList.remove('overflow-hidden');
-        body.classList.remove('touch-none');
-        // body.classList.remove('relative');
+        body.classList.remove('fixed');
       }
     }
   });
