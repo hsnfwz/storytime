@@ -1169,21 +1169,23 @@
                 }
               />
             </div>
-            <div class="w-full grid gap-2">
-              {#each bookCollections as bookCollection}
-                <div class="flex gap-2 items-center">
-                  {#if bookCollectionIds.indexOf(bookCollection.id) !== -1}
-                    <SuccessCard>
+            {#if bookCollections.length > 0}
+              <div class="w-full grid gap-2">
+                {#each bookCollections as bookCollection}
+                  <div class="flex gap-2 items-center">
+                    {#if bookCollectionIds.indexOf(bookCollection.id) !== -1}
+                      <SuccessCard>
+                        <p class="flex-grow">{bookCollection.title} ({bookCollection.total_count})</p>
+                      </SuccessCard>
+                      <MinusButton handleClick={async () => await handleRemoveFromCollection(bookCollection)} isDisabled={isLoading} />
+                    {:else}
                       <p class="flex-grow">{bookCollection.title} ({bookCollection.total_count})</p>
-                    </SuccessCard>
-                    <MinusButton handleClick={async () => await handleRemoveFromCollection(bookCollection)} isDisabled={isLoading} />
-                  {:else}
-                    <p class="flex-grow">{bookCollection.title} ({bookCollection.total_count})</p>
-                    <PlusButton handleClick={async () => await handleAddToCollection(bookCollection)} isDisabled={isLoading} />
-                  {/if}
-                </div>
-              {/each}
-            </div>
+                      <PlusButton handleClick={async () => await handleAddToCollection(bookCollection)} isDisabled={isLoading} />
+                    {/if}
+                  </div>
+                {/each}
+              </div>
+            {/if}
           {:else}
             <InfoCard>
               <p class="dark:text-white">You can start adding this book to your collections after marking a status</p>
