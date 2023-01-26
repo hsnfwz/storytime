@@ -66,14 +66,8 @@
   let bookCollections: any = [];
   let bookCollectionIds: any = [];
 
-  let isFollowing: boolean = false;
   let bookCollectionTitle: string = '';
   let bookCollectionDescription: string = '';
-
-  let expandStatusCard: boolean = false;
-  let expandCollectionsCard: boolean = false;
-  let expandRatingCard: boolean = false;
-  let expandReviewCard: boolean = false;
 
   let showStatusModal: boolean = false;
   let showCollectionsModal: boolean = false;
@@ -1038,13 +1032,19 @@
       <Card>
         <div class="w-full flex justify-between items-center">
           <Heading label="Status" />
-          <EditButton handleClick={() => showStatusModal = true} />
+          <EditButton handleClick={() => {
+            showStatusModal = true;
+          }} />
         </div>
         <Modal
           label="Status"
           showModal={showStatusModal}
-          handleSubmit={() => showStatusModal = false}
-          handleCancel={() => showStatusModal = false}
+          handleSubmit={() => {
+            showStatusModal = false;
+          }}
+          handleCancel={() => {
+            showStatusModal = false;
+          }}
         >
           {#if profileBook}
             <SuccessCard>

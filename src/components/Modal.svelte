@@ -1,9 +1,8 @@
 <script lang="ts">
   // svelte
-  import { afterUpdate } from 'svelte';
+  import { afterUpdate, onMount } from 'svelte';
 
   // components
-  import Card from 'src/components/Card.svelte';
   import Heading from 'src/components/Heading.svelte';
   import Button from 'src/components/Button.svelte';
   import XButton from 'src/components/XButton.svelte';
@@ -14,16 +13,21 @@
   export let handleSubmit: any;
   export let handleCancel: any;
 
+  // state
+  let scrollPosition: number = 0;
+
   afterUpdate(() => {
     const body = document.querySelector('body');
 
     if (body) {
       if (showModal) {
+        scrollPosition = window.scrollY;
         body.classList.add('overflow-hidden');
         body.classList.add('fixed');
       } else {
         body.classList.remove('overflow-hidden');
         body.classList.remove('fixed');
+        window.scrollTo(0, scrollPosition);
       }
     }
   });
