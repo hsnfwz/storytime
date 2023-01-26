@@ -2,7 +2,7 @@
 import { dev } from '$app/environment';
 
 // config
-import supabase from '$config/supabase';
+import supabase from 'src/config/supabase';
 
 // get 1 or more records
 const getRecords = async (

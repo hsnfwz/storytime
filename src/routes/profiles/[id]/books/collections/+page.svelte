@@ -3,12 +3,12 @@
   import { page } from '$app/stores';
 
   // components
-  import Heading from '$components/Heading.svelte';
-  import Link from '$components/Link.svelte';
-  import Paginator from '$components/Paginator.svelte';
-  import ProfileItemGrid from '$components/ProfileItemGrid.svelte';
-  import StatusSelector from '$components/StatusSelector.svelte';
-  import Card from '$components/Card.svelte';
+  import Heading from 'src/components/Heading.svelte';
+  import Link from 'src/components/Link.svelte';
+  import Paginator from 'src/components/Paginator.svelte';
+  import ProfileItemGrid from 'src/components/ProfileItemGrid.svelte';
+  import StatusSelector from 'src/components/StatusSelector.svelte';
+  import Card from 'src/components/Card.svelte';
 
   // data
   export let data: {

@@ -6,18 +6,18 @@
   import { onMount, onDestroy } from 'svelte';
 
   // api
-  import { getRecords, insertRecords } from '$api/database';
+  import { getRecords, insertRecords } from 'src/api/database';
 
   // stores
-  import { session } from '$stores/SessionStore';
-  import { profile } from '$stores/ProfileStore';
+  import { session } from 'src/stores/SessionStore';
+  import { profile } from 'src/stores/ProfileStore';
 
   // config
-  import supabase from '$config/supabase';
+  import supabase from 'src/config/supabase';
 
   // components
-  import Nav from '$components/Nav.svelte';
-  import Footer from '$components/Footer.svelte';
+  import Nav from 'src/components/Nav.svelte';
+  import Footer from 'src/components/Footer.svelte';
 
   // state
   let isLoading = true;

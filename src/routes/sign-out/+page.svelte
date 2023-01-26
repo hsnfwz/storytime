@@ -1,9 +1,9 @@
 <script lang="ts">
   // supabase
-  import supabase from '$config/supabase';
+  import supabase from 'src/config/supabase';
 
   // stores
-  import { session } from '$stores/SessionStore';
+  import { session } from 'src/stores/SessionStore';
 
   // state
   let currentSession: any;

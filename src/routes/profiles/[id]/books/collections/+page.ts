@@ -2,7 +2,7 @@
 import { error } from '@sveltejs/kit';
 
 // api
-import { getRecords } from '$api/database';
+import { getRecords } from 'src/api/database';
 
 export async function load({ url, params }: any) {
   const bookCollections: any = await getRecords(

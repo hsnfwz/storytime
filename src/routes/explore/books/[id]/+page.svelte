@@ -1,37 +1,39 @@
 <script lang="ts">
   // api
-  import { insertRecords, updateRecords, getRecords, deleteRecords } from '$api/database';
+  import { insertRecords, updateRecords, getRecords, deleteRecords } from 'src/api/database';
 
   // stores
-  import { profile } from '$stores/ProfileStore';
+  import { profile } from 'src/stores/ProfileStore';
 
   // enums
-  import E_BookStatus from '$enums/E_BookStatus';
-  import E_Rating from '$enums/E_Rating';
+  import E_BookStatus from 'src/enums/E_BookStatus';
+  import E_Rating from 'src/enums/E_Rating';
 
   // interfaces
-  import type I_Profile from '$interfaces/I_Profile';
+  import type I_Profile from 'src/interfaces/I_Profile';
 
   // components
-  import ItemCard from '$components/ItemCard.svelte';
-  import DatePicker from '$components/DatePicker.svelte';
-  import Slider from '$components/Slider.svelte';
-  import Card from '$components/Card.svelte';
-  import Button from '$components/Button.svelte';
-  import InfoCard from '$components/InfoCard.svelte';
-  import SuccessCard from '$components/SuccessCard.svelte';
-  import ErrorCard from '$components/ErrorCard.svelte';
-  import Link from '$components/Link.svelte';
-  import Heading from '$components/Heading.svelte';
-  import PlusButton from '$components/PlusButton.svelte';
-  import MinusButton from '$components/MinusButton.svelte';
-  import ArrowDownButton from '$components/ArrowDownButton.svelte';
-  import ArrowUpButton from '$components/ArrowUpButton.svelte';
-  import VerticalDivider from '$components/VerticalDivider.svelte';
-  import HorizontalDivider from '$components/HorizontalDivider.svelte';
+  import ItemCard from 'src/components/ItemCard.svelte';
+  import DatePicker from 'src/components/DatePicker.svelte';
+  import Slider from 'src/components/Slider.svelte';
+  import Card from 'src/components/Card.svelte';
+  import Button from 'src/components/Button.svelte';
+  import InfoCard from 'src/components/InfoCard.svelte';
+  import SuccessCard from 'src/components/SuccessCard.svelte';
+  import ErrorCard from 'src/components/ErrorCard.svelte';
+  import Link from 'src/components/Link.svelte';
+  import Heading from 'src/components/Heading.svelte';
+  import PlusButton from 'src/components/PlusButton.svelte';
+  import MinusButton from 'src/components/MinusButton.svelte';
+  import VerticalDivider from 'src/components/VerticalDivider.svelte';
+  import HorizontalDivider from 'src/components/HorizontalDivider.svelte';
+  import EditButton from 'src/components/EditButton.svelte';
+  import Modal from 'src/components/Modal.svelte';
+  import TextareaInput from 'src/components/TextareaInput.svelte';
+  import TextInput from 'src/components/TextInput.svelte';
 
   // helpers
-  import { formatDate, getItemRatingsAverage, getItemTotalRatings, getDateDifference, getCurrentEnvironment } from '$helpers/helpers';
+  import { formatDate, getItemRatingsAverage, getItemTotalRatings, getDateDifference, getCurrentEnvironment } from 'src/helpers/helpers';
 
   // data
   export let data: { item: any };
@@ -72,6 +74,11 @@
   let expandCollectionsCard: boolean = false;
   let expandRatingCard: boolean = false;
   let expandReviewCard: boolean = false;
+
+  let showStatusModal: boolean = false;
+  let showCollectionsModal: boolean = false;
+  let showRatingModal: boolean = false;
+  let showReviewModal: boolean = false;
 
   const dateDifference = getDateDifference(data.item.release_date);
 
@@ -1029,28 +1036,16 @@
   {#if currentProfile}
     <div class="w-full flex flex-col gap-4 md:max-w-[300px]">
       <Card>
-        <div class="flex items-center gap-4 w-full">
+        <div class="w-full flex justify-between items-center">
           <Heading label="Status" />
-          <div class="flex-shrink">
-            {#if expandStatusCard}
-              <ArrowUpButton
-                handleClick={() => {
-                  expandStatusCard = !expandStatusCard;
-                }}
-              />
-            {:else}
-              <ArrowDownButton
-                handleClick={() => {
-                  expandCollectionsCard = false;
-                  expandRatingCard = false;
-                  expandReviewCard = false;
-                  expandStatusCard = !expandStatusCard;
-                }}
-              />
-            {/if}
-          </div>
+          <EditButton handleClick={() => showStatusModal = true} />
         </div>
-        <div class={`${expandStatusCard ? 'w-full flex flex-col gap-4' : 'hidden'} transition-all`}>
+        <Modal
+          label="Status"
+          showModal={showStatusModal}
+          handleSubmit={() => showStatusModal = false}
+          handleCancel={() => showStatusModal = false}
+        >
           {#if profileBook}
             <SuccessCard>
               <p class="dark:text-white">
@@ -1135,31 +1130,19 @@
               }
             />
           {/if}
-        </div>
+        </Modal>
       </Card>
       <Card>
-        <div class="flex items-center gap-4 w-full">
+        <div class="w-full flex justify-between items-center">
           <Heading label="Collections" />
-          <div class="flex-shrink">
-            {#if expandCollectionsCard}
-              <ArrowUpButton
-                handleClick={() => {
-                  expandCollectionsCard = !expandCollectionsCard;
-                }}
-              />
-            {:else}
-              <ArrowDownButton
-                handleClick={() => {
-                  expandStatusCard = false;
-                  expandRatingCard = false;
-                  expandReviewCard = false;
-                  expandCollectionsCard = !expandCollectionsCard;
-                }}
-              />
-            {/if}
-          </div>
+          <EditButton handleClick={() => showCollectionsModal = true} />
         </div>
-        <div class={`${expandCollectionsCard ? 'w-full flex flex-col gap-4' : 'hidden'} transition-all`}>
+        <Modal
+          label="Collections"
+          showModal={showCollectionsModal}
+          handleSubmit={() => showCollectionsModal = false}
+          handleCancel={() => showCollectionsModal = false}
+        >
           {#if bookCollectionIds.length > 0}
             <SuccessCard>
               <p>You added this book to {bookCollectionIds.length} {bookCollectionIds.length === 1 ? 'collection' : 'collections'}</p>
@@ -1167,18 +1150,14 @@
           {/if}
           {#if profileBook}
             <div class="flex flex-col gap-2">
-              <input
+              <TextInput
                 placeholder="Title (max. 40 characters)"
-                class={`p-1 box-border w-full rounded border border-neutral-100 bg-neutral-100 dark:border-slate-600 dark:bg-slate-600 dark:text-white`}
-                type="text"
                 bind:value={bookCollectionTitle}
-                maxlength="40"
+                maxLength={40}
               />
-              <textarea
-                rows="6"
-                maxlength="400"
-                class={`resize-none p-1 box-border w-full rounded border border-neutral-100 bg-neutral-100 dark:border-slate-600 dark:bg-slate-600 dark:text-white`}
+              <TextareaInput
                 placeholder="Description (max. 400 characters)"
+                maxLength={400}
                 bind:value={bookCollectionDescription}
               />
               <Button
@@ -1210,31 +1189,19 @@
               <p class="dark:text-white">You can start adding this book to your collections after marking a status</p>
             </InfoCard>
           {/if}
-        </div>
+        </Modal>
       </Card>
       <Card>
-        <div class="flex items-center gap-4 w-full">
+        <div class="w-full flex justify-between items-center">
           <Heading label="Rating" />
-            <div class="flex-shrink">
-            {#if expandRatingCard}
-              <ArrowUpButton
-                handleClick={() => {
-                  expandRatingCard = !expandRatingCard;
-                }}
-              />
-            {:else}
-              <ArrowDownButton
-                handleClick={() => {
-                  expandStatusCard = false;
-                  expandCollectionsCard = false;
-                  expandReviewCard = false;
-                  expandRatingCard = !expandRatingCard;
-                }}
-              />
-            {/if}
-          </div>
+          <EditButton handleClick={() => showRatingModal = true} />
         </div>
-        <div class={`${expandRatingCard ? 'w-full flex flex-col gap-4' : 'hidden'} transition-all`}>
+        <Modal
+          label="Rating"
+          showModal={showRatingModal}
+          handleSubmit={() => showRatingModal = false}
+          handleCancel={() => showRatingModal = false}
+        >
           {#if profileBook && ((profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ.text) || (profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF.text))}
             {#if profileBook[`${getCurrentEnvironment()}_rating_instance`]}
               <SuccessCard>
@@ -1260,31 +1227,19 @@
               <p class="dark:text-white">You can start rating this book after marking it as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DNF.text}</span></p>
             </InfoCard>
           {/if}
-        </div>
+        </Modal>
       </Card>
       <Card>
-        <div class="flex items-center gap-4 w-full">
+        <div class="w-full flex justify-between items-center">
           <Heading label="Review" />
-          <div class="flex-shrink">
-            {#if expandReviewCard}
-              <ArrowUpButton
-                handleClick={() => {
-                  expandReviewCard = !expandReviewCard;
-                }}
-              />
-            {:else}
-              <ArrowDownButton
-                handleClick={() => {
-                  expandStatusCard = false;
-                  expandRatingCard = false;
-                  expandCollectionsCard = false;
-                  expandReviewCard = !expandReviewCard;
-                }}
-              />
-            {/if}
-          </div>
+          <EditButton handleClick={() => showReviewModal = true} />
         </div>
-        <div class={`${expandReviewCard ? 'w-full flex flex-col gap-4' : 'hidden'} transition-all`}>
+        <Modal
+          label="Review"
+          showModal={showReviewModal}
+          handleSubmit={() => showReviewModal = false}
+          handleCancel={() => showReviewModal = false}
+        >
           {#if profileBook && ((profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.READ.text) || (profileBook[`${getCurrentEnvironment()}_status_instance`].status === E_BookStatus.DNF.text))}
             {#if profileBook[`${getCurrentEnvironment()}_review_instance`]}
               <SuccessCard>
@@ -1292,11 +1247,9 @@
               </SuccessCard>
             {/if}
             <div class="flex flex-col gap-2">
-              <textarea
-                rows="6"
-                maxlength="4000"
-                class={`resize-none p-1 box-border w-full rounded border border-neutral-100 bg-neutral-100 dark:border-slate-600 dark:bg-slate-600 dark:text-white`}
+              <TextareaInput
                 placeholder="Review (max. 4000 characters)"
+                maxLength={4000}
                 bind:value={review}
               />
               <Button
@@ -1314,12 +1267,12 @@
               <p class="dark:text-white">You can start reviewing this book after marking it as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DNF.text}</span></p>
             </InfoCard>
           {/if}
-        </div>
+        </Modal>
       </Card>
       {#if profileBook}
         <HorizontalDivider />
         <Card>
-          <Heading label="Danger Zone" />
+          <Heading label="Remove Book" />
           <Button
             label="Remove Book"
             handleClick={async () => await handleDeleteProfileBook()}

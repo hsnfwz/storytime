@@ -3,7 +3,7 @@
   import { enhance } from '$app/forms';
 
   // stores
-  import { profile } from '$stores/ProfileStore';
+  import { profile } from 'src/stores/ProfileStore';
 
   // form
   export let form: {

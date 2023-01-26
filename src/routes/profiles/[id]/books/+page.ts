@@ -2,13 +2,13 @@
 import { error } from '@sveltejs/kit';
 
 // api
-import { getRecords } from '$api/database';
+import { getRecords } from 'src/api/database';
 
 // helpers
-import { sortBy, getCurrentEnvironment } from '$helpers/helpers';
+import { sortBy, getCurrentEnvironment } from 'src/helpers/helpers';
 
 // enums
-import E_BookStatus from '$enums/E_BookStatus';
+import E_BookStatus from 'src/enums/E_BookStatus';
 
 export async function load({ url, params }: any) {
   // status filter

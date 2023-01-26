@@ -3,11 +3,11 @@
   import { onMount, tick } from 'svelte';
 
   // api
-  import { getRecords } from '$api/database';
+  import { getRecords } from 'src/api/database';
 
   // components
-  import ItemCard from '$components/ItemCard.svelte';
-  import Button from '$components/Button.svelte';
+  import ItemCard from 'src/components/ItemCard.svelte';
+  import Button from 'src/components/Button.svelte';
 
   // state
   let items: any = [];

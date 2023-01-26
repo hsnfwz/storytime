@@ -2,11 +2,11 @@
 import { fail } from '@sveltejs/kit';
 
 // helpers
-import { formatText, formatFileName, dateIsValid } from '$helpers/helpers';
+import { formatText, formatFileName, dateIsValid } from 'src/helpers/helpers';
 
 // api
-import { uploadFile } from '$api/storage';
-import { insertRecords } from '$api/database';
+import { uploadFile } from 'src/api/storage';
+import { insertRecords } from 'src/api/database';
 
 export const actions = {
   default: async (event: any) => {

@@ -3,8 +3,8 @@
   import { afterUpdate } from 'svelte';
 
   // components
-  import ItemCard from '$components/ItemCard.svelte';
-  import Card from '$components/Card.svelte';
+  import ItemCard from 'src/components/ItemCard.svelte';
+  import Card from 'src/components/Card.svelte';
 
   // props
   export let items: any = [];

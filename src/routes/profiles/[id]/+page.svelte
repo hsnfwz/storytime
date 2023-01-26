@@ -1,8 +1,8 @@
 <script lang="ts">
   // components
-  import Heading from '$components/Heading.svelte';
-  import Link from '$components/Link.svelte';
-  import Card from '$components/Card.svelte';
+  import Heading from 'src/components/Heading.svelte';
+  import Link from 'src/components/Link.svelte';
+  import Card from 'src/components/Card.svelte';
 
   // data
   export let data: { item: any };

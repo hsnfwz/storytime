@@ -3,8 +3,8 @@
   import { onMount } from 'svelte';
 
   // stores
-  import { session } from '$stores/SessionStore';
-  import { profile } from '$stores/ProfileStore';
+  import { session } from 'src/stores/SessionStore';
+  import { profile } from 'src/stores/ProfileStore';
   import { page } from '$app/stores';
 
   // state
@@ -131,6 +131,8 @@
         currentTheme = '';
         const htmlElement = document.querySelector('html');
         htmlElement?.classList.remove('dark');
+        const bodyElement = document.querySelector('body');
+        bodyElement?.classList.remove('dark:bg-black');
         localStorage.setItem('theme', 'light');
       }}
     >
@@ -145,6 +147,8 @@
         currentTheme = 'dark';
         const htmlElement = document.querySelector('html');
         htmlElement?.classList.add('dark');
+        const bodyElement = document.querySelector('body');
+        bodyElement?.classList.add('dark:bg-black');
         localStorage.setItem('theme', 'dark');
       }}
     >

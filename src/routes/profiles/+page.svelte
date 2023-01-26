@@ -1,7 +1,7 @@
 <script lang="ts">
   // components
-  import ProfileGrid from '$components/ProfileGrid.svelte';
-  import Heading from '$components/Heading.svelte';
+  import ProfileGrid from 'src/components/ProfileGrid.svelte';
+  import Heading from 'src/components/Heading.svelte';
 </script>
 
 <Heading label="Profiles" />

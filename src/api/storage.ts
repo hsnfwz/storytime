@@ -1,5 +1,5 @@
 // config
-import supabase from '$config/supabase';
+import supabase from 'src/config/supabase';
 
 const getPublicUrl = (bucket: string, path: string) => {
   const { data } = supabase

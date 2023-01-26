@@ -3,12 +3,12 @@
   import { onMount, tick } from 'svelte';
 
   // api
-  import { getRecords } from '$api/database';
+  import { getRecords } from 'src/api/database';
 
   // components
-  import Link from '$components/Link.svelte';
-  import Button from '$components/Button.svelte';
-  import Card from '$components/Card.svelte';
+  import Link from 'src/components/Link.svelte';
+  import Button from 'src/components/Button.svelte';
+  import Card from 'src/components/Card.svelte';
 
   // props
   let profiles: any = [];

@@ -1,6 +1,6 @@
 <script lang="ts">
   // helpers
-  import { formatDate } from '$helpers/helpers';
+  import { formatDate } from 'src/helpers/helpers';
 
   // state
   let today: any = new Date();

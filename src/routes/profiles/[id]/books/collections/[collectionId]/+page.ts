@@ -2,10 +2,10 @@
 import { error } from '@sveltejs/kit';
 
 // api
-import { getRecords } from '$api/database';
+import { getRecords } from 'src/api/database';
 
 // helpers
-import { getCurrentEnvironment, sortBy } from '$helpers/helpers';
+import { getCurrentEnvironment, sortBy } from 'src/helpers/helpers';
 
 export async function load({ url, params }: any) {
   const bookCollectionBooks: any = await getRecords(

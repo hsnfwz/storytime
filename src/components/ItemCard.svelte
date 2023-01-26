@@ -1,12 +1,12 @@
 <script lang="ts">
   // interfaces
-  import type I_Book from '$interfaces/I_Book';
+  import type I_Book from 'src/interfaces/I_Book';
 
   // api
-  import { getPublicUrl } from '$api/storage';
+  import { getPublicUrl } from 'src/api/storage';
 
   // helpers
-  import { formatFileName } from '$helpers/helpers';
+  import { formatFileName } from 'src/helpers/helpers';
 
   // props
   export let item: I_Book;

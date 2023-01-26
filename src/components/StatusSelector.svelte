@@ -3,11 +3,11 @@
   import { page } from '$app/stores';
 
   // enums
-  import E_BookStatus from '$enums/E_BookStatus';
+  import E_BookStatus from 'src/enums/E_BookStatus';
 
   // components
-  import Link from '$components/Link.svelte';
-  import Card from '$components/Card.svelte';
+  import Link from 'src/components/Link.svelte';
+  import Card from 'src/components/Card.svelte';
 
   // props
   export let currentStatus: string = '';
