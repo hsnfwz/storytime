@@ -28,7 +28,7 @@
 </script>
 
 {#if showModal}
-  <div class="w-full h-screen flex justify-center fixed top-0 left-0 z-50 bg-black/50">
+  <div class="w-full h-screen flex justify-center fixed top-0 left-0 z-50 bg-black/50 overflow-auto">
     <div class="w-full max-w-[800px] max-h-min flex flex-col self-start gap-4 m-8 p-4 rounded bg-slate-100 dark:bg-slate-800">
       <div class="w-full flex justify-between items-center">
         <Heading label={label} />
