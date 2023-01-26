@@ -43,7 +43,7 @@
 
 {#if showModal}
   <div class="w-full h-screen flex justify-center fixed top-0 left-0 z-50 bg-black/50">
-    <div class="w-full h-screen md:max-w-[800px] md:max-h-min md:h-min flex flex-col self-start gap-4 md:m-4 p-4 md:rounded bg-slate-100 dark:bg-slate-800 overflow-auto">
+    <div class="w-full h-full md:max-w-[800px] md:max-h-min md:h-min flex flex-col self-start gap-4 md:m-4 p-4 md:rounded bg-slate-100 dark:bg-slate-800 overflow-auto">
       <div class="w-full flex justify-between items-center">
         <Heading label={label} />
         <XButton handleClick={handleCancel} />

@@ -71,7 +71,6 @@
 </script>
 
 <!-- VERSION 2 FEATURES/FIXES -->
-<!-- todo: fix modal scrolling issues on mobile -->
 <!-- todo: custom outline does not work on mobile -->
 <!-- todo: handle tracking status and counts -->
 <!-- todo: delete collection books when clikcing remove and update counts -->
