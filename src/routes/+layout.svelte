@@ -71,6 +71,7 @@
 </script>
 
 <!-- VERSION 2 FEATURES/FIXES -->
+<!-- todo: when refactoring submit/cancel functions for modal, make sure only 1 scroll bar is present, not 2 (this happens due to state changes) -->
 <!-- todo: custom outline does not work on mobile -->
 <!-- todo: handle tracking status and counts -->
 <!-- todo: delete collection books when clikcing remove and update counts -->
