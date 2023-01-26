@@ -22,14 +22,12 @@
     if (body) {
       if (showModal) {
         scrollPosition = window.scrollY;
-        body.classList.add('overflow-hidden');
         body.classList.add('fixed');
         body.classList.add('top-0');
         body.classList.add('left-0');
         body.classList.add('bottom-0');
         body.classList.add('right-0');
       } else {
-        body.classList.remove('overflow-hidden');
         body.classList.remove('fixed');
         body.classList.remove('top-0');
         body.classList.remove('left-0');
@@ -42,8 +40,8 @@
 </script>
 
 {#if showModal}
-  <div class="w-full h-full flex justify-center fixed top-0 left-0 z-50 bg-black/50">
-    <div class="w-full h-full md:max-w-[800px] md:max-h-min md:h-min flex flex-col self-start gap-4 md:m-4 p-4 md:rounded bg-slate-100 dark:bg-slate-800 overflow-auto">
+  <div class="w-full h-full flex justify-center fixed top-0 left-0 z-50 bg-black/50 overflow-auto">
+    <div class="w-full md:max-w-[800px] md:max-h-min md:h-min flex flex-col self-start gap-4 md:m-4 p-4 md:rounded bg-slate-100 dark:bg-slate-800">
       <div class="w-full flex justify-between items-center">
         <Heading label={label} />
         <XButton handleClick={handleCancel} />
