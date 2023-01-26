@@ -25,8 +25,6 @@
   import Heading from 'src/components/Heading.svelte';
   import PlusButton from 'src/components/PlusButton.svelte';
   import MinusButton from 'src/components/MinusButton.svelte';
-  import VerticalDivider from 'src/components/VerticalDivider.svelte';
-  import HorizontalDivider from 'src/components/HorizontalDivider.svelte';
   import EditButton from 'src/components/EditButton.svelte';
   import Modal from 'src/components/Modal.svelte';
   import TextareaInput from 'src/components/TextareaInput.svelte';
@@ -986,7 +984,6 @@
   <div class="w-full md:max-w-[300px]">
     <ItemCard item={data.item} />
   </div>
-  <VerticalDivider />
   <div class="w-full flex flex-col items-center gap-4 md:max-w-[600px]">
     <Card>
       <Heading label={data.item.title} />
@@ -1015,7 +1012,6 @@
         <p class="w-full dark:text-white">{data.item.read_count === 1 ? `${data.item.read_count} total read` : `${data.item.read_count} total reads`}</p>
       </div>
     </Card>
-    <HorizontalDivider />
     <Card>
       <Heading label="More Info" />
       <div class="w-full flex flex-col gap-2">
@@ -1026,7 +1022,6 @@
       </div>
     </Card>
   </div>
-  <VerticalDivider />
   {#if currentProfile}
     <div class="w-full flex flex-col gap-4 md:max-w-[300px]">
       <Card>
@@ -1272,7 +1267,6 @@
         </Modal>
       </Card>
       {#if profileBook}
-        <HorizontalDivider />
         <Card>
           <Heading label="Remove Book" />
           <Button
