@@ -17,6 +17,13 @@
   let scrollPosition: number = 0;
 
   afterUpdate(() => {
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Escape') {
+        showModal = false;
+        handleCancel();
+      }
+    });
+
     const body = document.querySelector('body');
 
     if (body) {
@@ -39,7 +46,7 @@
   });
 </script>
 
-{#if showModal}
+<!-- {#if showModal}
   <div class="w-full h-full flex justify-center fixed top-0 left-0 z-50 bg-black/50 overflow-auto">
     <div class="w-full h-min md:max-w-[800px] flex flex-col self-start gap-4 md:m-4 p-4 md:rounded bg-slate-100 dark:bg-slate-800">
       <div class="w-full flex justify-between items-center">
@@ -58,6 +65,34 @@
             handleClick={handleCancel}
           />
         </div>
+      </div>
+    </div>
+  </div>
+{/if} -->
+
+{#if showModal}
+  <div class="w-full h-full flex justify-center fixed top-0 left-0 z-50 bg-black/75 p-4">
+
+    <div class="w-full max-w-[800px] h-full flex flex-col gap-4 p-4 rounded bg-slate-100 dark:bg-slate-800">
+
+      <div class="w-full flex justify-between items-center">
+        <Heading label={label} />
+        <XButton handleClick={handleCancel} />
+      </div>
+
+      <div class="flex flex-col gap-4 h-full overflow-auto">
+        <slot />
+      </div>
+
+      <div class="flex gap-2 self-end">
+        <Button
+          label="Submit"
+          handleClick={handleSubmit}
+        />
+        <Button
+          label="Cancel"
+          handleClick={handleCancel}
+        />
       </div>
     </div>
   </div>

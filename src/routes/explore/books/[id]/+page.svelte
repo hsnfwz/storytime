@@ -1033,7 +1033,7 @@
         </div>
         <Modal
           label="Status"
-          showModal={showStatusModal}
+          bind:showModal={showStatusModal}
           handleSubmit={() => {
             showStatusModal = false;
           }}
@@ -1134,7 +1134,7 @@
         </div>
         <Modal
           label="Collections"
-          showModal={showCollectionsModal}
+          bind:showModal={showCollectionsModal}
           handleSubmit={() => showCollectionsModal = false}
           handleCancel={() => showCollectionsModal = false}
         >
@@ -1195,7 +1195,7 @@
         </div>
         <Modal
           label="Rating"
-          showModal={showRatingModal}
+          bind:showModal={showRatingModal}
           handleSubmit={() => showRatingModal = false}
           handleCancel={() => showRatingModal = false}
         >
@@ -1233,7 +1233,7 @@
         </div>
         <Modal
           label="Review"
-          showModal={showReviewModal}
+          bind:showModal={showReviewModal}
           handleSubmit={() => showReviewModal = false}
           handleCancel={() => showReviewModal = false}
         >
