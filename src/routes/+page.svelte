@@ -11,15 +11,13 @@
   };
 </script>
 
-<div class="w-full max-w-[800px] m-auto">
-  <Card>
-    <Heading label="Home" />
-    {#if data.profile}
-      <p class="dark:text-white">Welcome back Profile {data.profile.id}!</p>
-    {:else}
-      <InfoCard>
-        <p><Link link="/sign-in" label="Sign in" /> to start managing your books</p>
-      </InfoCard>
-    {/if}
-  </Card>
-</div>
+<Card>
+  <Heading label="Home" />
+  {#if data.profile}
+    <p class="dark:text-white">Welcome back Profile {data.profile.id}!</p>
+  {:else}
+    <InfoCard>
+      <p><Link link="/sign-in" label="Sign in" /> to start managing your books</p>
+    </InfoCard>
+  {/if}
+</Card>

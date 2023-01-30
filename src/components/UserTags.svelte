@@ -97,16 +97,7 @@
   {#if currentProfile}
     <div class="w-full flex flex-col gap-4 sm:max-w-[200px]">
       <Card>
-        <div class="w-full flex justify-between items-center">
-          <Heading label="Collections" />
-          <EditButton handleClick={() => showCollectionsModal = true} />
-        </div>
-        <Modal
-          label="Collections"
-          bind:showModal={showCollectionsModal}
-          handleSubmit={() => showCollectionsModal = false}
-          handleCancel={() => showCollectionsModal = false}
-        >
+
           {#if bookCollectionIds.length > 0}
             <SuccessCard>
               <p>You added this book to {bookCollectionIds.length} {bookCollectionIds.length === 1 ? 'collection' : 'collections'}</p>
@@ -155,7 +146,6 @@
               <p class="dark:text-white">You can start adding this book to your collections after marking a status</p>
             </InfoCard>
           {/if}
-        </Modal>
       </Card>
     </div>
 </div> -->

@@ -8,13 +8,13 @@ import { getSupabase } from '@supabase/auth-helpers-sveltekit';
 import { getRecords } from 'src/api/database';
 
 export async function load(event: any) {
-  const { id } = event.params;
+  const { bookId } = event.params;
 
   const books: any = await getRecords(
     'book',
     '*',
     {
-      id,
+      id: bookId,
     }
   );
 
@@ -42,7 +42,7 @@ export async function load(event: any) {
         '*, user_book_status(*), user_book_rating(*), user_book_review(*), user_book_read(*)',
         {
           user_id: session.user.id,
-          book_id: id,
+          book_id: bookId,
         }
       )
     ]);

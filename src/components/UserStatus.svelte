@@ -156,124 +156,6 @@
       let minusBookAttribute: string = '';
       let minusBookCount: number = 0;
 
-      if (userBookStatus === E_BookStatus.READING.text) {
-        minusProfileAttribute = 'book_status_reading_count';
-        minusProfileCount = userProfile[minusProfileAttribute] - 1;
-        minusBookAttribute = 'status_reading_count';
-        minusBookCount = book[minusBookAttribute] - 1;
-      } else if (userBookStatus === E_BookStatus.READ.text) {
-        minusProfileAttribute = 'book_status_read_count';
-        minusProfileCount = userProfile[minusProfileAttribute] - 1;
-        minusBookAttribute = 'status_read_count';
-        minusBookCount = book[minusBookAttribute] - 1;
-      } else if (userBookStatus === E_BookStatus.DNF.text) {
-        minusProfileAttribute = 'book_status_dnf_count';
-        minusProfileCount = userProfile[minusProfileAttribute] - 1;
-        minusBookAttribute = 'status_dnf_count';
-        minusBookCount = book[minusBookAttribute] - 1;
-      }
-
-      const updatedProfileData: any = {
-        book_status_to_read_count: userProfile.book_status_to_read_count + 1,
-        [minusProfileAttribute]: minusProfileCount,
-      };
-
-      const updatedBookData: any = {
-        status_to_read_count: book.status_to_read_count + 1,
-        [minusBookAttribute]: minusBookCount,
-      };
-
-      const [
-        latestUserBookRecords,
-        latestProfileRecords,
-        latestBookRecords
-      ] = await Promise.all([
-        updateRecords('user_book', [updatedUserBookData], { user_id: session.user.id, book_id: book.id }, `*, user_book_status(*), user_book_read(*), user_book_rating(*), user_book_review(*)`),
-        updateRecords('user_profile', updatedProfileData, { id: userProfile.id }),
-        updateRecords('book', updatedBookData, { id: book.id }),
-      ]);
-
-      book = latestBookRecords[0];
-      userProfile = latestProfileRecords[0];
-      userBook = latestUserBookRecords[0];
-    } else {
-      const UserBookstatusData: any = {
-        user_id: session.user.id,
-        book_id: book.id,
-        status,
-      };
-
-      const newUserBookStatusRecord = await insertRecords('user_book_status', [UserBookstatusData]);
-
-      const UserBookData: any = {
-        user_id: session.user.id,
-        book_id: book.id,
-        latest_user_book_status_id: newUserBookStatusRecord[0].id,
-      };
-
-      const updatedProfileData: any = {
-        book_status_to_read_count: userProfile.book_status_to_read_count + 1,
-      };
-
-      const updatedBookData: any = {
-        status_to_read_count: book.status_to_read_count + 1,
-      };
-
-      const [
-        newUserBookRecords,
-        latestProfileRecords,
-        latestBookRecords
-      ] = await Promise.all([
-        insertRecords('user_book', [UserBookData], `*, user_book_status(*), user_book_read(*), user_book_rating(*), user_book_review(*)`),
-        updateRecords('user_profile', updatedProfileData, { id: userProfile.id }),
-        updateRecords('book', updatedBookData, { id: book.id }),
-      ]);
-
-      book = latestBookRecords[0];
-      userProfile = latestProfileRecords[0];
-      userBook = newUserBookRecords[0];
-    }
-
-    startYear = _today.getUTCFullYear();
-    startMonth = _today.getUTCMonth() + 1;
-    startDay = _today.getUTCDate();
-
-    endYear = _today.getUTCFullYear();
-    endMonth = _today.getUTCMonth() + 1;
-    endDay = _today.getUTCDate();
-
-    isLoading = false;
-  }
-
-  const handleToReadStatus = async (status: string) => {
-    isLoading = true;
-
-    const _today: any = new Date();
-    _today.setHours(0);
-
-    if (userBook) {
-      const UserBookstatusData: any = {
-        user_id: session.user.id,
-        book_id: book.id,
-        status,
-      };
-
-      const newUserBookStatusRecord = await insertRecords('user_book_status', [UserBookstatusData]);
-
-      const updatedUserBookData: any = {
-        user_id: session.user.id,
-        book_id: book.id,
-        latest_user_book_status_id: newUserBookStatusRecord[0].id,
-      };
-
-      const userBookStatus: string = userBook.user_book_status.status;
-
-      let minusProfileAttribute: string = '';
-      let minusProfileCount: number = 0;
-
-      let minusBookAttribute: string = '';
-      let minusBookCount: number = 0;
-
       if (userBookStatus === E_BookStatus.TO_READ.text) {
         minusProfileAttribute = 'book_status_to_read_count';
         minusProfileCount = userProfile[minusProfileAttribute] - 1;
@@ -340,6 +222,129 @@
 
       const updatedBookData: any = {
         status_tracking_count: book.status_tracking_count + 1,
+      };
+
+      const [
+        newUserBookRecords,
+        latestProfileRecords,
+        latestBookRecords
+      ] = await Promise.all([
+        insertRecords('user_book', [UserBookData], `*, user_book_status(*), user_book_read(*), user_book_rating(*), user_book_review(*)`),
+        updateRecords('user_profile', updatedProfileData, { id: userProfile.id }),
+        updateRecords('book', updatedBookData, { id: book.id }),
+      ]);
+
+      book = latestBookRecords[0];
+      userProfile = latestProfileRecords[0];
+      userBook = newUserBookRecords[0];
+    }
+
+    startYear = _today.getUTCFullYear();
+    startMonth = _today.getUTCMonth() + 1;
+    startDay = _today.getUTCDate();
+
+    endYear = _today.getUTCFullYear();
+    endMonth = _today.getUTCMonth() + 1;
+    endDay = _today.getUTCDate();
+
+    isLoading = false;
+  }
+
+  const handleToReadStatus = async (status: string) => {
+    isLoading = true;
+
+    const _today: any = new Date();
+    _today.setHours(0);
+
+    if (userBook) {
+      const UserBookstatusData: any = {
+        user_id: session.user.id,
+        book_id: book.id,
+        status,
+      };
+
+      const newUserBookStatusRecord = await insertRecords('user_book_status', [UserBookstatusData]);
+
+      const updatedUserBookData: any = {
+        user_id: session.user.id,
+        book_id: book.id,
+        latest_user_book_status_id: newUserBookStatusRecord[0].id,
+      };
+
+      const userBookStatus: string = userBook.user_book_status.status;
+
+      let minusProfileAttribute: string = '';
+      let minusProfileCount: number = 0;
+
+      let minusBookAttribute: string = '';
+      let minusBookCount: number = 0;
+
+      if (userBookStatus === E_BookStatus.TRACKING.text) {
+        minusProfileAttribute = 'book_status_tracking_count';
+        minusProfileCount = userProfile[minusProfileAttribute] - 1;
+        minusBookAttribute = 'status_tracking_count';
+        minusBookCount = book[minusBookAttribute] - 1;
+      } else if (userBookStatus === E_BookStatus.READING.text) {
+        minusProfileAttribute = 'book_status_reading_count';
+        minusProfileCount = userProfile[minusProfileAttribute] - 1;
+        minusBookAttribute = 'status_reading_count';
+        minusBookCount = book[minusBookAttribute] - 1;
+      } else if (userBookStatus === E_BookStatus.READ.text) {
+        minusProfileAttribute = 'book_status_read_count';
+        minusProfileCount = userProfile[minusProfileAttribute] - 1;
+        minusBookAttribute = 'status_read_count';
+        minusBookCount = book[minusBookAttribute] - 1;
+      } else if (userBookStatus === E_BookStatus.DNF.text) {
+        minusProfileAttribute = 'book_status_dnf_count';
+        minusProfileCount = userProfile[minusProfileAttribute] - 1;
+        minusBookAttribute = 'status_dnf_count';
+        minusBookCount = book[minusBookAttribute] - 1;
+      }
+
+      const updatedProfileData: any = {
+        book_status_to_read_count: userProfile.book_status_to_read_count + 1,
+        [minusProfileAttribute]: minusProfileCount,
+      };
+
+      const updatedBookData: any = {
+        status_to_read_count: book.status_to_read_count + 1,
+        [minusBookAttribute]: minusBookCount,
+      };
+
+      const [
+        latestUserBookRecords,
+        latestProfileRecords,
+        latestBookRecords
+      ] = await Promise.all([
+        updateRecords('user_book', [updatedUserBookData], { user_id: session.user.id, book_id: book.id }, `*, user_book_status(*), user_book_read(*), user_book_rating(*), user_book_review(*)`),
+        updateRecords('user_profile', updatedProfileData, { id: userProfile.id }),
+        updateRecords('book', updatedBookData, { id: book.id }),
+      ]);
+
+      book = latestBookRecords[0];
+      userProfile = latestProfileRecords[0];
+      userBook = latestUserBookRecords[0];
+    } else {
+      const UserBookstatusData: any = {
+        user_id: session.user.id,
+        book_id: book.id,
+        status,
+      };
+
+      const newUserBookStatusRecord = await insertRecords('user_book_status', [UserBookstatusData]);
+
+      const UserBookData: any = {
+        user_id: session.user.id,
+        book_id: book.id,
+        latest_user_book_status_id: newUserBookStatusRecord[0].id,
+      };
+
+      const updatedProfileData: any = {
+        book_status_to_read_count: userProfile.book_status_to_read_count + 1,
+      };
+
+      const updatedBookData: any = {
+        status_to_read_count: book.status_to_read_count + 1,
       };
 
       const [
@@ -814,7 +819,7 @@
       <p class="dark:text-white">You can start marking this book as <span class="st-font-italic">{E_BookStatus.READING.text}</span>, <span class="st-font-italic">{E_BookStatus.READ.text}</span>, or <span class="st-font-italic">{E_BookStatus.DNF.text}</span> after publication</p>
     </InfoCard>
   {/if}
-  {#if (userBook && userBook.user_book_status.status !== E_BookStatus.TO_READ.text)}
+  {#if userBook && (userBook.user_book_status.status !== E_BookStatus.TRACKING.text && userBook.user_book_status.status !== E_BookStatus.TO_READ.text)}
     <DatePicker
       label="Start Date"
       bind:year={startYear}
@@ -832,14 +837,14 @@
       bind:showError={showInvalidDateRangeError}
     />
   {/if}
-  {#if (userBook && userBook.user_book_status.status !== E_BookStatus.TO_READ.text)}
+  {#if (userBook && (userBook.user_book_status.status !== E_BookStatus.TRACKING.text && userBook.user_book_status.status !== E_BookStatus.TO_READ.text))}
     {#if showInvalidDateRangeError}
       <ErrorCard>
         <p>{userBook.user_book_status.status === E_BookStatus.READING.text ? 'Start date cannot be after current date' : 'Start date cannot be after end date'}</p>
       </ErrorCard>
     {/if}
   {/if}
-  {#if userBook && userBook.user_book_status.status !== E_BookStatus.TO_READ.text}
+  {#if userBook && (userBook.user_book_status.status !== E_BookStatus.TRACKING.text && userBook.user_book_status.status !== E_BookStatus.TO_READ.text)}
     <Button
       label="Update Status"
       handleClick={async () => await handleUpdateUserBook()}

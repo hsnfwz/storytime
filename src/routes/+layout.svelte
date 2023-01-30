@@ -45,7 +45,7 @@
 </script>
 
 <!-- VERSION 2 FEATURES/FIXES -->
-<!-- todo: sync status and page number together -->
+<!-- todo: turn theme changer into svelte store -->
 
 <!-- todo: collections -->
 
@@ -59,8 +59,6 @@
 <!-- todo: authors, stats -->
 <!-- todo: films, games, series_title, series_entry, synopsis -->
 <!-- todo: editions (cover, page count, isbn, release date) ? -->
-
-<!-- todo: turn theme changer into svelte store -->
 
 <!-- VERSION 3 FEATURES/FIXES -->
 <!-- todo: option to import any csv files (similar to IFTA Fuel Card) -->

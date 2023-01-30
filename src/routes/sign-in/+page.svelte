@@ -28,7 +28,7 @@
 <div class="w-full m-auto max-w-[800px]">
   <Card>
     <Heading label="Sign In" />
-      {#if !$page.data.session}
+    {#if !$page.data.session}
       {#if form?.error}
         <div class="dark:text-white">{form.error}</div>
       {/if}
@@ -61,6 +61,8 @@
         </button>
       </form>
       <p class="dark:text-white">By signing in, you agree to our <Link label="Terms of Service" link="/terms-of-service" /></p>
+    {:else}
+      <p class="dark:text-white">You are signed in!</p>
     {/if}
   </Card>
 </div>

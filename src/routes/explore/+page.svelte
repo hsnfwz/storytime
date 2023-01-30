@@ -5,9 +5,7 @@
   import Link from 'src/components/Link.svelte';
 </script>
 
-<div class="w-full max-w-[800px] m-auto">
-  <Card>
-    <Heading label="Explore" />
-    <Link label="Books" link="/explore/books" />
-  </Card>
-</div>
+<Card>
+  <Heading label="Explore" />
+  <Link label="Books" link="/explore/books" />
+</Card>

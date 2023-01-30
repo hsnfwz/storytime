@@ -5,14 +5,10 @@ import { error } from '@sveltejs/kit';
 import { getRecords } from 'src/api/database';
 
 // helpers
-import { sortBy, getCurrentEnvironment } from 'src/helpers/helpers';
-
-// enums
-import E_BookStatus from 'src/enums/E_BookStatus';
+import { sortBy } from 'src/helpers/helpers';
 
 export async function load({ url, params }: any) {
-  // status filter
-  let currentStatus = url.searchParams.get('status') || E_BookStatus.ALL.url;
+  let currentStatus = url.searchParams.get('status') || 'all';
   const words = currentStatus.split('-');
   const _words = words.map((word: string) => {
     const firstChar = word[0].toUpperCase();
@@ -22,30 +18,29 @@ export async function load({ url, params }: any) {
   });
   currentStatus = _words.join(' ');
 
-  // page filter
   const currentPage = +url.searchParams.get('page') || 1;
   const maxPageItemsCount: number = 24;
   const from: number = (currentPage - 1) * maxPageItemsCount;
   const to: number = from + (maxPageItemsCount - 1);
 
-  const { id } = params;
+  const { userId } = params;
 
   let match: any;
 
-  if (currentStatus !== E_BookStatus.ALL.text) {
+  if (currentStatus !== 'All') {
     match = {
-      profile_id: id,
-      [`${getCurrentEnvironment()}_status_instance.status`]: currentStatus,
+      user_id: userId,
+      ['user_book_status.status']: currentStatus,
     }
   } else {
     match = {
-      profile_id: id,
+      user_id: userId,
     }
   }
 
-  const profileBooks: any = await getRecords(
-    'profile_book',
-    `*, ${getCurrentEnvironment()}_book(id, title, release_date), ${getCurrentEnvironment()}_status_instance!inner(*)`,
+  const userBooks: any = await getRecords(
+    'user_book',
+    `*, book(*), user_book_status!inner(*)`,
     match,
     {
       column: 'created_at',
@@ -57,13 +52,13 @@ export async function load({ url, params }: any) {
     }
   );
 
-  if (!profileBooks) throw error(404, 'Not Found');
+  if (!userBooks) throw error(404, 'Not Found');
 
-  const books: any = profileBooks.map((profileBook: any) => profileBook[`${getCurrentEnvironment()}_book`]);
-  const items: any = sortBy(books, 'release_date', false);
+  const books: any = userBooks.map((userBook: any) => userBook.book);
+  const sortedBooks: any = sortBy(books, 'release_date', false);
 
   return {
-    items,
+    books: sortedBooks,
     currentPage,
     maxPageItemsCount,
     currentStatus,
