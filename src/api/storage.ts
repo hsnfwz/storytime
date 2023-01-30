@@ -1,8 +1,8 @@
-// config
-import supabase from 'src/config/supabase';
+// supabase
+import { supabaseClient } from '$lib/db';
 
 const getPublicUrl = (bucket: string, path: string) => {
-  const { data } = supabase
+  const { data } = supabaseClient
   .storage
   .from(bucket)
   .getPublicUrl(path);
@@ -17,7 +17,7 @@ const uploadFile = async (
   path: string,
   file: any
 ) => {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
   .storage
   .from(bucket)
   .upload(path, file, {

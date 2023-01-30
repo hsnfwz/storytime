@@ -1,3 +1,11 @@
-<div class="flex flex-col gap-4">
-  <h1 class="dark:text-white text-xl st-font-bold text-center">Books</h1>
-</div>
+<script lang="ts">
+  // components
+  import Heading from 'src/components/Heading.svelte';
+  import ItemGrid from 'src/components/ItemGrid.svelte';
+  import Card from 'src/components/Card.svelte';
+</script>
+
+<Card>
+  <Heading label="Books" />
+</Card>
+<ItemGrid />

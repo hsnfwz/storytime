@@ -2,8 +2,8 @@
   // svelte
   import { enhance } from '$app/forms';
 
-  // stores
-  import { profile } from 'src/stores/ProfileStore';
+  // components
+  import Heading from 'src/components/Heading.svelte';
 
   // form
   export let form: {
@@ -20,14 +20,14 @@
   let coverFilePath: string = '';
   let isSubmitDisabled: boolean = false;
 
-  profile.subscribe((value) => currentProfile = value);
-
   $: {
     if (form?.message) setTimeout(() => form = undefined, 2000);
   }
 </script>
 
-<div class="flex flex-col gap-4 items-center">
+<Heading label="Upload" />
+
+<!-- <div class="flex flex-col gap-4 items-center">
   <h1 class="dark:text-white text-center text-xl st-font-bold">Upload</h1>
   {#if currentProfile && currentProfile.is_contributor}
     <form
@@ -68,7 +68,7 @@
       </div>
       <div class="flex flex-col gap-2">
         <p class={`${form?.message && form?.isCoverFileFail ? 'text-red-500' : 'dark:text-white'}`}>* Cover File</p>
-        <label for="coverFile" class="min-w-0 whitespace-nowrap overflow-hidden text-ellipsis p-2 bg-blue-500 text-white rounded">{coverFilePath || 'WEBP'}</label>
+        <label for="coverFile" class="min-w-0 whitespace-nowrap overflow-hidden text-ellipsis p-2 bg-slate-600 text-white rounded">{coverFilePath || 'WEBP'}</label>
         <input
           class="hidden"
           id="coverFile"
@@ -92,4 +92,4 @@
   {:else}
     <p class="dark:text-white text-center">Become a contributor to start uploading</p>
   {/if}
-</div>
+</div> -->

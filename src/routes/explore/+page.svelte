@@ -1,8 +1,13 @@
 <script lang="ts">
   // components
+  import Card from 'src/components/Card.svelte';
   import Heading from 'src/components/Heading.svelte';
-  import ItemGrid from 'src/components/ItemGrid.svelte';
+  import Link from 'src/components/Link.svelte';
 </script>
 
-<Heading label="Explore" />
-<ItemGrid />
+<div class="w-full max-w-[800px] m-auto">
+  <Card>
+    <Heading label="Explore" />
+    <Link label="Books" link="/explore/books" />
+  </Card>
+</div>

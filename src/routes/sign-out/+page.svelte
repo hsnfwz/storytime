@@ -1,27 +1,37 @@
 <script lang="ts">
-  // supabase
-  import supabase from 'src/config/supabase';
+  // svelte
+  import { applyAction, enhance } from '$app/forms';
+	import { invalidateAll } from '$app/navigation';
+  import { page } from '$app/stores';
 
-  // stores
-  import { session } from 'src/stores/SessionStore';
+  // components
+  import Heading from 'src/components/Heading.svelte';
+  import Card from 'src/components/Card.svelte';
 
-  // state
-  let currentSession: any;
-
-  session.subscribe((value) => currentSession = value);
+  const signOut = () => {
+		return async ({ result }: any) => {
+			await invalidateAll();
+			applyAction(result);
+		};
+	};
 </script>
 
-<div class="flex flex-col items-center gap-4">
-  <h1 class="dark:text-white st-font-bold text-xl text-center">Sign Out</h1>
-  {#if currentSession}
-    <button
-      class="px-4 py-2 bg-neutral-100 dark:bg-neutral-900 dark:text-white rounded st-font-bold"
-      type="button"
-      on:click={async () => await supabase.auth.signOut()}
-    >
-      Sign Out
-    </button>
-  {:else}
-    <p class="dark:text-white text-center">You are signed out!</p>
-  {/if}
+<div class="w-full m-auto max-w-[800px]">
+  <Card>
+    <Heading label="Sign Out" />
+    {#if $page.data.session}
+      <form
+        method="post"
+        use:enhance={signOut}
+        class="w-full flex flex-col gap-2"
+      >
+        <button
+          class={`flex justify-center w-full p-1 st-font-bold rounded border-2 hover:bg-slate-300 hover:border-slate-300 dark:hover:bg-slate-600 dark:hover:border-slate-600 dark:text-white disabled:opacity-50 disabled:pointer-events-none transition-all border-slate-300 dark:border-slate-600`}
+          type="submit"
+        >
+          Sign Out
+        </button>
+      </form>
+    {/if}
+  </Card>
 </div>

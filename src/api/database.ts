@@ -1,8 +1,5 @@
-// svelte
-import { dev } from '$app/environment';
-
-// config
-import supabase from 'src/config/supabase';
+// supabase
+import { supabaseClient } from '$lib/db';
 
 // get 1 or more records
 const getRecords = async (
@@ -26,16 +23,8 @@ const getRecords = async (
     to: 47,
   }
 ) => {
-  let _table: string = table;
-
-  if (dev) {
-    _table = `dev_${table}`;
-  } else {
-    _table = `prod_${table}`;
-  }
-
-  const { data, error } = await supabase
-  .from(_table)
+  const { data, error } = await supabaseClient
+  .from(table)
   .select(columns)
   .match(match)
   .order(order.column, { ascending: order.ascending })
@@ -55,16 +44,8 @@ const insertRecords = async (
   values: any[],
   columns: string = '*',
 ) => {
-  let _table: string = table;
-
-  if (dev) {
-    _table = `dev_${table}`;
-  } else {
-    _table = `prod_${table}`;
-  }
-
-  const { data, error } = await supabase
-  .from(_table)
+  const { data, error } = await supabaseClient
+  .from(table)
   .insert(values)
   .select(columns)
 
@@ -85,16 +66,8 @@ const updateRecords = async (
   } = {},
   columns: string = '*',
 ) => {
-  let _table: string = table;
-
-  if (dev) {
-    _table = `dev_${table}`;
-  } else {
-    _table = `prod_${table}`;
-  }
-
-  const { data, error } = await supabase
-  .from(_table)
+  const { data, error } = await supabaseClient
+  .from(table)
   .update(values)
   .match(match)
   .select(columns)
@@ -116,16 +89,8 @@ const updateRecordsGreatherThan = async (
   },
   columns: string = '*',
 ) => {
-  let _table: string = table;
-
-  if (dev) {
-    _table = `dev_${table}`;
-  } else {
-    _table = `prod_${table}`;
-  }
-
-  const { data, error } = await supabase
-  .from(_table)
+  const { data, error } = await supabaseClient
+  .from(table)
   .update(values)
   .gt(greaterThan.column, greaterThan.value)
   .select(columns)
@@ -146,16 +111,8 @@ const deleteRecords = async (
   } = {},
   columns: string = '*',
 ) => {
-  let _table: string = table;
-
-  if (dev) {
-    _table = `dev_${table}`;
-  } else {
-    _table = `prod_${table}`;
-  }
-
-  const { data, error } = await supabase
-  .from(_table)
+  const { data, error } = await supabaseClient
+  .from(table)
   .delete()
   .match(match)
   .select(columns)

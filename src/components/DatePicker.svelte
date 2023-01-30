@@ -48,10 +48,10 @@
   const regex = new RegExp('^[0-9]+$');
 </script>
 
-<div class="flex flex-col gap-2">
+<div class="w-full flex flex-col gap-2">
   <p class={`${showError ? 'text-rose-500' : 'dark:text-whtie'}`}>{label}</p>
   <div class="flex gap-2 w-full">
-    <div class="flex flex-col gap-2">
+    <div class="w-full flex flex-col gap-2">
       <label for="" class={`${showError ? 'text-rose-500' : 'dark:text-whtie'}`}>Year</label>
       <input
         class={`${showError ? 'border-rose-500' : 'border-neutral-100 dark:border-slate-600'} border-2 w-full box-border p-1 bg-neutral-100 dark:text-white dark:bg-slate-600 rounded`}
@@ -66,7 +66,7 @@
         maxlength="4"
       />
     </div>
-    <div class="flex flex-col gap-2">
+    <div class="w-full flex flex-col gap-2">
       <label for="" class={`${showError ? 'text-rose-500' : 'dark:text-whtie'}`}>Month</label>
       <input
         class={`${showError ? 'border-rose-500' : 'border-neutral-100 dark:border-slate-600'} border-2 w-full box-border p-1 bg-neutral-100 dark:text-white dark:bg-slate-600 rounded`}
@@ -81,7 +81,7 @@
         maxlength="2"
       />
     </div>
-    <div class="flex flex-col gap-2">
+    <div class="w-full flex flex-col gap-2">
       <label for="" class={`${showError ? 'text-rose-500' : 'dark:text-whtie'}`}>Day</label>
       <input
         class={`${showError ? 'border-rose-500' : 'border-neutral-100 dark:border-slate-600'} border-2 w-full box-border p-1 bg-neutral-100 dark:text-white dark:bg-slate-600 rounded`}

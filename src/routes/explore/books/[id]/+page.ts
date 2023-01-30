@@ -1,21 +1,59 @@
 // svelte
 import { error } from '@sveltejs/kit';
 
+// supabase
+import { getSupabase } from '@supabase/auth-helpers-sveltekit';
+
 // api
 import { getRecords } from 'src/api/database';
 
-export async function load({ params }: any) {
-  const { id } = params;
+export async function load(event: any) {
+  const { id } = event.params;
 
-  const items: any = await getRecords(
+  const books: any = await getRecords(
     'book',
     '*',
     {
-      id
+      id,
     }
   );
 
-  if (!items || !items[0]) throw error(404, 'Not Found');
+  if (!books || !books[0]) throw error(404, 'Not Found');
 
-  return { item: items[0] };
+  let userProfile: any;
+  let userBook: any;
+
+  const { session } = await getSupabase(event);
+
+	if (session) {
+    const [
+      userProfiles,
+      userBooks
+    ] = await Promise.all([
+      getRecords(
+        'user_profile',
+        '*',
+        {
+          user_id: session.user.id,
+        }
+      ),
+      getRecords(
+        'user_book',
+        '*, user_book_status(*), user_book_rating(*), user_book_review(*), user_book_read(*)',
+        {
+          user_id: session.user.id,
+          book_id: id,
+        }
+      )
+    ]);
+
+    userProfile = userProfiles[0];
+		userBook = userBooks[0];
+	}
+
+  return {
+    userProfile,
+    userBook,
+    book: books[0],
+  };
 }

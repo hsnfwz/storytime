@@ -3,21 +3,13 @@
   import { onMount } from 'svelte';
 
   // stores
-  import { session } from 'src/stores/SessionStore';
-  import { profile } from 'src/stores/ProfileStore';
   import { page } from '$app/stores';
 
   // state
-  let currentSession: any = undefined;
-  let currentProfile: any = undefined;
   let currentTheme: string = 'dark';
-
-  session.subscribe((value) => currentSession = value);
-  profile.subscribe((value) => currentProfile = value);
 
   onMount(() => {
     const theme = localStorage.getItem('theme') || '';
-
     let _theme: string = 'dark';
 
     if (theme === 'light') _theme = '';
@@ -50,7 +42,7 @@
       </svg>
     {/if}
   </a>
-  <a href="/community">
+  <!-- <a href="/community">
     {#if $page.url.pathname.includes('community')}
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-10 h-10 p-2 fill-slate-600">
         <path fill-rule="evenodd" d="M8.25 6.75a3.75 3.75 0 117.5 0 3.75 3.75 0 01-7.5 0zM15.75 9.75a3 3 0 116 0 3 3 0 01-6 0zM2.25 9.75a3 3 0 116 0 3 3 0 01-6 0zM6.31 15.117A6.745 6.745 0 0112 12a6.745 6.745 0 016.709 7.498.75.75 0 01-.372.568A12.696 12.696 0 0112 21.75c-2.305 0-4.47-.612-6.337-1.684a.75.75 0 01-.372-.568 6.787 6.787 0 011.019-4.38z" clip-rule="evenodd" />
@@ -61,8 +53,8 @@
         <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
       </svg>
     {/if}
-  </a>
-  <a href="/profiles">
+  </a> -->
+  <!-- <a href="/profiles">
     {#if $page.url.pathname.includes('profiles') && +$page.params.id !== currentProfile?.id}
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-10 h-10 p-2 fill-slate-600">
         <path d="M4.5 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM14.25 8.625a3.375 3.375 0 116.75 0 3.375 3.375 0 01-6.75 0zM1.5 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM17.25 19.128l-.001.144a2.25 2.25 0 01-.233.96 10.088 10.088 0 005.06-1.01.75.75 0 00.42-.643 4.875 4.875 0 00-6.957-4.611 8.586 8.586 0 011.71 5.157v.003z" />
@@ -72,8 +64,8 @@
         <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
       </svg>
     {/if}
-  </a>
-  {#if currentProfile}
+  </a> -->
+  <!-- {#if currentProfile}
     <a href={`/profiles/${currentProfile.id}`}>
       {#if $page.url.pathname.includes(`/profiles/${currentProfile.id}`)}
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-10 h-10 p-2 fill-slate-600">
@@ -85,8 +77,8 @@
         </svg>
       {/if}
     </a>
-  {/if}
-  {#if currentProfile && currentProfile.is_contributor}
+  {/if} -->
+  <!-- {#if currentProfile && currentProfile.is_contributor}
     <a href="/upload">
       {#if $page.url.pathname === '/upload'}
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-10 h-10 p-2 fill-slate-600">
@@ -98,8 +90,8 @@
         </svg>
       {/if}
     </a>
-  {/if}
-  {#if currentSession}
+  {/if} -->
+  {#if $page.data.session}
     <a href="/sign-out">
       {#if $page.url.pathname === '/sign-out'}
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 p-2 stroke-slate-600">

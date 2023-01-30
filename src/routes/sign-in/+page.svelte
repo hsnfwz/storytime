@@ -1,76 +1,66 @@
 <script lang="ts">
   // svelte
-  import { dev } from '$app/environment';
+  import { applyAction, enhance } from '$app/forms';
+  import { page } from '$app/stores';
 
-  // config
-  import supabase from 'src/config/supabase';
+  // components
+  import Heading from 'src/components/Heading.svelte';
+  import Card from 'src/components/Card.svelte';
+  import Link from 'src/components/Link.svelte';
 
-  // stores
-  import { session } from 'src/stores/SessionStore';
+  // form
+  export let form: any;
 
   // state
-  let currentSession: any;
-  let email: string = '';
-  let showSuccessMessage: boolean = false;
-  let showErrorMessage: boolean = false;
+  let isLoading: boolean = false;
+  let email: string = form?.values?.email ?? '';
 
-  session.subscribe((value) => currentSession = value);
+  const signIn = () => {
+    isLoading = true;
 
-  const handleSubmit = async () => {
-    if (email.length < 3) {
-      showErrorMessage = true;
-    } else {
-      showSuccessMessage = true;
-
-      let options: any;
-
-      if (dev) options = { emailRedirectTo: 'http://localhost:5173' };
-
-      await supabase.auth.signInWithOtp({ email, options });
-    }
-  }
-
-  $: {
-    if (showErrorMessage) setTimeout(() => showErrorMessage = false, 2000);
+    return async ({ result }: any) => {
+			isLoading = false;
+			await applyAction(result);
+		};
   }
 </script>
 
-<div class="flex flex-col items-center gap-4">
-  <h1 class="dark:text-white st-font-bold text-xl text-center">Sign In</h1>
-  {#if currentSession}
-    <p class="darK:text-white text-center">You are already signed in!</p>
-  {:else}
-    {#if showSuccessMessage}
-      <div class="flex flex-col gap-4 w-60">
-        <p class="dark:text-white text-center">
-          We sent an email to you at <span class="st-font-bold dark:text-white">{email}</span>. It has a magic link that will sign you in.
-        </p>
-      </div>
-    {:else}
-      <form class="flex flex-col gap-4 w-60 bg-neutral-100 dark:bg-neutral-900 p-4 rounded">
+<div class="w-full m-auto max-w-[800px]">
+  <Card>
+    <Heading label="Sign In" />
+      {#if !$page.data.session}
+      {#if form?.error}
+        <div class="dark:text-white">{form.error}</div>
+      {/if}
+      {#if form?.message}
+        <div class="dark:text-white">{form.message}</div>
+      {/if}
+      <form
+        method="post"
+        use:enhance={signIn}
+        class="w-full flex flex-col gap-2"
+      >
         <div class="flex flex-col gap-2">
-          <label for="user-email" class={`${showErrorMessage ? 'text-red-500' : 'dark:text-white'}`}>* Email</label>
+          <label for="email" class={`${form?.error ? 'text-red-500' : 'dark:text-white'}`}>* Email</label>
           <input
-            id="user-email"
+            id="email"
             type="email"
-            autoComplete="off"
+            name="email"
             bind:value={email}
-            class={`${showErrorMessage ? 'border-red-500' : 'border-white'} p-2 box-border border w-full rounded`}
+            autoComplete="off"
+            class={`${form?.error ? 'border-red-500' : 'dark:border-slate-600'} p-1 box-border border w-full rounded dark:bg-slate-600`}
             placeholder="Email"
           />
         </div>
-        {#if showErrorMessage}
-          <p class="text-red-500">Email must be between 3 and 320 characters</p>
-        {/if}
         <button
-          class="rounded px-4 py-2 bg-blue-500 text-white st-font-bold disabled:opacity-50"
-          on:click={async () => await handleSubmit()}
-          disabled={showErrorMessage}
+          class={`flex justify-center w-full p-1 st-font-bold rounded border-2 hover:bg-slate-300 hover:border-slate-300 dark:hover:bg-slate-600 dark:hover:border-slate-600 dark:text-white disabled:opacity-50 disabled:pointer-events-none transition-all border-slate-300 dark:border-slate-600`}
+          type="submit"
+          disabled={isLoading || email === ''}
         >
           Sign In
         </button>
-        <p class="dark:text-white">By signing in, you agree to our <a class="text-blue-500" href="/terms-and-conditions">Terms and Conditions.</a></p>
       </form>
+      <p class="dark:text-white">By signing in, you agree to our <Link label="Terms of Service" link="/terms-of-service" /></p>
     {/if}
-  {/if}
+  </Card>
 </div>
