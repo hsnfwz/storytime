@@ -144,7 +144,7 @@
     <HorizontalDivider />
     <Card>
       <Heading label="Links" />
-      <div class="flex flex-col gap-2 self-start">
+      <div class="flex flex-col gap-2">
         <Link link="/" label="Purchase" />
         <Link link="/" label="Community" />
         <Link link="/" label="Statistics" />
@@ -183,7 +183,7 @@
     <HorizontalDivider />
     {#if session}
       <Card>
-        <div class="w-full flex justify-between gap-2 self-start">
+        <div class="w-full flex justify-between gap-2">
           <Heading label="Your Status" />
           {#if showUserStatus}
             <ArrowUpButton handleClick={() => showUserStatus = false} />
@@ -212,7 +212,7 @@
         {/if}
       </Card>
       <Card>
-        <div class="w-full flex justify-between gap-2 self-start">
+        <div class="w-full flex justify-between gap-2">
           <Heading label="Your Rating" />
           {#if showUserRating}
             <ArrowUpButton
@@ -251,7 +251,7 @@
         {/if}
       </Card>
       <Card>
-        <div class="w-full flex justify-between gap-2 self-start">
+        <div class="w-full flex justify-between gap-2">
           <Heading label="Your Review" />
           {#if showUserReview}
             <ArrowUpButton
@@ -292,7 +292,7 @@
       {#if userBook}
         <HorizontalDivider />
         <Card>
-          <div class="w-full flex justify-between gap-2 self-start">
+          <div class="w-full flex justify-between gap-2">
             <Heading label="Delete Book" />
             {#if showDeleteUserBook}
               <ArrowUpButton handleClick={() => showDeleteUserBook = false} />
