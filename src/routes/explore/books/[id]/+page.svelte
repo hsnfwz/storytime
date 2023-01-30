@@ -19,7 +19,6 @@
   import ArrowDownButton from 'src/components/ArrowDownButton.svelte';
   import TextInput from 'src/components/TextInput.svelte';
   import HorizontalDivider from 'src/components/HorizontalDivider.svelte';
-  import VerticalDivider from 'src/components/VerticalDivider.svelte';
   import WarningCard from 'src/components/WarningCard.svelte';
   import ArrowUpButton from 'src/components/ArrowUpButton.svelte';
 
@@ -194,7 +193,10 @@
         </div>
         {#if !showUserStatus && userBook}
           <SuccessCard>
-            <p class="dark:text-white w-full">You marked this book as <span class="st-font-italic">{userBook.user_book_status.status}</span></p>
+            <div class="w-full flex flex-col gap-2">
+              <p class="dark:text-white w-full">You marked this book as <span class="st-font-italic">{userBook.user_book_status.status}</span></p>
+              <p class="dark:text-white text-sm w-full">Last updated {formatDate(userBook.user_book_status.updated_at, true)}</p>
+            </div>
           </SuccessCard>
         {:else if !showUserStatus && !userBook}
           <InfoCard>
@@ -226,7 +228,10 @@
         </div>
         {#if !showUserRating && userBook && userBook.user_book_rating}
           <SuccessCard>
-            <p class="dark:text-white w-full">You rated this book <span class="st-font-italic">{userBook.user_book_rating.rating}/10</span></p>
+            <div class="w-full flex flex-col gap-2">
+              <p class="dark:text-white w-full">You rated this book <span class="st-font-italic">{userBook.user_book_rating.rating}/10</span></p>
+              <p class="dark:text-white text-sm w-full">Last updated {formatDate(userBook.user_book_rating.updated_at, true)}</p>
+            </div>
           </SuccessCard>
         {:else if !showUserRating && userBook && !userBook.user_book_rating && (userBook.user_book_status.status === E_BookStatus.READ.text || userBook.user_book_status.status === E_BookStatus.DNF.text)}
           <InfoCard>
@@ -262,7 +267,10 @@
         </div>
         {#if !showUserReview && userBook && userBook.user_book_review}
           <SuccessCard>
-            <p class="dark:text-white w-full">You reviewed this book</p>
+            <div class="w-full flex flex-col gap-2">
+              <p class="dark:text-white w-full">You reviewed this book</p>
+              <p class="dark:text-white text-sm w-full">Last updated {formatDate(userBook.user_book_review.updated_at, true)}</p>
+            </div>
           </SuccessCard>
         {:else if !showUserReview && userBook && !userBook.user_book_review && (userBook.user_book_status.status === E_BookStatus.READ.text || userBook.user_book_status.status === E_BookStatus.DNF.text)}
           <InfoCard>

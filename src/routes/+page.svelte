@@ -15,7 +15,7 @@
   <Card>
     <Heading label="Home" />
     {#if data.profile}
-      <p class="dark:text-white">Profile {data.profile.id}</p>
+      <p class="dark:text-white self-start">Welcome back Profile {data.profile.id}!</p>
     {:else}
       <InfoCard>
         <p><Link link="/sign-in" label="Sign in" /> to start managing your books</p>

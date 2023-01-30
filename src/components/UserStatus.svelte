@@ -7,7 +7,7 @@
   import { insertRecords, updateRecords } from 'src/api/database';
 
   // helpers
-  import { getDateDifference } from 'src/helpers/helpers';
+  import { getDateDifference, formatDate } from 'src/helpers/helpers';
 
   // enums
   import E_BookStatus from 'src/enums/E_BookStatus';
@@ -765,7 +765,10 @@
 {#if session}
   {#if userBook}
     <SuccessCard>
-      <p class="dark:text-white w-full">You marked this book as <span class="st-font-italic">{userBook.user_book_status.status}</span></p>
+      <div class="w-full flex flex-col gap-2">
+        <p class="dark:text-white w-full">You marked this book as <span class="st-font-italic">{userBook.user_book_status.status}</span></p>
+        <p class="dark:text-white text-sm w-full">Last updated {formatDate(userBook.user_book_status.updated_at, true)}</p>
+      </div>
     </SuccessCard>
   {:else}
     <InfoCard>

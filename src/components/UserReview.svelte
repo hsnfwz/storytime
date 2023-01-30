@@ -6,6 +6,9 @@
   // api
   import { insertRecords, updateRecords } from 'src/api/database';
 
+  // helpers
+  import { formatDate } from 'src/helpers/helpers';
+
   // enums
   import E_BookStatus from 'src/enums/E_BookStatus';
 
@@ -33,13 +36,45 @@
     // grab records for timeline
   });
 
+  const handleAddNewReview = async () => {
+    const reviewInstanceData: any = {
+      user_id: session.user.id,
+      book_id: book.id,
+      review,
+    };
+
+    const newReviewInstanceRecords = await insertRecords('user_book_review', [reviewInstanceData]);
+
+    const updatedUserBookData: any = {
+      latest_user_book_review_id: newReviewInstanceRecords[0].id,
+    };
+
+    const [
+      latestUserBookRecords,
+    ] = await Promise.all([
+      updateRecords('user_book', updatedUserBookData, { id: userBook.id }, `*, user_book_status(*), user_book_read(*), user_book_rating(*), user_book_review(*)`),
+    ]);
+
+    userBook = latestUserBookRecords[0];
+  }
+
   const handleReview = async () => {
     isLoading = true;
 
     if (userBook && userBook.user_book_review) {
-      // ... edit
+      const updatedReviewData: any = {
+        updated_at: new Date(),
+        review,
+      }
+
+      const [
+        latestUserBookReviewRecords,
+      ] = await Promise.all([
+        updateRecords('user_book_review', updatedReviewData, { id: userBook.latest_user_book_review_id }, `*`),
+      ]);
+
+      userBook.user_book_review = latestUserBookReviewRecords[0];
     } else if (userBook && !userBook.user_book_review) {
-      // review instance
       const reviewInstanceData: any = {
         user_id: session.user.id,
         book_id: book.id,
@@ -48,17 +83,14 @@
 
       const newReviewInstanceRecords = await insertRecords('user_book_review', [reviewInstanceData]);
 
-      // profile book
       const updatedUserBookData: any = {
         latest_user_book_review_id: newReviewInstanceRecords[0].id,
       };
 
-      // profile
       const updatedProfileData: any = {
         book_review_count: userProfile.book_review_count + 1,
       };
 
-      // book
       const updatedBookData: any = {
         review_count: book.review_count + 1,
       };
@@ -87,7 +119,10 @@
 {#if session}
   {#if userBook && userBook.user_book_review}
     <SuccessCard>
-      <p class="dark:text-white w-full">You reviewed this book</p>
+      <div class="flex flex-col gap-2 w-full">
+        <p class="dark:text-white w-full">You reviewed this book</p>
+        <p class="dark:text-white text-sm w-full">Last updated {formatDate(userBook.user_book_review.updated_at, true)}</p>
+      </div>
     </SuccessCard>
   {:else if userBook && !userBook.user_book_review && (userBook.user_book_status.status === E_BookStatus.READ.text || userBook.user_book_status.status === E_BookStatus.DNF.text)}
     <InfoCard>
@@ -105,8 +140,10 @@
         maxLength={4000}
         bind:value={review}
       />
+    </div>
+    <div class="w-full flex flex-col gap-2 items-center">
       <Button
-        label={userBook.user_book_review ? 'Update Review' : 'Add Review'}
+        label={userBook.user_book_review ? 'Update Current Review' : 'Add Review'}
         handleClick={async () => await handleReview()}
         isDisabled={
           isLoading ||
@@ -114,6 +151,16 @@
           (!userBook.user_book_review && !review)
         }
       />
+      {#if userBook && userBook.user_book_review}
+        <Button
+          label="Add New Review"
+          handleClick={async () => await handleAddNewReview()}
+          isDisabled={
+            isLoading ||
+            (userBook.user_book_review && userBook.user_book_review.review === review)
+          }
+        />
+      {/if}
     </div>
   {/if}
 {:else}

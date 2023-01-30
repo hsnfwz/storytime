@@ -45,12 +45,14 @@
 </script>
 
 <!-- VERSION 2 FEATURES/FIXES -->
-<!-- todo: allow user to edit rating, review -->
-<!-- todo: allow user to create another read, rating, review instance -->
-<!-- todo: allow user to delete read, rating, review instance -->
+<!-- todo: sync status and page number together -->
+
 <!-- todo: collections -->
 
-<!-- todo: sync status and page number together -->
+<!-- todo: status, rating, review, read timelines -->
+<!-- todo: allow user to create another read instance -->
+<!-- todo: allow user to delete read, rating, and review instance -->
+
 <!-- todo: make date input more robust -->
 <!-- todo: filter, sort, search -->
 
@@ -64,6 +66,7 @@
 <!-- todo: option to import any csv files (similar to IFTA Fuel Card) -->
 <!-- todo: account display name and username -->
 <!-- todo: convert sign in form to svelte form -->
+<!-- todo: handle timezones -->
 
 <!-- BEFORE RELEASE -->
 <!-- todo: log all data that is being fetched in each url and test by switching pages to see how many requests we make each time, then we will figure out how to reduce requests from there (i.e. caching, look up pros and cons and what to consider) -->

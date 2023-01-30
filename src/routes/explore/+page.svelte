@@ -8,6 +8,8 @@
 <div class="w-full max-w-[800px] m-auto">
   <Card>
     <Heading label="Explore" />
-    <Link label="Books" link="/explore/books" />
+    <div class="self-start">
+      <Link label="Books" link="/explore/books" />
+    </div>
   </Card>
 </div>

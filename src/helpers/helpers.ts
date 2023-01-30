@@ -26,8 +26,22 @@ const formatFileName = (text: string, id: number, includeFileType: boolean = fal
   return _text;
 }
 
-const formatDate = (date: any) => {
-  const formattedDate = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(date));
+const formatDate = (date: any, includeTime: boolean = false) => {
+  const options: any = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'UTC',
+  }
+
+  if (includeTime) {
+    options.hour = 'numeric';
+    options.minute = 'numeric';
+    options.second = 'numeric';
+    options.timeZoneName = 'short';
+  }
+
+  const formattedDate = new Intl.DateTimeFormat('en-US', options).format(new Date(date));
   
   return formattedDate;
 }
