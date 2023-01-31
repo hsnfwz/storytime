@@ -61,9 +61,9 @@
     <p>No books</p>
   </Card>
 {:else if items.length !== 0 && columns}
-  <div class={`grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 2xl:grid-cols-8 gap-4`}>
+  <div class={`grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 2xl:grid-cols-8 gap-2`}>
     {#each Object.values(columns) as column}
-      <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-2">
         {#each column as item}
           <a href={`/explore/books/${item.id}`}>
             <ItemCard {item} />

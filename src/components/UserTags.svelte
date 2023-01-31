@@ -148,5 +148,7 @@
         </div>
       {/each}
     </div>
+  {:else if userBook && userBookTags.length === 0}
+    <p class="w-full dark:text-white">You have no tags</p>
   {/if}
 {/if}
