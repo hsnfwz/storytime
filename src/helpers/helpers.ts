@@ -10,6 +10,16 @@ const formatText = (text: string) => {
   return _text;
 }
 
+const formatUrl = (text: string) => {
+  let _text: string = '';
+  
+  if (text) {
+    _text = text.replace(' ', '-').trim().toLowerCase();
+  }
+  
+  return _text;
+}
+
 const formatFileName = (text: string, id: number, includeFileType: boolean = false) => {
   let _text: string = '';
 
@@ -37,7 +47,7 @@ const formatDate = (date: any, includeTime: boolean = false) => {
   if (includeTime) {
     options.hour = 'numeric';
     options.minute = 'numeric';
-    options.second = 'numeric';
+    // options.second = 'numeric';
     options.timeZoneName = 'short';
   }
 
@@ -175,4 +185,5 @@ export {
   getProfileRatingsAverage,
   getDateDifference,
   getCurrentEnvironment,
+  formatUrl,
 };

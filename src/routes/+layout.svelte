@@ -44,32 +44,52 @@
   });
 </script>
 
-<!-- VERSION 2 FEATURES/FIXES -->
-<!-- todo: turn theme changer into svelte store -->
 
-<!-- todo: collections -->
+
+<!-- VERSION 2 FEATURES/FIXES -->
+
+<!-- todo: maybe link a user to their unique and all status books, all tags, all ratings, and all reviews -->
+<!-- todo: create 18px (heading), 16px (body/subheading) and 14px (body) text components -->
+<!-- todo: turn theme changer into svelte store (make sure to cleaup up on destroy) -->
+
+<!-- todo:
+  ADD TO COLLECTION: insert book_tag record if tag does not exist and update count, otherwise only update count
+
+  REMOVE FROM COLLECTION: update count, otherwise delete book_tag record if count reaches 0
+
+  how do we keep track of all (unique) tagged books for a user?
+-->
+<!-- todo: create views for user_book_view and user_book_tag_book_view -->
+<!-- todo: delete tags and update associated counts on delete book -->
+
+<!-- todo: editions -->
+<!-- todo: make date input more robust -->
+
+
+
+<!-- VERSION 3 FEATURES/FIXES -->
+
+<!-- todo: filter, sort, search -->
+<!-- todo: statistics -->
+<!-- todo: authors -->
 
 <!-- todo: status, rating, review, read timelines -->
 <!-- todo: allow user to create another read instance -->
 <!-- todo: allow user to delete read, rating, and review instance -->
 
-<!-- todo: make date input more robust -->
-<!-- todo: filter, sort, search -->
+<!-- todo: profile display name -->
+<!-- todo: profile timezone -->
+<!-- todo: films, games -->
 
-<!-- todo: authors, stats -->
-<!-- todo: films, games, series_title, series_entry, synopsis -->
-<!-- todo: editions (cover, page count, isbn, release date) ? -->
-
-<!-- VERSION 3 FEATURES/FIXES -->
 <!-- todo: option to import any csv files (similar to IFTA Fuel Card) -->
-<!-- todo: account display name and username -->
-<!-- todo: convert sign in form to svelte form -->
-<!-- todo: handle timezones -->
+
+
 
 <!-- BEFORE RELEASE -->
-<!-- todo: log all data that is being fetched in each url and test by switching pages to see how many requests we make each time, then we will figure out how to reduce requests from there (i.e. caching, look up pros and cons and what to consider) -->
+
 <!-- todo: update supabase RLS -->
-<!-- todo: look into cleanup (to avoid memory leaks) for svelte subcription functions -->
+<!-- todo: look into cacheing? -->
+<!-- todo: it appears postgres handle concurrent transactions automatically, but test just in case -->
 
 <main class="flex flex-col gap-4 mt-4 mb-[58px] sm:mt-0 sm:mb-0">
   <Nav />

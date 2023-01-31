@@ -4,19 +4,18 @@
   import Heading from 'src/components/Heading.svelte';
   import Paginator from 'src/components/Paginator.svelte';
   import MasonryGrid from 'src/components/MasonryGrid.svelte';
+  import HorizontalDivider from 'src/components/HorizontalDivider.svelte';
 
   // data
   export let data: any;
 </script>
 
-<Card>
-  <Heading label="Books" />
-</Card>
+<Heading label="Books" />
+<HorizontalDivider />
 <MasonryGrid items={data.books} />
-<Card>
-  <Paginator
-    currentPage={data.currentPage}
-    maxPageItemsCount={data.maxPageItemsCount}
-    currentItemsCount={data.books.length}
-  />
-</Card>
+<HorizontalDivider />
+<Paginator
+  currentPage={data.currentPage}
+  maxPageItemsCount={data.maxPageItemsCount}
+  currentItemsCount={data.books.length}
+/>

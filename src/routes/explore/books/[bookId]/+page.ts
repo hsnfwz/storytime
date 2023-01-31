@@ -22,13 +22,17 @@ export async function load(event: any) {
 
   let userProfile: any;
   let userBook: any;
+  let userBookTags: any;
+  let userBookTagBooks: any;
 
   const { session } = await getSupabase(event);
 
 	if (session) {
     const [
-      userProfiles,
-      userBooks
+      userProfileRecords,
+      userBookRecords,
+      userBookTagRecords,
+      userBookTagBookRecords
     ] = await Promise.all([
       getRecords(
         'user_profile',
@@ -44,16 +48,39 @@ export async function load(event: any) {
           user_id: session.user.id,
           book_id: bookId,
         }
+      ),
+      getRecords(
+        'user_book_tag',
+        `*`,
+        {
+          user_id: session.user.id,
+        },
+        {
+          column: 'name',
+          ascending: true,
+        },
+      ),
+      getRecords(
+        'user_book_tag_book',
+        `*`,
+        {
+          user_id: session.user.id,
+          book_id: bookId,
+        },
       )
     ]);
 
-    userProfile = userProfiles[0];
-		userBook = userBooks[0];
+    userProfile = userProfileRecords[0];
+		userBook = userBookRecords[0];
+    userBookTags = userBookTagRecords;
+    userBookTagBooks = userBookTagBookRecords;
 	}
 
   return {
     userProfile,
     userBook,
+    userBookTags,
+    userBookTagBooks,
     book: books[0],
   };
 }

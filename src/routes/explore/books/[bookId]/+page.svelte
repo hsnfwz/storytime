@@ -21,6 +21,7 @@
   import HorizontalDivider from 'src/components/HorizontalDivider.svelte';
   import WarningCard from 'src/components/WarningCard.svelte';
   import ArrowUpButton from 'src/components/ArrowUpButton.svelte';
+  import UserTags from 'src/components/UserTags.svelte';
 
   // helpers
   import { formatDate, getItemRatingsAverage, getItemTotalRatings, getDateDifference } from 'src/helpers/helpers';
@@ -32,6 +33,8 @@
   let userProfile: any = data.userProfile;
   let userBook: any = data.userBook;
   let book: any = data.book;
+  let userBookTags: any = data.userBookTags;
+  let userBookTagBooks: any = data.userBookTagBooks;
 
   // state
   let isLoading: boolean = false;
@@ -39,6 +42,7 @@
   const dateDifference = getDateDifference(book.release_date);
 
   let showUserStatus: boolean = false;
+  let showUserTags: boolean = false;
   let showUserRating: boolean = false;
   let showUserReview: boolean = false;
   let showDeleteUserBook: boolean = false;
@@ -86,8 +90,6 @@
     const hasRead = userBook.read_count > 0;
     const hasRated = userBook.user_book_rating;
     const hasReviewed = userBook.user_book_review;
-
-    // todo: delete collections (tags)
 
     const updatedProfileData = {
       [profileCountAttribute]: profileCountValue,
@@ -171,6 +173,7 @@
       <div class="w-full flex flex-col gap-2">
         <p class="w-full dark:text-white">{getItemTotalRatings(book) === 1 ? `${getItemTotalRatings(book)} rating`: `${getItemTotalRatings(book)} ratings`}</p>
         <p class="w-full dark:text-white">{book.review_count ===  1 ? `${book.review_count} review` : `${book.review_count} reviews`}</p>
+        <p class="w-full dark:text-white">{book.book_tag_count ===  1 ? `${book.book_tag_count} tag` : `${book.book_tag_count} tags`}</p>
         <p class="w-full dark:text-white">{book.status_tracking_count} tracking</p>
         <p class="w-full dark:text-white">{book.status_to_read_count} to read</p>
         <p class="w-full dark:text-white">{book.status_reading_count} reading</p>
@@ -213,6 +216,47 @@
       </Card>
       <Card>
         <div class="w-full flex justify-between gap-2">
+          <Heading label="Your Tags" />
+          {#if showUserTags}
+            <ArrowUpButton
+              handleClick={() => showUserTags = false}
+              isDisabled={!userBook}
+            />
+          {:else}
+            <ArrowDownButton
+              handleClick={() => showUserTags = true}
+              isDisabled={!userBook}
+            />
+          {/if}
+        </div>
+        {#if !showUserTags && userBook && userBookTagBooks.length > 0}
+          <SuccessCard>
+            <div class="w-full flex flex-col gap-2">
+              <p class="dark:text-white w-full">You tagged this book {userBookTagBooks.length} {userBookTagBooks.length === 1 ? 'time' : 'times'}</p>
+              <!-- <p class="dark:text-white text-sm w-full">Last updated {formatDate(userBook.user_book_rating.updated_at, true)}</p> -->
+            </div>
+          </SuccessCard>
+        {:else if !showUserTags && userBook && userBookTagBooks.length === 0}
+          <InfoCard>
+            <p class="dark:text-white w-full">You can tag this book</p>
+          </InfoCard>
+        {:else if !showUserTags && !userBook}
+          <InfoCard>
+            <p class="dark:text-white w-full">You can start tagging this book after marking a status</p>
+          </InfoCard>
+        {/if}
+        {#if showUserTags}
+          <UserTags
+            bind:userProfile
+            bind:userBook
+            bind:book
+            bind:userBookTags
+            bind:userBookTagBooks
+          />
+        {/if}
+      </Card>
+      <Card>
+        <div class="w-full flex justify-between gap-2">
           <Heading label="Your Rating" />
           {#if showUserRating}
             <ArrowUpButton
@@ -239,7 +283,7 @@
           </InfoCard>
         {:else if !showUserRating && ((userBook && (userBook.user_book_status.status !== E_BookStatus.READ.text && userBook.user_book_status.status !== E_BookStatus.DNF.text)) || !userBook)}
           <InfoCard>
-            <p class="dark:text-white">You can start rating this book after marking it as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DNF.text}</span></p>
+            <p class="dark:text-white w-full">You can start rating this book after marking it as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DNF.text}</span></p>
           </InfoCard>
         {/if}
         {#if showUserRating}
@@ -278,7 +322,7 @@
           </InfoCard>
         {:else if !showUserReview && ((userBook && (userBook.user_book_status.status !== E_BookStatus.READ.text && userBook.user_book_status.status !== E_BookStatus.DNF.text)) || !userBook)}
           <InfoCard>
-            <p class="dark:text-white">You can start reviewing this book after marking it as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DNF.text}</span></p>
+            <p class="dark:text-white w-full">You can start reviewing this book after marking it as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DNF.text}</span></p>
           </InfoCard>
         {/if}
         {#if showUserReview}
@@ -307,6 +351,7 @@
             <div class="w-full flex flex-col gap-2">
               <label for="">* Please type <span class="st-font-bold">Delete Book</span> to confirm.</label>
               <TextInput
+                placeholder="Delete Book"
                 bind:value={deleteConfirmation}
               />
               <Button
