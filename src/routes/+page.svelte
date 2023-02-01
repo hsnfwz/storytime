@@ -13,7 +13,6 @@
 </script>
 
 <Heading label="Home" />
-<HorizontalDivider />
 {#if data.profile}
   <p class="dark:text-white">Welcome back Profile {data.profile.id}!</p>
 {:else}

@@ -21,7 +21,6 @@
 </script>
 
 <Heading label={`Profile ${data.userProfile.id} Books`} />
-<HorizontalDivider />
 <div class="flex flex-col sm:flex-row gap-2">
   <Button
     label={`All (${bookStatusAllCount})`}
@@ -54,9 +53,7 @@
     handleClick={() => goto(`?status=${E_BookStatus.DNF.url}&page=${data.currentPage}`, { replaceState: true })}
   />
 </div>
-<HorizontalDivider />
 <MasonryGrid items={data.books} />
-<HorizontalDivider />
 <Paginator
   currentPage={data.currentPage}
   maxPageItemsCount={data.maxPageItemsCount}

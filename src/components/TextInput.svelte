@@ -7,7 +7,7 @@
 
 <input
   placeholder={placeholder}
-  class={`p-1 box-border w-full rounded border border-neutral-100 bg-neutral-100 dark:border-slate-600 dark:bg-slate-600 dark:text-white`}
+  class={`p-1 box-border w-full border border-slate-400 dark:border-slate-700 dark:text-white dark:bg-transparent rounded`}
   type="text"
   bind:value={value}
   maxlength={maxLength}

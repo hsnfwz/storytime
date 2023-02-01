@@ -40,18 +40,16 @@
 
     const bodyElement = document.querySelector('body');
     bodyElement?.classList.add('bg-white');
-    bodyElement?.classList.add('dark:bg-black');
+    bodyElement?.classList.add('dark:bg-slate-900');
   });
 </script>
 
 <!-- VERSION 2 FEATURES/FIXES -->
 <!-- todo: hide rating score, rating count and reviews count by default, let user click to view it -->
 <!-- todo: create 18px (heading), 16px (body/subheading) and 14px (body) text components -->
-
 <!-- todo: editions: author, title, series title, series entry, cover, publish date, page count, edition title, edition series title, edition series entry, isbn 10, isbn 13, format, language, publisher, description -->
 
 <!-- todo: before updating counts for book, we need to get the latest count and ensure no other user has updated it before we update it. one way to do this is to subcribe to the book, but there is still a chance the data becomes inconsistent. maybe for book, we need to use count()  -->
-
 <!-- todo:
   - ADD TO COLLECTION: insert book_tag record if tag does not exist and update count, otherwise only update count
   - REMOVE FROM COLLECTION: update count, otherwise delete book_tag record if count reaches 0

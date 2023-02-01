@@ -1,7 +1,4 @@
 <script lang="ts">
-  // interfaces
-  import type I_Book from 'src/interfaces/I_Book';
-
   // api
   import { getPublicUrl } from 'src/api/storage';
 
@@ -9,7 +6,7 @@
   import { formatFileName } from 'src/helpers/helpers';
 
   // props
-  export let item: I_Book;
+  export let item: any;
 </script>
 
 <img

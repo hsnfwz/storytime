@@ -8,6 +8,7 @@
   import Card from 'src/components/Card.svelte';
   import Link from 'src/components/Link.svelte';
   import HorizontalDivider from 'src/components/HorizontalDivider.svelte';
+  import Button from 'src/components/Button.svelte';
 
   // form
   export let form: any;
@@ -27,7 +28,6 @@
 </script>
 
 <Heading label="Sign In" />
-<HorizontalDivider />
 {#if !$page.data.session}
   {#if form?.error}
     <div class="dark:text-white">{form.error}</div>
@@ -48,17 +48,15 @@
         name="email"
         bind:value={email}
         autoComplete="off"
-        class={`${form?.error ? 'border-red-500' : 'dark:border-slate-600'} p-1 box-border border w-full rounded dark:bg-slate-600`}
+        class={`${form?.error ? 'border-red-500' : 'dark:border-slate-700'} p-1 box-border border w-full rounded dark:bg-slate-700`}
         placeholder="Email"
       />
     </div>
-    <button
-      class={`flex justify-center w-full p-1 st-font-bold rounded border-2 hover:bg-slate-400 hover:border-slate-400 dark:hover:bg-slate-600 dark:hover:border-slate-600 dark:text-white disabled:opacity-50 disabled:pointer-events-none transition-all border-slate-400 dark:border-slate-600`}
+    <Button
+      label="Sign In"
       type="submit"
-      disabled={isLoading || email === ''}
-    >
-      Sign In
-    </button>
+      isDisabled={isLoading || email === ''}
+    />
   </form>
   <p class="dark:text-white">By signing in, you agree to our <Link label="Terms of Service" link="/terms-of-service" /></p>
 {:else}

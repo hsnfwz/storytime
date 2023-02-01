@@ -15,7 +15,6 @@
 </script>
 
 <Heading label={`Profile ${data.userProfile.id}`} />
-<HorizontalDivider />
 <Link
   label={`Books (${bookStatusAllCount})`}
   link={`/profiles/${$page.data.session.user.id}/books`}

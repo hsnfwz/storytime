@@ -141,19 +141,19 @@
 </script>
 
 <div class="flex flex-col items-center sm:flex-row sm:justify-center sm:items-start gap-4">
-  <div class="w-full sm:max-w-[200px] flex flex-col gap-4">
+  <div class="w-full sm:max-w-[250px] flex flex-col gap-4">
     <ItemCard item={book} />
-    <HorizontalDivider />
-    <Card>
+    <!-- <HorizontalDivider /> -->
+    <!-- <Card>
       <Heading label="Links" />
       <div class="flex flex-col gap-2">
         <Link link="/" label="Purchase" />
         <Link link="/" label="Community" />
         <Link link="/" label="Statistics" />
       </div>
-    </Card>
+    </Card> -->
   </div>
-  <div class="w-full flex flex-col items-center gap-4 sm:max-w-[800px]">
+  <div class="w-full flex flex-col items-center gap-4 sm:max-w-[750px]">
     <Card>
       <Heading label={book.title} />
       <div class="w-full flex flex-col gap-2">
@@ -346,10 +346,10 @@
           </div>
           {#if showDeleteUserBook}
             <WarningCard>
-              <p class="dark:text-white">This action cannot be undone. This will permanently delete your book and all associated statuses, ratings, reviews, reads, and tags.</p>
+              <p class="dark:text-white">This action cannot be undone. This will permanently delete your book and all associated statuses, ratings, reviews, reads, and tags</p>
             </WarningCard>
             <div class="w-full flex flex-col gap-2">
-              <label for="">* Please type <span class="st-font-bold">Delete Book</span> to confirm.</label>
+              <label for="">* Please type <span class="st-font-bold">Delete Book</span> to confirm</label>
               <TextInput
                 placeholder="Delete Book"
                 bind:value={deleteConfirmation}

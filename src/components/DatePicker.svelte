@@ -49,12 +49,12 @@
 </script>
 
 <div class="w-full flex flex-col gap-2">
-  <p class={`${showError ? 'text-rose-500' : 'dark:text-whtie'}`}>{label}</p>
+  <p class={`${showError ? 'text-rose-500' : 'dark:text-white'}`}>{label}</p>
   <div class="flex gap-2 w-full">
     <div class="w-full flex flex-col gap-2">
-      <label for="" class={`${showError ? 'text-rose-500' : 'dark:text-whtie'}`}>Year</label>
+      <label for="" class={`${showError ? 'text-rose-500' : 'dark:text-white'}`}>Year</label>
       <input
-        class={`${showError ? 'border-rose-500' : 'border-neutral-100 dark:border-slate-600'} border-2 w-full box-border p-1 bg-neutral-100 dark:text-white dark:bg-slate-600 rounded`}
+        class={`${showError ? 'border-rose-500' : 'border-slate-400 dark:border-slate-700'} border w-full box-border p-1 bg-slate-400 dark:text-white dark:bg-transparent rounded`}
         type="text"
         placeholder="YYYY"
         value={year}
@@ -67,9 +67,9 @@
       />
     </div>
     <div class="w-full flex flex-col gap-2">
-      <label for="" class={`${showError ? 'text-rose-500' : 'dark:text-whtie'}`}>Month</label>
+      <label for="" class={`${showError ? 'text-rose-500' : 'dark:text-white'}`}>Month</label>
       <input
-        class={`${showError ? 'border-rose-500' : 'border-neutral-100 dark:border-slate-600'} border-2 w-full box-border p-1 bg-neutral-100 dark:text-white dark:bg-slate-600 rounded`}
+        class={`${showError ? 'border-rose-500' : 'border-slate-400 dark:border-slate-700'} border w-full box-border p-1 bg-slate-400 dark:text-white dark:bg-transparent rounded`}
         type="text"
         placeholder="MM"
         value={month}
@@ -82,9 +82,9 @@
       />
     </div>
     <div class="w-full flex flex-col gap-2">
-      <label for="" class={`${showError ? 'text-rose-500' : 'dark:text-whtie'}`}>Day</label>
+      <label for="" class={`${showError ? 'text-rose-500' : 'dark:text-white'}`}>Day</label>
       <input
-        class={`${showError ? 'border-rose-500' : 'border-neutral-100 dark:border-slate-600'} border-2 w-full box-border p-1 bg-neutral-100 dark:text-white dark:bg-slate-600 rounded`}
+        class={`${showError ? 'border-rose-500' : 'border-slate-400 dark:border-slate-700'} border w-full box-border p-1 bg-slate-400 dark:text-white dark:bg-transparent rounded`}
         type="text"
         placeholder="DD"
         value={day}

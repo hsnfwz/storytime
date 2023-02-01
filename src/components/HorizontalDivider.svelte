@@ -1,1 +1,1 @@
-<div class="w-full h-[2px] bg-slate-400 dark:bg-slate-800 rounded-full"></div>
+<div class="w-full h-[1px] bg-slate-400 dark:bg-slate-700"></div>

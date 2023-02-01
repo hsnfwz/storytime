@@ -7,5 +7,4 @@
 </script>
 
 <Heading label="Explore" />
-<HorizontalDivider />
 <Link label="Books" link="/explore/books" />

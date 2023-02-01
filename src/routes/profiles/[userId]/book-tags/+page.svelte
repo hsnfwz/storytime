@@ -58,14 +58,13 @@
 </script>
 
 <Heading label={`Profile ${data.userProfile.id} Tags`} />
-<HorizontalDivider />
 {#if tagExists}
   <WarningCard>
     <p class="w-full dark:text-white">Tag already exists.</p>
   </WarningCard>
 {/if}
 <div class="w-full flex flex-col gap-2">
-  <label for="">Tag</label>
+  <label for="" class="dark:text-white">Tag</label>
   <TextInput
     placeholder="Tag (max. 40 characters)"
     bind:value={tagName}

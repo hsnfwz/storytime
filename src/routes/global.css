@@ -80,7 +80,8 @@ body {
   height: 1rem;
   border-radius: 0.25rem;
 
-  background-color: #475569;
+  background-color: transparent;
+  border: solid 1px #334155;
 
   cursor: pointer;
 }
@@ -92,16 +93,16 @@ body {
   width: 2rem;
   height:2rem;
 
-  background: #64748b;
-  border-radius: 0.25rem;
+  background: #334155;
+  border-radius: 0;
 }
 
 .dark .dark\:slider-dark::-moz-range-thumb {
   width: 2rem;
   height: 2rem;
 
-  background: #64748b;
-  border-radius: 0.25rem;
+  background: #334155;
+  border-radius: 0;
 }
 
 /* .slider-light:hover {

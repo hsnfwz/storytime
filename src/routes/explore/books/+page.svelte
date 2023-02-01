@@ -11,9 +11,7 @@
 </script>
 
 <Heading label="Books" />
-<HorizontalDivider />
 <MasonryGrid items={data.books} />
-<HorizontalDivider />
 <Paginator
   currentPage={data.currentPage}
   maxPageItemsCount={data.maxPageItemsCount}

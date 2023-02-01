@@ -16,8 +16,8 @@ const E_BookStatus = Object.freeze({
     url: 'read',
   },
   'DNF': {
-    text: 'Did Not Finish',
-    url: 'did-not-finish',
+    text: 'DNF',
+    url: 'dnf',
   }
 });
 
