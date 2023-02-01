@@ -12,7 +12,7 @@
   export let maxPageItemsCount: number;
 </script>
 
-<div class="flex justify-between sm:justify-center gap-2">
+<div class="flex justify-center gap-2">
   <ArrowLeftButton
     handleClick={() => {
       currentPage = currentPage - 1;

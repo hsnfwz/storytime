@@ -76,7 +76,7 @@
 <!-- todo: look into cacheing? -->
 <!-- todo: it appears postgres handle concurrent transactions automatically, but test just in case -->
 
-<main class="flex flex-col gap-4 mt-4 mb-[42px] sm:mt-0 sm:mb-0">
+<main class="flex flex-col gap-4 mt-4 mb-[33px] sm:mt-0 sm:mb-0">
   <Nav />
   <div class="flex flex-col gap-4 mx-4">
     <slot />
