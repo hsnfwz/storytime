@@ -95,6 +95,7 @@ body {
 
   background: #334155;
   border-radius: 0;
+  box-shadow: none;
 }
 
 .dark .dark\:slider-dark::-moz-range-thumb {
@@ -103,6 +104,7 @@ body {
 
   background: #334155;
   border-radius: 0;
+  box-shadow: none;
 }
 
 /* .slider-light:hover {
