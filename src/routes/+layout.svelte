@@ -45,9 +45,17 @@
 </script>
 
 <!-- VERSION 2 FEATURES/FIXES -->
-<!-- todo: hide rating score, rating count and reviews count by default, let user click to view it -->
+<!-- todo: refactor deletebook function and usertag component and rename counts in db and files -->
+<!-- todo: tags -->
+<!-- todo: authors -->
+<!-- todo: content warnings -->
+<!-- todo: storage folder name: bookId/bookEditionId/book-cover.webp -->
+
+<!-- todo: allow user to mark yes/no to "would read again" -->
+<!-- todo: allow user to mark yes/no to "own this book" -->
+
+<!-- todo: hide content warnings, rating score, rating count and reviews count by default, let user click to view it -->
 <!-- todo: create 18px (heading), 16px (body/subheading) and 14px (body) text components -->
-<!-- todo: editions: author, title, series title, series entry, cover, publish date, page count, edition title, edition series title, edition series entry, isbn 10, isbn 13, format, language, publisher, description -->
 
 <!-- todo: before updating counts for book, we need to get the latest count and ensure no other user has updated it before we update it. one way to do this is to subcribe to the book, but there is still a chance the data becomes inconsistent. maybe for book, we need to use count()  -->
 <!-- todo:

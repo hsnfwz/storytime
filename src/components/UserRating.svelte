@@ -4,7 +4,7 @@
   import { page } from '$app/stores';
 
   // api
-  import { insertRecords, updateRecords } from 'src/api/database';
+  import { insertRecords, updateRecords, increment, incrementAndDecrement } from 'src/api/database';
 
   // helpers
   import { formatDate } from 'src/helpers/helpers';
@@ -26,147 +26,143 @@
 
   // props
   export let userProfile: any;
-  export let userBook: any;
-  export let book: any;
+  export let userBookEdition: any;
+  export let bookEdition: any;
 
   // state
   let isLoading: boolean = false;
-  let rating: number = userBook ? userBook.user_book_rating ? userBook.user_book_rating.rating : 5 : 5;
+  let rating: number = userBookEdition ? userBookEdition.user_book_edition_rating ? userBookEdition.user_book_edition_rating.rating : 5 : 5;
 
   onMount(() => {
     // grab records for timeline
   });
 
   const handleAddNewRating = async () => {
-    const ratingInstanceData: any = {
+    const userBookEditionRatingData: any = {
       user_id: session.user.id,
-      book_id: book.id,
+      book_edition_id: bookEdition.id,
       rating,
     };
 
-    const newRatingInstanceRecords = await insertRecords('user_book_rating', [ratingInstanceData]);
+    const newUserBookEditionRatingRecords = await insertRecords('user_book_edition_rating', [userBookEditionRatingData], '*');
 
-    const updatedUserBookData: any = {
-      latest_user_book_rating_id: newRatingInstanceRecords[0].id,
+    const updatedUserBookEditionData: any = {
+      latest_user_book_edition_rating_id: newUserBookEditionRatingRecords[0].id,
     };
-
-    const updatedProfileData: any = {
-      [`book_rating_${userBook.user_book_rating.rating}_count`]: userProfile[`book_rating_${userBook.user_book_rating.rating}_count`] - 1,
-      [`book_rating_${rating}_count`]: userProfile[`book_rating_${rating}_count`] + 1,
-    };
-
-    const updatedBookData: any = {
-      [`rating_${userBook.user_book_rating.rating}_count`]: book[`rating_${userBook.user_book_rating.rating}_count`] - 1,
-      [`rating_${rating}_count`]: book[`rating_${rating}_count`] + 1,
-    };;
 
     const [
-      latestUserBookRecords,
-      latestProfileRecords,
-      latestBookRecords
+      latestUserBookEditionRecords,
+      latestUserProfileRecords,
+      latestBookEditionRecords,
+      latestBookRecords,
     ] = await Promise.all([
-      updateRecords('user_book', updatedUserBookData, { id: userBook.id }, `*, user_book_status(*), user_book_read(*), user_book_rating(*), user_book_review(*)`),
-      updateRecords('user_profile', updatedProfileData, { id: userProfile.id }),
-      updateRecords('book', updatedBookData, { id: book.id }),
+      updateRecords('user_book_edition', updatedUserBookEditionData, { id: userBookEdition.id }, 'id'),
+      incrementAndDecrement('user_profile', userProfile.id, `book_edition_rating_${rating}_count`, 1, `book_edition_rating_${userBookEdition.user_book_edition_rating.rating}_count`, 1),
+      incrementAndDecrement('book_edition', bookEdition.id, `rating_${rating}_count`, 1, `rating_${userBookEdition.user_book_edition_rating.rating}_count`, 1),
+      incrementAndDecrement('book', bookEdition.book.id, `total_book_edition_rating_${rating}_count`, 1, `total_book_edition_rating_${userBookEdition.user_book_edition_rating.rating}_count`, 1),
     ]);
-
-    book = latestBookRecords[0];
-    userProfile = latestProfileRecords[0];
-    userBook = latestUserBookRecords[0];
+    userProfile[`book_edition_rating_${rating}_count`] = latestUserProfileRecords[0].increment_column_value;
+    userProfile[`book_edition_rating_${userBookEdition.user_book_edition_rating.rating}_count`] = latestUserProfileRecords[0].decrement_column_value;
+    
+    bookEdition[`rating_${rating}_count`] = latestBookEditionRecords[0].increment_column_value;
+    bookEdition[`rating_${userBookEdition.user_book_edition_rating.rating}_count`] = latestBookEditionRecords[0].decrement_column_value;
+    
+    bookEdition.book[`total_book_edition_rating_${rating}_count`] = latestBookRecords[0].increment_column_value;
+    bookEdition.book[`total_book_edition_rating_${userBookEdition.user_book_edition_rating.rating}_count`] = latestBookRecords[0].decremented_column_value;
+    
+    userBookEdition.latest_user_book_edition_rating_id = newUserBookEditionRatingRecords[0].id,
+    userBookEdition.user_book_edition_rating = newUserBookEditionRatingRecords[0];
   }
 
   const handleRating = async () => {
     isLoading = true;
 
-    if (userBook && userBook.user_book_rating) {
-      const updatedRatingData: any = {
+    if (userBookEdition && userBookEdition.user_book_edition_rating) {
+      const updatedUserBookEditionRatingData: any = {
         updated_at: new Date(),
         rating,
       }
 
-      const updatedProfileData: any = {
-        [`book_rating_${userBook.user_book_rating.rating}_count`]: userProfile[`book_rating_${userBook.user_book_rating.rating}_count`] - 1,
-        [`book_rating_${rating}_count`]: userProfile[`book_rating_${rating}_count`] + 1,
-      };
-
-      const updatedBookData: any = {
-        [`rating_${userBook.user_book_rating.rating}_count`]: book[`rating_${userBook.user_book_rating.rating}_count`] - 1,
-        [`rating_${rating}_count`]: book[`rating_${rating}_count`] + 1,
-      };
-
       const [
-        latestUserBookRatingRecords,
-        latestProfileRecords,
-        latestBookRecords
+        latestUserBookEditionRatingRecords,
+        latestUserProfileRecords,
+        latestBookEditionRecords,
+        latestBookRecords,
       ] = await Promise.all([
-        updateRecords('user_book_rating', updatedRatingData, { id: userBook.latest_user_book_rating_id }, `*`),
-        updateRecords('user_profile', updatedProfileData, { id: userProfile.id }),
-        updateRecords('book', updatedBookData, { id: book.id }),
+        updateRecords('user_book_edition_rating', updatedUserBookEditionRatingData, { id: userBookEdition.latest_user_book_edition_rating_id }, `*`),
+        incrementAndDecrement('user_profile', userProfile.id, `book_edition_rating_${rating}_count`, 1, `book_edition_rating_${userBookEdition.user_book_edition_rating.rating}_count`, 1),
+        incrementAndDecrement('book_edition', bookEdition.id, `rating_${rating}_count`, 1, `rating_${userBookEdition.user_book_edition_rating.rating}_count`, 1),
+        incrementAndDecrement('book', bookEdition.book.id, `total_book_edition_rating_${rating}_count`, 1, `total_book_edition_rating_${userBookEdition.user_book_edition_rating.rating}_count`, 1),
       ]);
 
-      book = latestBookRecords[0];
-      userProfile = latestProfileRecords[0];
-      userBook.user_book_rating = latestUserBookRatingRecords[0];
-    } else if (userBook && !userBook.user_book_rating) {
-      const ratingInstanceData: any = {
+      userProfile[`book_edition_rating_${rating}_count`] = latestUserProfileRecords[0].increment_column_value;
+      userProfile[`book_edition_rating_${userBookEdition.user_book_edition_rating.rating}_count`] = latestUserProfileRecords[0].decrement_column_value;
+      
+      bookEdition[`rating_${rating}_count`] = latestBookEditionRecords[0].increment_column_value;
+      bookEdition[`rating_${userBookEdition.user_book_edition_rating.rating}_count`] = latestBookEditionRecords[0].decrement_column_value;
+      
+      bookEdition.book[`total_book_edition_rating_${rating}_count`] = latestBookRecords[0].increment_column_value;
+      bookEdition.book[`total_book_edition_rating_${userBookEdition.user_book_edition_rating.rating}_count`] = latestBookRecords[0].decremented_column_value;
+
+      userBookEdition.user_book_edition_rating = latestUserBookEditionRatingRecords[0];
+    } else if (userBookEdition && !userBookEdition.user_book_edition_rating) {
+      const userBookEditionRatingData: any = {
         user_id: session.user.id,
-        book_id: book.id,
+        book_edition_id: bookEdition.id,
         rating,
       };
 
-      const newRatingInstanceRecords = await insertRecords('user_book_rating', [ratingInstanceData]);
+      const newUserBookEditionRatingRecords = await insertRecords('user_book_edition_rating', [userBookEditionRatingData], '*');
 
-      const updatedUserBookData: any = {
-        latest_user_book_rating_id: newRatingInstanceRecords[0].id,
-      };
-
-      const updatedProfileData: any = {
-        [`book_rating_${rating}_count`]: userProfile[`book_rating_${rating}_count`] + 1,
-      };
-
-      const updatedBookData: any = {
-        [`rating_${rating}_count`]: book[`rating_${rating}_count`] + 1,
+      const updatedUserBookEditionData: any = {
+        latest_user_book_edition_rating_id: newUserBookEditionRatingRecords[0].id,
       };
 
       const [
-        latestUserBookRecords,
-        latestProfileRecords,
-        latestBookRecords
+        latestUserBookEditionRecords,
+        latestUserProfileRecords,
+        latestBookEditionRecords,
+        latestBookRecords,
       ] = await Promise.all([
-        updateRecords('user_book', updatedUserBookData, { id: userBook.id }, `*, user_book_status(*), user_book_read(*), user_book_rating(*), user_book_review(*)`),
-        updateRecords('user_profile', updatedProfileData, { id: userProfile.id }),
-        updateRecords('book', updatedBookData, { id: book.id }),
+        updateRecords('user_book_edition', updatedUserBookEditionData, { id: userBookEdition.id }, 'id'),
+        increment('user_profile', userProfile.id, `book_edition_rating_${rating}_count`, 1),
+        increment('book_edition', bookEdition.id, `rating_${rating}_count`, 1),
+        increment('book', bookEdition.book.id, 'total_book_edition_rating_count', 1),
       ]);
+      userProfile.book_edition_rating_count = latestUserProfileRecords[0].increment_column_value;
+      
+      bookEdition[`rating_${rating}_count`] = latestBookEditionRecords[0].increment_column_value;
+      
+      bookEdition.book.total_book_edition_rating_count = latestBookRecords[0].increment_column_value;
 
-      book = latestBookRecords[0];
-      userProfile = latestProfileRecords[0];
-      userBook = latestUserBookRecords[0];
+      userBookEdition.latest_user_book_edition_rating_id = newUserBookEditionRatingRecords[0].id,
+      userBookEdition.user_book_edition_rating = newUserBookEditionRatingRecords[0];
     }
 
-    rating = userBook.user_book_rating.rating;
+    rating = userBookEdition.user_book_edition_rating.rating;
 
     isLoading = false;
   }
 </script>
 
 {#if session}
-  {#if userBook && userBook.user_book_rating}
+  {#if userBookEdition && userBookEdition.user_book_edition_rating}
     <SuccessCard>
       <div class="flex flex-col gap-2 w-full">
-        <p class="dark:text-white w-full">You rated this book <span class="st-font-italic">{userBook.user_book_rating.rating}/10</span></p>
-        <p class="dark:text-white text-sm w-full">Last updated {formatDate(userBook.user_book_rating.updated_at, true)}</p>
+        <p class="dark:text-white w-full">You rated this bookEdition <span class="st-font-italic">{userBookEdition.user_book_edition_rating.rating}/10</span></p>
+        <p class="dark:text-white text-sm w-full">Last updated {formatDate(userBookEdition.user_book_edition_rating.updated_at, true)}</p>
       </div>
     </SuccessCard>
-  {:else if userBook && !userBook.user_book_rating && (userBook.user_book_status.status === E_BookStatus.READ.text || userBook.user_book_status.status === E_BookStatus.DNF.text)}
+  {:else if userBookEdition && !userBookEdition.user_book_edition_rating && (userBookEdition.user_book_edition_status.status === E_BookStatus.READ.text || userBookEdition.user_book_edition_status.status === E_BookStatus.DNF.text)}
     <InfoCard>
-      <p class="dark:text-white w-full">You can rate this book</p>
+      <p class="dark:text-white w-full">You can rate this bookEdition</p>
     </InfoCard>
-  {:else if (userBook && (userBook.user_book_status.status !== E_BookStatus.READ.text && userBook.user_book_status.status !== E_BookStatus.DNF.text)) || !userBook}
+  {:else if (userBookEdition && (userBookEdition.user_book_edition_status.status !== E_BookStatus.READ.text && userBookEdition.user_book_edition_status.status !== E_BookStatus.DNF.text)) || !userBookEdition}
     <InfoCard>
-      <p class="dark:text-white w-full">You can start rating this book after marking it as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DNF.text}</span></p>
+      <p class="dark:text-white w-full">You can start rating this bookEdition after marking it as <span class="st-font-italic">{E_BookStatus.READ.text}</span> or <span class="st-font-italic">{E_BookStatus.DNF.text}</span></p>
     </InfoCard>
   {/if}
-  {#if userBook && (userBook.user_book_status.status === E_BookStatus.READ.text || userBook.user_book_status.status === E_BookStatus.DNF.text)}
+  {#if userBookEdition && (userBookEdition.user_book_edition_status.status === E_BookStatus.READ.text || userBookEdition.user_book_edition_status.status === E_BookStatus.DNF.text)}
     <div class="w-full flex flex-col gap-2 items-center">
       <p class="dark:text-white text-center text-lg st-font-bold ">{rating}</p>
       <p class="dark:text-white text-center st-font-italic">{E_Rating[rating].label}</p>
@@ -174,20 +170,20 @@
     </div>
     <div class="w-full flex flex-col gap-2 items-center">
       <Button
-        label={userBook.user_book_rating ? 'Update Current Rating' : 'Add Rating'}
+        label={userBookEdition.user_book_edition_rating ? 'Update Current Rating' : 'Add Rating'}
         handleClick={async () => await handleRating()}
         isDisabled={
           isLoading ||
-          (userBook.user_book_rating && userBook.user_book_rating.rating === rating)
+          (userBookEdition.user_book_edition_rating && userBookEdition.user_book_edition_rating.rating === rating)
         }
       />
-      {#if userBook && userBook.user_book_rating}
+      {#if userBookEdition && userBookEdition.user_book_edition_rating}
         <Button
           label="Add New Rating"
           handleClick={async () => await handleAddNewRating()}
           isDisabled={
             isLoading ||
-            (userBook.user_book_rating && userBook.user_book_rating.rating === rating)
+            (userBookEdition.user_book_edition_rating && userBookEdition.user_book_edition_rating.rating === rating)
           }
         />
       {/if}

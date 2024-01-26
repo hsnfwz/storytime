@@ -11,9 +11,9 @@
 </script>
 
 <Heading label="Books" />
-<MasonryGrid items={data.books} />
+<MasonryGrid items={data.bookEditions} />
 <Paginator
   currentPage={data.currentPage}
   maxPageItemsCount={data.maxPageItemsCount}
-  currentItemsCount={data.books.length}
+  currentItemsCount={data.bookEditions.length}
 />

@@ -27,21 +27,25 @@
 
   // props
   export let userProfile: any;
-  export let userBook: any;
-  export let book: any;
-  export let userBookTags: any;
-  export let userBookTagBooks: any;
+  export let bookEdition: any;
+  export let userBookEdition: any;
+  export let userBookEditionTags: any;
+  export let userBookEditionTagBookEditions: any;
 
   // state
   let isLoading: boolean = false;
-  let userBookTagIds = userBookTagBooks.map((userBookTagBook: any) => userBookTagBook.user_book_tag_id);
+  let userBookTagIds = userBookEditionTagBookEditions.map((userBookTagBook: any) => userBookTagBook.user_book_tag_id);
+
+
+  /* todo: 4 counts and 2 instance counts */
+
 
   const handleAddToCollection = async (userBookTag: any) => {
     isLoading = true;
 
     const userBookTagBookData: any = {
       user_id: session.user.id,
-      book_id: book.id,
+      book_id: bookEdition.id,
       user_book_tag_id: userBookTag.id,
     }
 
@@ -58,7 +62,7 @@
     // };
 
     // const updatedBookData: any = {
-    //   book_tag_count: book.book_tag_count + 1,
+    //   book_tag_count: bookEdition.book_tag_count + 1,
     // };
 
     const [
@@ -68,13 +72,13 @@
       insertRecords('user_book_tag_book', [userBookTagBookData]),
       updateRecords('user_book_tag', [updatedUserBookTagData], { id: userBookTag.id }),
       // updateRecords('user_profile', [updatedProfileData], { id: userProfile.id }),
-      // updateRecords('book', [updatedBookData], { id: book.id }),
+      // updateRecords('bookEdition', [updatedBookData], { id: bookEdition.id }),
     ]);
 
-    const index = userBookTags.findIndex((previousUserBookTag: any) => previousUserBookTag.id === userBookTag.id);
-    userBookTags[index] = latestUserBookTagRecords[0];
+    const index = userBookEditionTags.findIndex((previousUserBookTag: any) => previousUserBookTag.id === userBookTag.id);
+    userBookEditionTags[index] = latestUserBookTagRecords[0];
     userBookTagIds = [ ...userBookTagIds, userBookTag.id ];
-    userBookTagBooks = [ ...userBookTagBooks, newUserBookTagBookRecords[0] ];
+    userBookEditionTagBookEditions = [ ...userBookEditionTagBookEditions, newUserBookTagBookRecords[0] ];
 
     isLoading = false;
   }
@@ -90,39 +94,39 @@
       deletedUserBookTagBookRecords,
       latestUserBookTagRecords
     ] = await Promise.all([
-      deleteRecords('user_book_tag_book', { user_book_tag_id: userBookTag.id, book_id: book.id }),
+      deleteRecords('user_book_tag_book', { user_book_tag_id: userBookTag.id, book_id: bookEdition.id }),
       updateRecords('user_book_tag', [updatedUserBookTagData], { id: userBookTag.id }),
     ]);
 
-    const index = userBookTags.findIndex((previousUserBookTag: any) => previousUserBookTag.id === userBookTag.id);
-    userBookTags[index] = latestUserBookTagRecords[0];
+    const index = userBookEditionTags.findIndex((previousUserBookTag: any) => previousUserBookTag.id === userBookTag.id);
+    userBookEditionTags[index] = latestUserBookTagRecords[0];
     userBookTagIds = userBookTagIds.filter((userBookTagId: number) => userBookTagId !== userBookTag.id);
-    userBookTagBooks = userBookTagBooks.filter((userBookTagBook: any) => userBookTagBook.id !== deletedUserBookTagBookRecords[0].id);
+    userBookEditionTagBookEditions = userBookEditionTagBookEditions.filter((userBookTagBook: any) => userBookTagBook.id !== deletedUserBookTagBookRecords[0].id);
 
     isLoading = false;
   }
 </script>
 
 {#if session}
-  {#if userBook && userBookTagBooks.length > 0}
+  {#if userBookEdition && userBookEditionTagBookEditions.length > 0}
     <SuccessCard>
       <div class="w-full flex flex-col gap-2">
-        <p class="dark:text-white w-full">You tagged this book {userBookTagBooks.length} {userBookTagBooks.length === 1 ? 'time' : 'times'}</p>
-        <!-- <p class="dark:text-white text-sm w-full">Last updated {formatDate(userBook.user_book_rating.updated_at, true)}</p> -->
+        <p class="dark:text-white w-full">You tagged this book {userBookEditionTagBookEditions.length} {userBookEditionTagBookEditions.length === 1 ? 'time' : 'times'}</p>
+        <!-- <p class="dark:text-white text-sm w-full">Last updated {formatDate(userBookEdition.user_book_rating.updated_at, true)}</p> -->
       </div>
     </SuccessCard>
-  {:else if userBook && userBookTagBooks.length === 0}
+  {:else if userBookEdition && userBookEditionTagBookEditions.length === 0}
     <InfoCard>
       <p class="dark:text-white w-full">You can tag this book</p>
     </InfoCard>
-  {:else if !userBook}
+  {:else if !userBookEdition}
     <InfoCard>
       <p class="dark:text-white w-full">You can start tagging this book after marking a status</p>
     </InfoCard>
   {/if}
-  {#if userBook && userBookTags.length > 0}
+  {#if userBookEdition && userBookEditionTags.length > 0}
     <div class="w-full flex flex-col gap-2">
-      {#each userBookTags as userBookTag}
+      {#each userBookEditionTags as userBookTag}
         <div class="w-full flex justify-between gap-2 items-center">
           {#if userBookTagIds.indexOf(userBookTag.id) !== -1}
             <SuccessCard>
@@ -148,7 +152,7 @@
         </div>
       {/each}
     </div>
-  {:else if userBook && userBookTags.length === 0}
+  {:else if userBookEdition && userBookEditionTags.length === 0}
     <p class="w-full dark:text-white">You have no tags</p>
   {/if}
 {/if}

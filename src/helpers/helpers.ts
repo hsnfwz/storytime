@@ -20,6 +20,16 @@ const formatUrl = (text: string) => {
   return _text;
 }
 
+const formatTableColumn = (text: string) => {
+  let _text: string = '';
+
+  if (text) {
+    _text = text.replace(' ', '_').trim().toLowerCase();
+  }
+
+  return _text;
+}
+
 const formatFileName = (text: string, id: number, includeFileType: boolean = false) => {
   let _text: string = '';
 
@@ -186,4 +196,5 @@ export {
   getDateDifference,
   getCurrentEnvironment,
   formatUrl,
+  formatTableColumn,
 };
